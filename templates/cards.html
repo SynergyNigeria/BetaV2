@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cards - BetaBank</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+        * {
+            font-family: 'Montserrat', sans-serif;
+        }
+        .card-item {
+            transition: all 0.3s ease;
+        }
+        .card-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+        .debit-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .credit-gradient {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        .rewards-gradient {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        .business-gradient {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+        .premium-gradient {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+        .modal-overlay {
+            backdrop-filter: blur(5px);
+        }
+        .card-visual {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+        .card-visual::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%, transparent 50%);
+        }
+        .chip {
+            width: 30px;
+            height: 24px;
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <a href="index.html">
+                            <img src="../assets/photos/beta_logo.png" alt="BetaBank Logo" class="h-10 w-auto">
+                        </a>
+                    </div>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="dashboard.html" class="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Dashboard</a>
+                        <a href="accounts.html" class="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Accounts</a>
+                        <a href="investments.html" class="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Investments</a>
+                        <a href="loans.html" class="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Loans</a>
+                        <a href="settings.html" class="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Settings</a>
+                        <a href="support.html" class="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Support</a>
+                        <a href="logout.html" class="bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-red-700 transition duration-300">Sign Out</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="bg-white border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="py-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-900">Cards & Payment Methods</h1>
+                        <p class="text-gray-600 mt-1">Manage your cards and explore new options</p>
+                    </div>
+                    <button onclick="openCardApplicationModal()" class="bg-indigo-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition duration-300 flex items-center">
+                        <i data-feather="plus" class="w-5 h-5 mr-2"></i>
+                        Apply for Card
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Cards Summary -->
+        <div class="mb-8">
+            <div class="grid md:grid-cols-4 gap-6">
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4">
+                            <i data-feather="credit-card" class="w-6 h-6 text-green-600"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">Available Credit</p>
+                            <p class="text-2xl font-bold text-gray-900">$12,850.00</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mr-4">
+                            <i data-feather="trending-up" class="w-6 h-6 text-red-600"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">Total Balance</p>
+                            <p class="text-2xl font-bold text-gray-900">$2,150.00</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
+                            <i data-feather="gift" class="w-6 h-6 text-blue-600"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">Rewards Points</p>
+                            <p class="text-2xl font-bold text-gray-900">24,560</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4">
+                            <i data-feather="calendar" class="w-6 h-6 text-purple-600"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">Next Payment</p>
+                            <p class="text-2xl font-bold text-gray-900">Aug 15</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Active Cards -->
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">My Cards</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Credit Card -->
+                <div class="card-item bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="credit-gradient p-6 text-white">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-lg font-semibold">BetaBank Rewards</h3>
+                            <div class="text-right">
+                                <div class="text-sm opacity-75">Credit Card</div>
+                                <div class="text-xs opacity-50">****7890</div>
+                            </div>
+                        </div>
+                        <!-- Card Visual -->
+                        <div class="card-visual p-4 mb-4 text-white">
+                            <div class="flex justify-between items-start mb-6">
+                                <div class="chip"></div>
+                                <i data-feather="wifi" class="w-6 h-6 opacity-75"></i>
+                            </div>
+                            <div class="mb-4">
+                                <div class="text-lg font-mono tracking-wider">**** **** **** 7890</div>
+                            </div>
+                            <div class="flex justify-between items-end">
+                                <div>
+                                    <div class="text-xs opacity-75">VALID THRU</div>
+                                    <div class="text-sm font-mono">12/28</div>
+                                </div>
+                                <div class="text-lg font-bold">BETA</div>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-xl font-bold">$2,150.00</p>
+                            <p class="text-sm opacity-90">Current Balance</p>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="space-y-2 text-sm text-gray-600 mb-4">
+                            <div class="flex justify-between">
+                                <span>Credit Limit:</span>
+                                <span>$15,000.00</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Available Credit:</span>
+                                <span class="text-green-600 font-semibold">$12,850.00</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Minimum Payment:</span>
+                                <span>$65.00</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Rewards Rate:</span>
+                                <span>1.5% Cash Back</span>
+                            </div>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button onclick="viewCardDetails('credit-7890')" class="flex-1 bg-gray-100 text-gray-700 py-2 rounded-lg text-sm font-medium hover:bg-gray-200 transition duration-300">
+                                View Details
+                            </button>
+                            <button onclick="manageCard('credit-7890')" class="flex-1 bg-indigo-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition duration-300">
+                                Manage
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Debit Card -->
+                <div class="card-item bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="debit-gradient p-6 text-white">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-lg font-semibold">Primary Checking</h3>
+                            <div class="text-right">
+                                <div class="text-sm opacity-75">Debit Card</div>
+                                <div class="text-xs opacity-50">****1234</div>
+                            </div>
+                        </div>
+                        <!-- Card Visual -->
+                        <div class="card-visual p-4 mb-4 text-white">
+                            <div class="flex justify-between items-start mb-6">
+                                <div class="chip"></div>
+                                <i data-feather="wifi" class="w-6 h-6 opacity-75"></i>
+                            </div>
+                            <div class="mb-4">
+                                <div class="text-lg font-mono tracking-wider">**** **** **** 1234</div>
+                            </div>
+                            <div class="flex justify-between items-end">
+                                <div>
+                                    <div class="text-xs opacity-75">VALID THRU</div>
+                                    <div class="text-sm font-mono">08/27</div>
+                                </div>
+                                <div class="text-lg font-bold">BETA</div>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-xl font-bold">$8,450.25</p>
+                            <p class="text-sm opacity-90">Available Balance</p>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="space-y-2 text-sm text-gray-600 mb-4">
+                            <div class="flex justify-between">
+                                <span>Account Type:</span>
+                                <span>Checking</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Daily Limit:</span>
+                                <span>$1,000.00</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>ATM Fees:</span>
+                                <span>Free Worldwide</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Status:</span>
+                                <span class="text-green-600 font-semibold">Active</span>
+                            </div>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button onclick="viewCardDetails('debit-1234')" class="flex-1 bg-gray-100 text-gray-700 py-2 rounded-lg text-sm font-medium hover:bg-gray-200 transition duration-300">
+                                View Details
+                            </button>
+                            <button onclick="manageCard('debit-1234')" class="flex-1 bg-indigo-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition duration-300">
+                                Manage
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Business Card -->
+                <div class="card-item bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="business-gradient p-6 text-white">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-lg font-semibold">Business Card</h3>
+                            <div class="text-right">
+                                <div class="text-sm opacity-75">Credit Card</div>
+                                <div class="text-xs opacity-50">****9012</div>
+                            </div>
+                        </div>
+                        <!-- Card Visual -->
+                        <div class="card-visual p-4 mb-4 text-white">
+                            <div class="flex justify-between items-start mb-6">
+                                <div class="chip"></div>
+                                <i data-feather="wifi" class="w-6 h-6 opacity-75"></i>
+                            </div>
+                            <div class="mb-4">
+                                <div class="text-lg font-mono tracking-wider">**** **** **** 9012</div>
+                            </div>
+                            <div class="flex justify-between items-end">
+                                <div>
+                                    <div class="text-xs opacity-75">VALID THRU</div>
+                                    <div class="text-sm font-mono">06/29</div>
+                                </div>
+                                <div class="text-lg font-bold">BETA</div>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-xl font-bold">$850.00</p>
+                            <p class="text-sm opacity-90">Current Balance</p>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="space-y-2 text-sm text-gray-600 mb-4">
+                            <div class="flex justify-between">
+                                <span>Credit Limit:</span>
+                                <span>$25,000.00</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Available Credit:</span>
+                                <span class="text-green-600 font-semibold">$24,150.00</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Rewards Rate:</span>
+                                <span>2% on Business</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Annual Fee:</span>
+                                <span>$95.00</span>
+                            </div>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button onclick="viewCardDetails('business-9012')" class="flex-1 bg-gray-100 text-gray-700 py-2 rounded-lg text-sm font-medium hover:bg-gray-200 transition duration-300">
+                                View Details
+                            </button>
+                            <button onclick="manageCard('business-9012')" class="flex-1 bg-indigo-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition duration-300">
+                                Manage
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Available Cards -->
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Available Card Products</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Premium Rewards Card -->
+                <div class="card-item bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer" onclick="applyForCard('premium-rewards')">
+                    <div class="premium-gradient p-6 text-white">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold">Premium Rewards</h3>
+                            <i data-feather="star" class="w-6 h-6"></i>
+                        </div>
+                        <p class="text-xl font-bold">3% Cash Back</p>
+                        <p class="text-sm opacity-90">On All Purchases</p>
+                    </div>
+                    <div class="p-6">
+                        <ul class="text-sm text-gray-600 space-y-2 mb-4">
+                            <li class="flex items-center">
+                                <i data-feather="check" class="w-4 h-4 text-green-600 mr-2"></i>
+                                $500 welcome bonus
+                            </li>
+                            <li class="flex items-center">
+                                <i data-feather="check" class="w-4 h-4 text-green-600 mr-2"></i>
+                                No foreign transaction fees
+                            </li>
+                            <li class="flex items-center">
+                                <i data-feather="check" class="w-4 h-4 text-green-600 mr-2"></i>
+                                Travel insurance included
+                            </li>
+                            <li class="flex items-center">
+                                <i data-feather="check" class="w-4 h-4 text-green-600 mr-2"></i>
+                                Priority customer support
+                            </li>
+                        </ul>
+                        <button class="w-full bg-indigo-600 text-white py-2 rounded-lg font-medium hover:bg-indigo-700 transition duration-300">
+                            Apply Now
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Cashback Card -->
+                <div class="card-item bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer" onclick="applyForCard('cashback')">
+                    <div class="rewards-gradient p-6 text-white">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold">Cashback Plus</h3>
+                            <i data-feather="dollar-sign" class="w-6 h-6"></i>
+                        </div>
+                        <p class="text-xl font-bold">1.5% Cash Back</p>
+                        <p class="text-sm opacity-90">No Annual Fee</p>
+                    </div>
+                    <div class="p-6">
+                        <ul class="text-sm text-gray-600 space-y-2 mb-4">
+                            <li class="flex items-center">
+                                <i data-feather="check" class="w-4 h-4 text-green-600 mr-2"></i>
+                                No annual fee forever
+                            </li>
+                            <li class="flex items-center">
+                                <i data-feather="check" class="w-4 h-4 text-green-600 mr-2"></i>
+                                $200 welcome bonus
+                            </li>
+                            <li class="flex items-center">
+                                <i data-feather="check" class="w-4 h-4 text-green-600 mr-2"></i>
+                                0% intro APR for 15 months
+                            </li>
+                            <li class="flex items-center">
+                                <i data-feather="check" class="w-4 h-4 text-green-600 mr-2"></i>
+                                Easy approval process
+                            </li>
+                        </ul>
+                        <button class="w-full bg-indigo-600 text-white py-2 rounded-lg font-medium hover:bg-indigo-700 transition duration-300">
+                            Apply Now
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Student Card -->
+                <div class="card-item bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer" onclick="applyForCard('student')">
+                    <div class="debit-gradient p-6 text-white">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold">Student Card</h3>
+                            <i data-feather="book-open" class="w-6 h-6"></i>
+                        </div>
+                        <p class="text-xl font-bold">Build Credit</p>
+                        <p class="text-sm opacity-90">Perfect for Students</p>
+                    </div>
+                    <div class="p-6">
+                        <ul class="text-sm text-gray-600 space-y-2 mb-4">
+                            <li class="flex items-center">
+                                <i data-feather="check" class="w-4 h-4 text-green-600 mr-2"></i>
+                                No annual fee
+                            </li>
+                            <li class="flex items-center">
+                                <i data-feather="check" class="w-4 h-4 text-green-600 mr-2"></i>
+                                Credit education tools
+                            </li>
+                            <li class="flex items-center">
+                                <i data-feather="check" class="w-4 h-4 text-green-600 mr-2"></i>
+                                Easy approval for students
+                            </li>
+                            <li class="flex items-center">
+                                <i data-feather="check" class="w-4 h-4 text-green-600 mr-2"></i>
+                                Graduation bonus program
+                            </li>
+                        </ul>
+                        <button class="w-full bg-indigo-600 text-white py-2 rounded-lg font-medium hover:bg-indigo-700 transition duration-300">
+                            Apply Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Transactions -->
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <h2 class="text-xl font-bold text-gray-900 mb-4">Recent Transactions</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="border-b border-gray-200">
+                            <th class="text-left py-3 px-4 font-semibold text-gray-900">Date</th>
+                            <th class="text-left py-3 px-4 font-semibold text-gray-900">Description</th>
+                            <th class="text-left py-3 px-4 font-semibold text-gray-900">Card</th>
+                            <th class="text-left py-3 px-4 font-semibold text-gray-900">Amount</th>
+                            <th class="text-left py-3 px-4 font-semibold text-gray-900">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b border-gray-100 hover:bg-gray-50">
+                            <td class="py-3 px-4 text-gray-900">Jul 28</td>
+                            <td class="py-3 px-4">
+                                <div>
+                                    <p class="font-medium text-gray-900">Amazon Purchase</p>
+                                    <p class="text-sm text-gray-600">Online Shopping</p>
+                                </div>
+                            </td>
+                            <td class="py-3 px-4 text-gray-900">****7890</td>
+                            <td class="py-3 px-4 text-gray-900 font-semibold">$89.95</td>
+                            <td class="py-3 px-4">
+                                <span class="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">Completed</span>
+                            </td>
+                        </tr>
+                        <tr class="border-b border-gray-100 hover:bg-gray-50">
+                            <td class="py-3 px-4 text-gray-900">Jul 27</td>
+                            <td class="py-3 px-4">
+                                <div>
+                                    <p class="font-medium text-gray-900">Gas Station</p>
+                                    <p class="text-sm text-gray-600">Shell #1234</p>
+                                </div>
+                            </td>
+                            <td class="py-3 px-4 text-gray-900">****1234</td>
+                            <td class="py-3 px-4 text-gray-900 font-semibold">$45.20</td>
+                            <td class="py-3 px-4">
+                                <span class="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">Completed</span>
+                            </td>
+                        </tr>
+                        <tr class="border-b border-gray-100 hover:bg-gray-50">
+                            <td class="py-3 px-4 text-gray-900">Jul 26</td>
+                            <td class="py-3 px-4">
+                                <div>
+                                    <p class="font-medium text-gray-900">Restaurant</p>
+                                    <p class="text-sm text-gray-600">The Bistro</p>
+                                </div>
+                            </td>
+                            <td class="py-3 px-4 text-gray-900">****7890</td>
+                            <td class="py-3 px-4 text-gray-900 font-semibold">$67.50</td>
+                            <td class="py-3 px-4">
+                                <span class="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">Completed</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card Application Modal -->
+    <div id="cardApplicationModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden modal-overlay">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl mx-auto">
+                <!-- Modal Header -->
+                <div class="bg-indigo-600 text-white p-6 rounded-t-xl">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-xl font-semibold">Card Application</h3>
+                        <button onclick="closeCardApplicationModal()" class="text-white hover:text-gray-200">
+                            <i data-feather="x" class="w-6 h-6"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Modal Content -->
+                <div class="p-6">
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Card Type</label>
+                        <select id="cardType" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                            <option value="">Select card type</option>
+                            <option value="premium-rewards">Premium Rewards (3% Cash Back)</option>
+                            <option value="cashback">Cashback Plus (1.5% Cash Back)</option>
+                            <option value="student">Student Card (Build Credit)</option>
+                            <option value="business">Business Card (2% on Business)</option>
+                        </select>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Annual Income</label>
+                            <div class="relative">
+                                <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
+                                <input 
+                                    type="number" 
+                                    id="annualIncome" 
+                                    placeholder="50,000" 
+                                    class="w-full pl-8 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                >
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Employment Status</label>
+                            <select id="employmentStatus" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                                <option value="">Select status</option>
+                                <option value="employed">Employed Full-time</option>
+                                <option value="self-employed">Self-employed</option>
+                                <option value="student">Student</option>
+                                <option value="retired">Retired</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Housing Status</label>
+                        <select id="housingStatus" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                            <option value="">Select housing status</option>
+                            <option value="own">Own</option>
+                            <option value="rent">Rent</option>
+                            <option value="mortgage">Mortgage</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+                        <div class="flex items-start">
+                            <i data-feather="check-circle" class="w-5 h-5 text-green-600 mr-2 mt-0.5"></i>
+                            <div class="text-sm text-green-800">
+                                <p class="font-medium mb-1">Instant Pre-approval Available</p>
+                                <p>Get an instant decision in most cases. Check your eligibility without impacting your credit score.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end space-x-3">
+                        <button onclick="closeCardApplicationModal()" class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition duration-300">
+                            Cancel
+                        </button>
+                        <button onclick="submitCardApplication()" class="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition duration-300">
+                            Submit Application
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="flex justify-center items-center mb-4">
+                <img src="../assets/photos/beta_logo.png" alt="BetaBank Logo" class="h-8 w-auto mr-3">
+                <h3 class="text-xl font-bold">BetaBank</h3>
+            </div>
+            <p class="text-gray-300 mb-4">Your trusted financial partner.</p>
+            <div class="text-sm text-gray-400">
+                <p>&copy; 2025 BetaBank. All rights reserved. | Member FDIC | Credit approval subject to qualification</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Feather Icons
+        feather.replace();
+
+        // Modal functions
+        function openCardApplicationModal() {
+            document.getElementById('cardApplicationModal').classList.remove('hidden');
+        }
+
+        function closeCardApplicationModal() {
+            document.getElementById('cardApplicationModal').classList.add('hidden');
+            // Reset form
+            document.getElementById('cardType').value = '';
+            document.getElementById('annualIncome').value = '';
+            document.getElementById('employmentStatus').value = '';
+            document.getElementById('housingStatus').value = '';
+        }
+
+        function applyForCard(type) {
+            openCardApplicationModal();
+            document.getElementById('cardType').value = type;
+        }
+
+        function submitCardApplication() {
+            const cardType = document.getElementById('cardType').value;
+            const income = document.getElementById('annualIncome').value;
+            const employment = document.getElementById('employmentStatus').value;
+            const housing = document.getElementById('housingStatus').value;
+            
+            if (!cardType || !income || !employment || !housing) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+            
+            alert(`Card application submitted!\n\nCard Type: ${cardType}\nIncome: $${income}\nEmployment: ${employment}\nHousing: ${housing}\n\nYou will receive a decision within minutes.`);
+            closeCardApplicationModal();
+            // Here you would submit the application
+        }
+
+        // Card action functions
+        function viewCardDetails(cardId) {
+            alert(`Viewing details for card: ${cardId}`);
+            // Here you would redirect to card details page
+        }
+
+        function manageCard(cardId) {
+            alert(`Opening card management for: ${cardId}`);
+            // Here you would open card management options
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('cardApplicationModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeCardApplicationModal();
+            }
+        });
+
+        // Handle escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeCardApplicationModal();
+            }
+        });
+    </script>
+</body>
+</html>

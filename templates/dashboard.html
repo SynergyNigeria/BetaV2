@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - BetaBank</title>
+    {% load static %}
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="shortcut icon" href="{% static 'photos/favicon.ico' %}" type="image/x-icon">
+    <link rel="apple-touch-icon" href="{% static 'photos/apple-touch-icon.png' %}" type="image/x-icon">
+    <link rel="chrome" href="{% static 'photos/android-chrome-192x192.png' %}" type="image/x-icon">
+    <style>
+        * {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card-hover {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .gradient-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .balance-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .income-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .expense-card {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .investment-card {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+
+        .sidebar-transition {
+            transition: transform 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar-hidden {
+                transform: translateX(-100%);
+            }
+        }
+
+        /* Ensure sidebar is visible on desktop */
+        @media (min-width: 769px) {
+            #sidebar {
+                transform: translateX(0) !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+    <!-- Mobile Sidebar Overlay -->
+    <div id="sidebarOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden md:hidden"></div>
+
+    <!-- Sidebar Navigation for Desktop -->
+    <div id="sidebar"
+        class="fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-xl sidebar-transition md:translate-x-0 sidebar-hidden">
+        <div class="flex items-center justify-between h-16 px-6 border-b border-gray-200">
+            <div class="flex items-center">
+                <div class="h-8 w-8 bg-indigo-600 rounded-lg flex items-center justify-center mr-3">
+                    <span class="text-white font-bold text-lg">B</span>
+                </div>
+                <h1 class="text-xl font-bold text-gray-800">BetaBank</h1>
+            </div>
+            <button id="closeSidebar" class="md:hidden text-gray-500 hover:text-gray-700">
+                <i data-feather="x" class="w-6 h-6"></i>
+            </button>
+        </div>
+
+        <!-- User Profile -->
+        <div class="px-6 py-4 border-b border-gray-200">
+            <div class="flex items-center">
+                <div class="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center mr-3">
+                    <span class="text-indigo-600 font-semibold">{{user.first_name.0}}{{user.last_name.0}}</span>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-800">{{user.first_name}} {{user.last_name}}</h3>
+                    <p class="text-xs text-gray-500">Personal Account</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Menu -->
+        <nav class="px-4 py-6 space-y-2">
+            <a href="#dashboard"
+                class="nav-item active flex items-center px-4 py-3 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg">
+                <i data-feather="home" class="w-5 h-5 mr-3"></i>
+                Dashboard
+            </a>
+            <a href="#accounts"
+                class="nav-item flex items-center px-4 py-3 text-sm font-medium text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition duration-200">
+                <i data-feather="credit-card" class="w-5 h-5 mr-3"></i>
+                Accounts
+            </a>
+            <a href="{% url 'transactions:transfer' %}"
+                class="nav-item flex items-center px-4 py-3 text-sm font-medium text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition duration-200">
+                <i data-feather="send" class="w-5 h-5 mr-3"></i>
+                Transfers
+            </a>
+            <a href="#bills"
+                class="nav-item flex items-center px-4 py-3 text-sm font-medium text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition duration-200">
+                <i data-feather="file-text" class="w-5 h-5 mr-3"></i>
+                Bills & Payments
+            </a>
+            <a href="#investments"
+                class="nav-item flex items-center px-4 py-3 text-sm font-medium text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition duration-200">
+                <i data-feather="trending-up" class="w-5 h-5 mr-3"></i>
+                Investments
+            </a>
+            <a href="#loans"
+                class="nav-item flex items-center px-4 py-3 text-sm font-medium text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition duration-200">
+                <i data-feather="dollar-sign" class="w-5 h-5 mr-3"></i>
+                Loans
+            </a>
+            <a href="#cards"
+                class="nav-item flex items-center px-4 py-3 text-sm font-medium text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition duration-200">
+                <i data-feather="credit-card" class="w-5 h-5 mr-3"></i>
+                Cards
+            </a>
+            <a href="{% url 'accounts:support' %}"
+                class="nav-item flex items-center px-4 py-3 text-sm font-medium text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition duration-200">
+                <i data-feather="help-circle" class="w-5 h-5 mr-3"></i>
+                Help & Support
+            </a>
+        </nav>
+
+        <!-- Quick Actions -->
+        <div class="px-4 py-6 border-t border-gray-200">
+            <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Quick Actions</h4>
+            <div class="space-y-2">
+                <a href="{% url 'transactions:transfer' %}"
+                    class="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition duration-200">
+                    <i data-feather="plus" class="w-4 h-4 mr-3"></i>
+                    Transfer Money
+                </a>
+                <button
+                    class="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition duration-200 hidden">
+                    <i data-feather="download" class="w-4 h-4 mr-3"></i>
+                    Download Statement
+                </button>
+                <button
+                    class="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition duration-200 hidden">
+                    <i data-feather="phone" class="w-4 h-4 mr-3"></i>
+                    Contact Support
+                </button>
+            </div>
+        </div>
+
+        <!-- Sign Out -->
+        <div class="absolute bottom-4 left-4 right-4">
+            <a href="{% url 'accounts:logout' %}"
+                class="flex items-center px-4 py-3 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition duration-200">
+                <i data-feather="log-out" class="w-5 h-5 mr-3"></i>
+                Sign Out
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="md:ml-64">
+        <!-- Top Navigation Bar -->
+        <header class="bg-white shadow-sm border-b border-gray-200">
+            <div class="flex items-center justify-between h-16 px-4 md:px-6">
+                <div class="flex items-center">
+                    <button id="openSidebar" class="md:hidden text-gray-500 hover:text-gray-700 mr-4">
+                        <i data-feather="menu" class="w-6 h-6"></i>
+                    </button>
+                    <h2 class="text-xl font-semibold text-gray-800">Dashboard</h2>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <!-- Search -->
+                    <div class="hidden md:block relative">
+                        <input type="text" placeholder="Search transactions..."
+                            class="w-64 px-4 py-2 pl-10 pr-4 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i data-feather="search" class="h-4 w-4 text-gray-400"></i>
+                        </div>
+                    </div>
+
+                    <!-- Notifications -->
+                    <a href="{% url 'accounts:notifications' %}" class="relative text-gray-500 hover:text-gray-700">
+                        <i data-feather="bell" class="w-6 h-6"></i>
+                        {% if unread_notifications > 0 %}
+                        <span class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
+                        {% endif %}
+                    </a>
+
+                    <!-- Profile Menu -->
+                    <div class="relative">
+                        <button class="flex items-center text-gray-700 hover:text-gray-900">
+                            <div class="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center mr-2">
+                                <span
+                                    class="text-indigo-600 text-sm font-semibold">{{user.first_name.0}}{{user.last_name.0}}</span>
+                            </div>
+                            <span class="hidden md:block text-sm font-medium">{{user.first_name}}
+                                {{user.last_name}}</span>
+                            <i data-feather="chevron-down" class="w-4 h-4 ml-1 hidden md:block"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <main class="p-4 md:p-6 pb-20 md:pb-6">
+            <!-- Welcome Message -->
+            <div class="mb-8">
+                <h1 class="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Welcome back, {{user.first_name}}!</h1>
+                <p class="text-gray-600">Here's what's happening with your account today.</p>
+            </div>
+
+            <!-- Messages -->
+            {% if messages %}
+            <div class="mb-6">
+                {% for message in messages %}
+                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-3">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Account Summary Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <!-- Total Balance -->
+                <div class="balance-card text-white p-6 rounded-xl card-hover fade-in">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <p class="text-white text-opacity-80 text-sm">Total Balance</p>
+                            <h3 class="text-2xl font-bold">${{total_balance|floatformat:2}}</h3>
+                        </div>
+                        <div class="w-12 h-12 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
+                            <i data-feather="dollar-sign" class="w-6 h-6"></i>
+                        </div>
+                    </div>
+                    <div class="flex items-center text-sm">
+                        <i data-feather="trending-up" class="w-4 h-4 mr-1"></i>
+                        <span class="hidden">+2.5% from last month</span>
+                    </div>
+                </div>
+
+                <!-- Bank Accounts -->
+                <div class="income-card text-white p-6 rounded-xl card-hover fade-in">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <p class="text-white text-opacity-80 text-sm">Bank Accounts</p>
+                            <h3 class="text-2xl font-bold">{{total_accounts}}</h3>
+                        </div>
+                        <div class="w-12 h-12 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
+                            <i data-feather="briefcase" class="w-6 h-6"></i>
+                        </div>
+                    </div>
+                    <div class="flex items-center text-sm">
+                        <i data-feather="calendar" class="w-4 h-4 mr-1"></i>
+                        <span>Active accounts</span>
+                    </div>
+                </div>
+
+                <!-- Cards -->
+                <div class="expense-card text-white p-6 rounded-xl card-hover fade-in">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <p class="text-white text-opacity-80 text-sm">Credit/Debit Cards</p>
+                            <h3 class="text-2xl font-bold">{{total_cards}}</h3>
+                        </div>
+                        <div class="w-12 h-12 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
+                            <i data-feather="credit-card" class="w-6 h-6"></i>
+                        </div>
+                    </div>
+                    <div class="flex items-center text-sm">
+                        <i data-feather="shield" class="w-4 h-4 mr-1"></i>
+                        <span>Secure & Protected</span>
+                    </div>
+                </div>
+
+                <!-- Notifications -->
+                <a href="{% url 'accounts:notifications' %}"
+                    class="investment-card text-white p-6 rounded-xl card-hover fade-in block">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <p class="text-white text-opacity-80 text-sm">Notifications</p>
+                            <h3 class="text-2xl font-bold">{{unread_notifications}}</h3>
+                        </div>
+                        <div class="w-12 h-12 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
+                            <i data-feather="bell" class="w-6 h-6"></i>
+                        </div>
+                    </div>
+                    <div class="flex items-center text-sm">
+                        <i data-feather="mail" class="w-4 h-4 mr-1"></i>
+                        <span>Unread alerts</span>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Charts and Recent Activity -->
+            <div class="grid lg:grid-cols-2 gap-6 mb-8">
+                <!-- Recent Notifications -->
+                <div class="bg-white p-6 rounded-xl shadow-sm card-hover">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-lg font-semibold text-gray-900">Recent Notifications</h3>
+                        <a href="{% url 'accounts:notifications' %}"
+                            class="text-indigo-600 text-sm font-medium hover:text-indigo-700">View All</a>
+                    </div>
+                    <div class="space-y-4">
+                        {% if recent_notifications %}
+                        {% for notification in recent_notifications %}
+                        <div
+                            class="flex items-center justify-between p-3 {% if not notification.is_read %}bg-blue-50{% else %}bg-gray-50{% endif %} rounded-lg">
+                            <div class="flex items-center">
+                                <div
+                                    class="w-10 h-10 {% if notification.notification_type == 'welcome' %}bg-green-100{% elif notification.notification_type == 'security' %}bg-red-100{% elif notification.notification_type == 'account_info' %}bg-blue-100{% else %}bg-gray-100{% endif %} rounded-lg flex items-center justify-center mr-3">
+                                    {% if notification.notification_type == 'welcome' %}
+                                    <i data-feather="smile" class="w-5 h-5 text-green-600"></i>
+                                    {% elif notification.notification_type == 'security' %}
+                                    <i data-feather="shield" class="w-5 h-5 text-red-600"></i>
+                                    {% elif notification.notification_type == 'account_info' %}
+                                    <i data-feather="info" class="w-5 h-5 text-blue-600"></i>
+                                    {% else %}
+                                    <i data-feather="bell" class="w-5 h-5 text-gray-600"></i>
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900">{{notification.title}}</p>
+                                    <p class="text-xs text-gray-500">{{notification.created_at|timesince}} ago</p>
+                                </div>
+                            </div>
+                            {% if not notification.is_read %}
+                            <span class="w-2 h-2 bg-blue-600 rounded-full"></span>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                        {% else %}
+                        <div class="text-center py-8">
+                            <i data-feather="bell" class="h-12 w-12 mx-auto text-gray-400 mb-4"></i>
+                            <p class="text-gray-500">No notifications</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Account Summary -->
+                <div class="bg-white p-6 rounded-xl shadow-sm card-hover">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-lg font-semibold text-gray-900">Account Summary</h3>
+                        <a href="#" class="text-indigo-600 text-sm font-medium hover:text-indigo-700">View Details</a>
+                    </div>
+                    {% if user_profile %}
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center mr-3">
+                                    <i data-feather="user" class="w-5 h-5 text-indigo-600"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900">Account Number</p>
+                                    <p class="text-xs text-gray-500">{{user_profile.account_number}}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-3">
+                                    <i data-feather="calendar" class="w-5 h-5 text-green-600"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900">Member Since</p>
+                                    <p class="text-xs text-gray-500">{{user.date_joined|date:"M d, Y"}}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div class="flex items-center">
+                                <div
+                                    class="w-10 h-10 {% if user_profile.is_verified %}bg-green-100{% else %}bg-yellow-100{% endif %} rounded-lg flex items-center justify-center mr-3">
+                                    <i data-feather="{% if user_profile.is_verified %}check-circle{% else %}clock{% endif %}"
+                                        class="w-5 h-5 {% if user_profile.is_verified %}text-green-600{% else %}text-yellow-600{% endif %}"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900">Verification Status</p>
+                                    <p
+                                        class="text-xs {% if user_profile.is_verified %}text-green-600{% else %}text-yellow-600{% endif %}">
+                                        {% if user_profile.is_verified %}Verified{% else %}Pending{% endif %}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Accounts and Quick Actions -->
+            <div class="grid lg:grid-cols-3 gap-6 mb-8">
+                <!-- My Accounts -->
+                <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm card-hover">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-6">My Bank Accounts</h3>
+                    <div class="space-y-4">
+                        {% if bank_accounts %}
+                        {% for account in bank_accounts %}
+                        <div
+                            class="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition duration-300">
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mr-4">
+                                    <i data-feather="briefcase" class="w-6 h-6 text-indigo-600"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-semibold text-gray-900">{{account.get_account_type_display}}
+                                        Account</p>
+                                    <p class="text-xs text-gray-500">Account #{{account.account_number}}</p>
+                                    <p class="text-xs text-gray-400">Created: {{account.created_at|date:"M d, Y"}}</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-lg font-bold text-gray-900">${{account.balance|floatformat:2}}</p>
+                                <span
+                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
+                                        {% if account.is_active %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %}">
+                                    {% if account.is_active %}Active{% else %}Inactive{% endif %}
+                                </span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        {% else %}
+                        <div class="text-center py-8">
+                            <i data-feather="briefcase" class="h-12 w-12 mx-auto text-gray-400 mb-4"></i>
+                            <p class="text-gray-500">No bank accounts found</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="bg-white p-6 rounded-xl shadow-sm card-hover">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-6">Quick Actions</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <a href="{% url 'transactions:transfer' %}"
+                            class="flex flex-col items-center p-4 border border-gray-200 rounded-lg hover:border-indigo-300 hover:bg-indigo-50 transition duration-200">
+                            <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center mb-2">
+                                <i data-feather="send" class="w-5 h-5 text-indigo-600"></i>
+                            </div>
+                            <span class="text-sm font-medium text-gray-900">Transfer</span>
+                        </a>
+
+                        <a href="{% url 'transactions:deposit' %}"
+                            class="flex flex-col items-center p-4 border border-gray-200 rounded-lg hover:border-green-300 hover:bg-green-50 transition duration-200">
+                            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mb-2">
+                                <i data-feather="plus" class="w-5 h-5 text-green-600"></i>
+                            </div>
+                            <span class="text-sm font-medium text-gray-900">Deposit</span>
+                        </a>
+
+                        <button
+                            class="flex flex-col items-center p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition duration-200">
+                            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mb-2">
+                                <i data-feather="file-text" class="w-5 h-5 text-blue-600"></i>
+                            </div>
+                            <span class="text-sm font-medium text-gray-900">Pay Bills</span>
+                        </button>
+
+                        <button
+                            class="flex flex-col items-center p-4 border border-gray-200 rounded-lg hover:border-purple-300 hover:bg-purple-50 transition duration-200">
+                            <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mb-2">
+                                <i data-feather="download" class="w-5 h-5 text-purple-600"></i>
+                            </div>
+                            <span class="text-sm font-medium text-gray-900">Statement</span>
+                        </button>
+
+                        <button
+                            class="flex flex-col items-center p-4 border border-gray-200 rounded-lg hover:border-orange-300 hover:bg-orange-50 transition duration-200">
+                            <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center mb-2">
+                                <i data-feather="phone" class="w-5 h-5 text-orange-600"></i>
+                            </div>
+                            <span class="text-sm font-medium text-gray-900">Support</span>
+                        </button>
+
+                        <a href="#"
+                            class="flex flex-col items-center p-4 border border-gray-200 rounded-lg hover:border-red-300 hover:bg-red-50 transition duration-200">
+                            <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center mb-2">
+                                <i data-feather="settings" class="w-5 h-5 text-red-600"></i>
+                            </div>
+                            <span class="text-sm font-medium text-gray-900">Settings</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- My Cards Section -->
+            <div class="bg-white p-6 rounded-xl shadow-sm card-hover mb-8">
+                <h3 class="text-lg font-semibold text-gray-900 mb-6">My Cards</h3>
+                {% if cards %}
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {% for card in cards %}
+                    <div
+                        class="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl p-6 text-white relative overflow-hidden">
+                        <div
+                            class="absolute top-0 right-0 w-32 h-32 bg-white bg-opacity-10 rounded-full transform translate-x-8 -translate-y-8">
+                        </div>
+                        <div class="relative z-10">
+                            <div class="flex justify-between items-start mb-8">
+                                <div>
+                                    <p class="text-sm opacity-80">{{card.get_card_type_display}} Card</p>
+                                    <p class="text-xs opacity-60">BetaBank</p>
+                                </div>
+                                <i data-feather="credit-card" class="h-8 w-8"></i>
+                            </div>
+                            <div class="mb-6">
+                                <p class="text-xl font-mono tracking-wider">•••• •••• ••••
+                                    {{card.card_number|slice:"-4:"}}</p>
+                            </div>
+                            <div class="flex justify-between items-end">
+                                <div>
+                                    <p class="text-xs opacity-60">Card Holder</p>
+                                    <p class="text-sm font-medium">{{card.card_holder_name}}</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-xs opacity-60">Expires</p>
+                                    <p class="text-sm font-medium">{{card.expiry_date|date:"m/y"}}</p>
+                                </div>
+                            </div>
+                            {% if card.card_type == 'credit' %}
+                            <div class="mt-4 pt-4 border-t border-white border-opacity-20">
+                                <p class="text-xs opacity-60">Credit Limit: ${{card.credit_limit|floatformat:2}}</p>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-12">
+                    <i data-feather="credit-card" class="h-16 w-16 mx-auto text-gray-400 mb-4"></i>
+                    <p class="text-gray-500">No cards found</p>
+                    <button
+                        class="mt-4 bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition duration-300">
+                        Request New Card
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+        </main>
+    </div>
+
+    <!-- Mobile Bottom Navigation -->
+    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 md:hidden z-30">
+        <div class="grid grid-cols-5 py-2">
+            <a href="#dashboard" class="mobile-nav-item active flex flex-col items-center py-2 px-1">
+                <i data-feather="home" class="w-5 h-5 text-indigo-600"></i>
+                <span class="text-xs text-indigo-600 mt-1">Dashboard</span>
+            </a>
+            <a href="#accounts" class="mobile-nav-item flex flex-col items-center py-2 px-1">
+                <i data-feather="credit-card" class="w-5 h-5 text-gray-400"></i>
+                <span class="text-xs text-gray-400 mt-1">Accounts</span>
+            </a>
+            <a href="{% url 'transactions:transfer' %}" class="mobile-nav-item flex flex-col items-center py-2 px-1">
+                <i data-feather="send" class="w-5 h-5 text-gray-400"></i>
+                <span class="text-xs text-gray-400 mt-1">Transfer</span>
+            </a>
+            <a href="#bills" class="mobile-nav-item flex flex-col items-center py-2 px-1">
+                <i data-feather="file-text" class="w-5 h-5 text-gray-400"></i>
+                <span class="text-xs text-gray-400 mt-1">Bills</span>
+            </a>
+            <a href="#more" class="mobile-nav-item flex flex-col items-center py-2 px-1">
+                <i data-feather="more-horizontal" class="w-5 h-5 text-gray-400"></i>
+                <span class="text-xs text-gray-400 mt-1">More</span>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Feather Icons
+        feather.replace();
+
+        // Wrap all functionality in DOMContentLoaded to ensure elements are loaded
+        document.addEventListener('DOMContentLoaded', function () {
+            // Sidebar toggle functionality
+            const sidebar = document.getElementById('sidebar');
+            const openSidebar = document.getElementById('openSidebar');
+            const closeSidebar = document.getElementById('closeSidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+
+            function showSidebar() {
+                sidebar.classList.remove('sidebar-hidden');
+                if (overlay) {
+                    overlay.classList.remove('hidden');
+                }
+            }
+
+            function hideSidebar() {
+                sidebar.classList.add('sidebar-hidden');
+                if (overlay) {
+                    overlay.classList.add('hidden');
+                }
+            }
+
+            if (openSidebar) {
+                openSidebar.addEventListener('click', showSidebar);
+            }
+            if (closeSidebar) {
+                closeSidebar.addEventListener('click', hideSidebar);
+            }
+            if (overlay) {
+                overlay.addEventListener('click', hideSidebar);
+            }
+
+            // Add fade-in animation to dashboard cards
+            const cards = document.querySelectorAll('.fade-in');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+
+            // Mobile navigation active state
+            // const mobileNavItems = document.querySelectorAll('.mobile-nav-item');
+            // mobileNavItems.forEach(item => {
+            //     item.addEventListener('click', function (e) {
+            //         e.preventDefault();
+            //         mobileNavItems.forEach(nav => nav.classList.remove('active'));
+            //         this.classList.add('active');
+
+            //         // Update icon and text colors
+            //         mobileNavItems.forEach(nav => {
+            //             const icon = nav.querySelector('i');
+            //             const text = nav.querySelector('span');
+            //             if (nav.classList.contains('active')) {
+            //                 icon.className = icon.className.replace('text-gray-400', 'text-indigo-600');
+            //                 text.className = text.className.replace('text-gray-400', 'text-indigo-600');
+            //             } else {
+            //                 icon.className = icon.className.replace('text-indigo-600', 'text-gray-400');
+            //                 text.className = text.className.replace('text-indigo-600', 'text-gray-400');
+            //             }
+            //         });
+            //     });
+            // });
+        });
+    </script>
+</body>
+
+</html>

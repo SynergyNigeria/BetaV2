@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loans - BetaBank</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+        * {
+            font-family: 'Montserrat', sans-serif;
+        }
+        .loan-card {
+            transition: all 0.3s ease;
+        }
+        .loan-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+        .mortgage-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .personal-gradient {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        .auto-gradient {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        .business-gradient {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+        .education-gradient {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+        .modal-overlay {
+            backdrop-filter: blur(5px);
+        }
+        .progress-bar {
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <a href="index.html">
+                            <img src="../assets/photos/beta_logo.png" alt="BetaBank Logo" class="h-10 w-auto">
+                        </a>
+                    </div>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="dashboard.html" class="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Dashboard</a>
+                        <a href="accounts.html" class="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Accounts</a>
+                        <a href="investments.html" class="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Investments</a>
+                        <a href="cards.html" class="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Cards</a>
+                        <a href="settings.html" class="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Settings</a>
+                        <a href="support.html" class="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Support</a>
+                        <a href="logout.html" class="bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-red-700 transition duration-300">Sign Out</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="bg-white border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="py-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-900">Loans & Credit</h1>
+                        <p class="text-gray-600 mt-1">Manage your loans and explore new financing options</p>
+                    </div>
+                    <button onclick="openLoanApplicationModal()" class="bg-indigo-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition duration-300 flex items-center">
+                        <i data-feather="plus" class="w-5 h-5 mr-2"></i>
+                        Apply for Loan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Loan Summary -->
+        <div class="mb-8">
+            <div class="grid md:grid-cols-4 gap-6">
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mr-4">
+                            <i data-feather="credit-card" class="w-6 h-6 text-red-600"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">Total Debt</p>
+                            <p class="text-2xl font-bold text-gray-900">$127,150.00</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
+                            <i data-feather="calendar" class="w-6 h-6 text-blue-600"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">Monthly Payments</p>
+                            <p class="text-2xl font-bold text-gray-900">$1,310.00</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4">
+                            <i data-feather="dollar-sign" class="w-6 h-6 text-green-600"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">Available Credit</p>
+                            <p class="text-2xl font-bold text-gray-900">$45,850.00</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4">
+                            <i data-feather="trending-down" class="w-6 h-6 text-purple-600"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">Avg Interest Rate</p>
+                            <p class="text-2xl font-bold text-gray-900">4.2%</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Active Loans -->
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Active Loans</h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Mortgage Loan -->
+                <div class="loan-card bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="mortgage-gradient p-6 text-white">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold">Home Mortgage</h3>
+                            <i data-feather="home" class="w-6 h-6"></i>
+                        </div>
+                        <p class="text-2xl font-bold">$125,000.00</p>
+                        <p class="text-sm opacity-90">Remaining Balance</p>
+                    </div>
+                    <div class="p-6">
+                        <div class="mb-4">
+                            <div class="flex justify-between text-sm text-gray-600 mb-2">
+                                <span>Loan Progress</span>
+                                <span>67% Paid</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="progress-bar bg-indigo-600 h-2 rounded-full" style="width: 67%"></div>
+                            </div>
+                        </div>
+                        <div class="space-y-2 text-sm text-gray-600 mb-4">
+                            <div class="flex justify-between">
+                                <span>Loan Number:</span>
+                                <span>****3456</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Interest Rate:</span>
+                                <span>3.25% APR</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Monthly Payment:</span>
+                                <span>$1,245.00</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Next Payment:</span>
+                                <span class="font-semibold text-red-600">Aug 1, 2025</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Term Remaining:</span>
+                                <span>18 years</span>
+                            </div>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button onclick="viewLoanDetails('mortgage-3456')" class="flex-1 bg-gray-100 text-gray-700 py-2 rounded-lg text-sm font-medium hover:bg-gray-200 transition duration-300">
+                                View Details
+                            </button>
+                            <button onclick="makePayment('mortgage-3456')" class="flex-1 bg-red-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-red-700 transition duration-300">
+                                Make Payment
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Personal Loan -->
+                <div class="loan-card bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="personal-gradient p-6 text-white">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold">Personal Loan</h3>
+                            <i data-feather="user" class="w-6 h-6"></i>
+                        </div>
+                        <p class="text-2xl font-bold">$2,150.00</p>
+                        <p class="text-sm opacity-90">Remaining Balance</p>
+                    </div>
+                    <div class="p-6">
+                        <div class="mb-4">
+                            <div class="flex justify-between text-sm text-gray-600 mb-2">
+                                <span>Loan Progress</span>
+                                <span>86% Paid</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="progress-bar bg-pink-600 h-2 rounded-full" style="width: 86%"></div>
+                            </div>
+                        </div>
+                        <div class="space-y-2 text-sm text-gray-600 mb-4">
+                            <div class="flex justify-between">
+                                <span>Loan Number:</span>
+                                <span>****7892</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Interest Rate:</span>
+                                <span>6.75% APR</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Monthly Payment:</span>
+                                <span>$65.00</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Next Payment:</span>
+                                <span class="font-semibold text-red-600">Aug 15, 2025</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Term Remaining:</span>
+                                <span>8 months</span>
+                            </div>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button onclick="viewLoanDetails('personal-7892')" class="flex-1 bg-gray-100 text-gray-700 py-2 rounded-lg text-sm font-medium hover:bg-gray-200 transition duration-300">
+                                View Details
+                            </button>
+                            <button onclick="makePayment('personal-7892')" class="flex-1 bg-red-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-red-700 transition duration-300">
+                                Make Payment
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loan Products -->
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Available Loan Products</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Auto Loan -->
+                <div class="loan-card bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer" onclick="applyForLoan('auto')">
+                    <div class="auto-gradient p-6 text-white">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold">Auto Loan</h3>
+                            <i data-feather="truck" class="w-6 h-6"></i>
+                        </div>
+                        <p class="text-xl font-bold">As low as 2.9% APR</p>
+                        <p class="text-sm opacity-90">New & Used Vehicles</p>
+                    </div>
+                    <div class="p-6">
+                        <ul class="text-sm text-gray-600 space-y-2 mb-4">
+                            <li class="flex items-center">
+                                <i data-feather="check" class="w-4 h-4 text-green-600 mr-2"></i>
+                                Up to $75,000
+                            </li>
+                            <li class="flex items-center">
+                                <i data-feather="check" class="w-4 h-4 text-green-600 mr-2"></i>
+                                Terms up to 84 months
+                            </li>
+                            <li class="flex items-center">
+                                <i data-feather="check" class="w-4 h-4 text-green-600 mr-2"></i>
+                                Fast approval process
+                            </li>
+                            <li class="flex items-center">
+                                <i data-feather="check" class="w-4 h-4 text-green-600 mr-2"></i>
+                                No prepayment penalty
+                            </li>
+                        </ul>
+                        <button class="w-full bg-indigo-600 text-white py-2 rounded-lg font-medium hover:bg-indigo-700 transition duration-300">
+                            Apply Now
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Business Loan -->
+                <div class="loan-card bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer" onclick="applyForLoan('business')">
+                    <div class="business-gradient p-6 text-white">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold">Business Loan</h3>
+                            <i data-feather="briefcase" class="w-6 h-6"></i>
+                        </div>
+                        <p class="text-xl font-bold">As low as 4.5% APR</p>
+                        <p class="text-sm opacity-90">Grow Your Business</p>
+                    </div>
+                    <div class="p-6">
+                        <ul class="text-sm text-gray-600 space-y-2 mb-4">
+                            <li class="flex items-center">
+                                <i data-feather="check" class="w-4 h-4 text-green-600 mr-2"></i>
+                                Up to $500,000
+                            </li>
+                            <li class="flex items-center">
+                                <i data-feather="check" class="w-4 h-4 text-green-600 mr-2"></i>
+                                Flexible terms
+                            </li>
+                            <li class="flex items-center">
+                                <i data-feather="check" class="w-4 h-4 text-green-600 mr-2"></i>
+                                Competitive rates
+                            </li>
+                            <li class="flex items-center">
+                                <i data-feather="check" class="w-4 h-4 text-green-600 mr-2"></i>
+                                Business support team
+                            </li>
+                        </ul>
+                        <button class="w-full bg-indigo-600 text-white py-2 rounded-lg font-medium hover:bg-indigo-700 transition duration-300">
+                            Apply Now
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Education Loan -->
+                <div class="loan-card bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer" onclick="applyForLoan('education')">
+                    <div class="education-gradient p-6 text-white">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold">Education Loan</h3>
+                            <i data-feather="book-open" class="w-6 h-6"></i>
+                        </div>
+                        <p class="text-xl font-bold">As low as 3.5% APR</p>
+                        <p class="text-sm opacity-90">Invest in Your Future</p>
+                    </div>
+                    <div class="p-6">
+                        <ul class="text-sm text-gray-600 space-y-2 mb-4">
+                            <li class="flex items-center">
+                                <i data-feather="check" class="w-4 h-4 text-green-600 mr-2"></i>
+                                Up to $100,000
+                            </li>
+                            <li class="flex items-center">
+                                <i data-feather="check" class="w-4 h-4 text-green-600 mr-2"></i>
+                                Deferred payments
+                            </li>
+                            <li class="flex items-center">
+                                <i data-feather="check" class="w-4 h-4 text-green-600 mr-2"></i>
+                                No origination fees
+                            </li>
+                            <li class="flex items-center">
+                                <i data-feather="check" class="w-4 h-4 text-green-600 mr-2"></i>
+                                Flexible repayment
+                            </li>
+                        </ul>
+                        <button class="w-full bg-indigo-600 text-white py-2 rounded-lg font-medium hover:bg-indigo-700 transition duration-300">
+                            Apply Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment Schedule -->
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <h2 class="text-xl font-bold text-gray-900 mb-4">Upcoming Payments</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="border-b border-gray-200">
+                            <th class="text-left py-3 px-4 font-semibold text-gray-900">Loan</th>
+                            <th class="text-left py-3 px-4 font-semibold text-gray-900">Due Date</th>
+                            <th class="text-left py-3 px-4 font-semibold text-gray-900">Amount</th>
+                            <th class="text-left py-3 px-4 font-semibold text-gray-900">Status</th>
+                            <th class="text-left py-3 px-4 font-semibold text-gray-900">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b border-gray-100 hover:bg-gray-50">
+                            <td class="py-3 px-4">
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center mr-3">
+                                        <i data-feather="home" class="w-4 h-4 text-indigo-600"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-gray-900">Home Mortgage</p>
+                                        <p class="text-sm text-gray-600">****3456</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="py-3 px-4 text-gray-900">Aug 1, 2025</td>
+                            <td class="py-3 px-4 text-gray-900 font-semibold">$1,245.00</td>
+                            <td class="py-3 px-4">
+                                <span class="px-2 py-1 text-xs bg-yellow-100 text-yellow-800 rounded-full">Due Soon</span>
+                            </td>
+                            <td class="py-3 px-4">
+                                <button onclick="makePayment('mortgage-3456')" class="text-indigo-600 hover:text-indigo-800 text-sm font-medium">
+                                    Pay Now
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="border-b border-gray-100 hover:bg-gray-50">
+                            <td class="py-3 px-4">
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 bg-pink-100 rounded-lg flex items-center justify-center mr-3">
+                                        <i data-feather="user" class="w-4 h-4 text-pink-600"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-gray-900">Personal Loan</p>
+                                        <p class="text-sm text-gray-600">****7892</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="py-3 px-4 text-gray-900">Aug 15, 2025</td>
+                            <td class="py-3 px-4 text-gray-900 font-semibold">$65.00</td>
+                            <td class="py-3 px-4">
+                                <span class="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">On Track</span>
+                            </td>
+                            <td class="py-3 px-4">
+                                <button onclick="makePayment('personal-7892')" class="text-indigo-600 hover:text-indigo-800 text-sm font-medium">
+                                    Pay Now
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loan Application Modal -->
+    <div id="loanApplicationModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden modal-overlay">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl mx-auto">
+                <!-- Modal Header -->
+                <div class="bg-indigo-600 text-white p-6 rounded-t-xl">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-xl font-semibold">Loan Application</h3>
+                        <button onclick="closeLoanApplicationModal()" class="text-white hover:text-gray-200">
+                            <i data-feather="x" class="w-6 h-6"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Modal Content -->
+                <div class="p-6">
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Loan Type</label>
+                        <select id="loanType" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                            <option value="">Select loan type</option>
+                            <option value="auto">Auto Loan (2.9% APR)</option>
+                            <option value="business">Business Loan (4.5% APR)</option>
+                            <option value="education">Education Loan (3.5% APR)</option>
+                            <option value="personal">Personal Loan (6.75% APR)</option>
+                            <option value="mortgage">Home Mortgage (3.25% APR)</option>
+                        </select>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Loan Amount</label>
+                            <div class="relative">
+                                <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
+                                <input 
+                                    type="number" 
+                                    id="loanAmount" 
+                                    placeholder="25,000" 
+                                    class="w-full pl-8 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                >
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Loan Term</label>
+                            <select id="loanTerm" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                                <option value="">Select term</option>
+                                <option value="12">12 months</option>
+                                <option value="24">24 months</option>
+                                <option value="36">36 months</option>
+                                <option value="48">48 months</option>
+                                <option value="60">60 months</option>
+                                <option value="84">84 months</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Purpose of Loan</label>
+                        <textarea 
+                            id="loanPurpose" 
+                            rows="3" 
+                            placeholder="Briefly describe how you plan to use this loan..."
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                        ></textarea>
+                    </div>
+
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                        <div class="flex items-start">
+                            <i data-feather="info" class="w-5 h-5 text-blue-600 mr-2 mt-0.5"></i>
+                            <div class="text-sm text-blue-800">
+                                <p class="font-medium mb-1">Pre-qualification Available</p>
+                                <p>Get pre-qualified in minutes without affecting your credit score. Final approval subject to verification and credit review.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end space-x-3">
+                        <button onclick="closeLoanApplicationModal()" class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition duration-300">
+                            Cancel
+                        </button>
+                        <button onclick="submitLoanApplication()" class="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition duration-300">
+                            Submit Application
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="flex justify-center items-center mb-4">
+                <img src="../assets/photos/beta_logo.png" alt="BetaBank Logo" class="h-8 w-auto mr-3">
+                <h3 class="text-xl font-bold">BetaBank</h3>
+            </div>
+            <p class="text-gray-300 mb-4">Your trusted financial partner.</p>
+            <div class="text-sm text-gray-400">
+                <p>&copy; 2025 BetaBank. All rights reserved. | Member FDIC | Equal Housing Lender</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Feather Icons
+        feather.replace();
+
+        // Modal functions
+        function openLoanApplicationModal() {
+            document.getElementById('loanApplicationModal').classList.remove('hidden');
+        }
+
+        function closeLoanApplicationModal() {
+            document.getElementById('loanApplicationModal').classList.add('hidden');
+            // Reset form
+            document.getElementById('loanType').value = '';
+            document.getElementById('loanAmount').value = '';
+            document.getElementById('loanTerm').value = '';
+            document.getElementById('loanPurpose').value = '';
+        }
+
+        function applyForLoan(type) {
+            openLoanApplicationModal();
+            document.getElementById('loanType').value = type;
+        }
+
+        function submitLoanApplication() {
+            const loanType = document.getElementById('loanType').value;
+            const amount = document.getElementById('loanAmount').value;
+            const term = document.getElementById('loanTerm').value;
+            const purpose = document.getElementById('loanPurpose').value;
+            
+            if (!loanType || !amount || !term) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+            
+            alert(`Loan application submitted!\n\nType: ${loanType}\nAmount: $${amount}\nTerm: ${term} months\n\nYou will receive a response within 24 hours.`);
+            closeLoanApplicationModal();
+            // Here you would submit the application
+        }
+
+        // Loan action functions
+        function viewLoanDetails(loanId) {
+            alert(`Viewing details for loan: ${loanId}`);
+            // Here you would redirect to loan details page
+        }
+
+        function makePayment(loanId) {
+            alert(`Processing payment for loan: ${loanId}`);
+            // Here you would open payment modal or redirect to payment page
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('loanApplicationModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeLoanApplicationModal();
+            }
+        });
+
+        // Handle escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeLoanApplicationModal();
+            }
+        });
+    </script>
+</body>
+</html>

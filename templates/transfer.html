@@ -1,0 +1,1113 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transfer Money - BetaBank</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
+    <link rel="shortcut icon" href="{% static 'photos/favicon.ico' %}" type="image/x-icon">
+    <link rel="apple-touch-icon" href="{% static 'photos/apple-touch-icon.png' %}" type="image/x-icon">
+    <link rel="chrome" href="{% static 'photos/android-chrome-192x192.png' %}" type="image/x-icon">
+    <style>
+        * {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card-hover {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar-transition {
+            transition: transform 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar-hidden {
+                transform: translateX(-100%);
+            }
+        }
+
+        .keypad-button {
+            transition: all 0.2s ease;
+        }
+
+        .keypad-button:hover {
+            transform: scale(1.05);
+            background-color: #f3f4f6;
+        }
+
+        .keypad-button:active {
+            transform: scale(0.95);
+            background-color: #e5e7eb;
+        }
+
+        .step-indicator {
+            transition: all 0.3s ease;
+        }
+
+        .step-indicator.active {
+            background-color: #4f46e5;
+            color: white;
+        }
+
+        .step-indicator.completed {
+            background-color: #10b981;
+            color: white;
+        }
+
+        .pin-input {
+            font-size: 24px;
+            text-align: center;
+            letter-spacing: 8px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+    <!-- Mobile Sidebar Overlay -->
+    <div id="sidebarOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden md:hidden"></div>
+
+    <!-- Sidebar Navigation for Desktop -->
+    <div id="sidebar"
+        class="fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-xl sidebar-transition md:translate-x-0 sidebar-hidden">
+        <div class="flex items-center justify-between h-16 px-6 border-b border-gray-200">
+            <div class="flex items-center">
+                <img src="{% static 'photos/beta_logo.png' %}" alt="BetaBank Logo" class="h-8 w-auto mr-3">
+                <h1 class="text-xl font-bold text-gray-800 hidden">BetaBank</h1>
+            </div>
+            <button id="closeSidebar" class="md:hidden text-gray-500 hover:text-gray-700">
+                <i data-feather="x" class="w-6 h-6"></i>
+            </button>
+        </div>
+
+        <!-- User Profile -->
+        <div class="px-6 py-4 border-b border-gray-200">
+            <div class="flex items-center">
+                <div class="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center mr-3">
+                    <span class="text-indigo-600 font-semibold">{{user.first_name.0}}{{user.last_name.0}}</span>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-800">{{user.first_name}} {{user.last_name}}</h3>
+                    <p class="text-xs text-gray-500">Personal Account</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Menu -->
+        <nav class="px-4 py-6 space-y-2">
+            <a href="{% url 'accounts:dashboard' %}"
+                class="nav-item flex items-center px-4 py-3 text-sm font-medium text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition duration-200">
+                <i data-feather="home" class="w-5 h-5 mr-3"></i>
+                Dashboard
+            </a>
+            <a href="#accounts"
+                class="nav-item flex items-center px-4 py-3 text-sm font-medium text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition duration-200">
+                <i data-feather="credit-card" class="w-5 h-5 mr-3"></i>
+                Accounts
+            </a>
+            <a href="{% url 'transactions:transfer' %}"
+                class="nav-item active flex items-center px-4 py-3 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg">
+                <i data-feather="send" class="w-5 h-5 mr-3"></i>
+                Transfers
+            </a>
+            <a href="#bills"
+                class="nav-item flex items-center px-4 py-3 text-sm font-medium text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition duration-200">
+                <i data-feather="file-text" class="w-5 h-5 mr-3"></i>
+                Bills & Payments
+            </a>
+            <a href="#investments"
+                class="nav-item flex items-center px-4 py-3 text-sm font-medium text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition duration-200">
+                <i data-feather="trending-up" class="w-5 h-5 mr-3"></i>
+                Investments
+            </a>
+            <a href="#loans"
+                class="nav-item flex items-center px-4 py-3 text-sm font-medium text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition duration-200">
+                <i data-feather="dollar-sign" class="w-5 h-5 mr-3"></i>
+                Loans
+            </a>
+            <a href="#cards"
+                class="nav-item flex items-center px-4 py-3 text-sm font-medium text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition duration-200">
+                <i data-feather="credit-card" class="w-5 h-5 mr-3"></i>
+                Cards
+            </a>
+            <a href="{% url 'accounts:support' %}"
+                class="nav-item flex items-center px-4 py-3 text-sm font-medium text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition duration-200">
+                <i data-feather="help-circle" class="w-5 h-5 mr-3"></i>
+                Help & Support
+            </a>
+        </nav>
+
+        <!-- Quick Actions -->
+        <div class="px-4 py-6 border-t border-gray-200">
+            <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Quick Actions</h4>
+            <div class="space-y-2">
+                <button class="w-full flex items-center px-4 py-2 text-sm text-indigo-600 bg-indigo-50 rounded-lg">
+                    <i data-feather="plus" class="w-4 h-4 mr-3"></i>
+                    Transfer Money
+                </button>
+                <button
+                    class="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition duration-200">
+                    <i data-feather="download" class="w-4 h-4 mr-3"></i>
+                    Download Statement
+                </button>
+                <button
+                    class="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition duration-200">
+                    <i data-feather="phone" class="w-4 h-4 mr-3"></i>
+                    Contact Support
+                </button>
+            </div>
+        </div>
+
+        <!-- Sign Out -->
+        <div class="absolute bottom-4 left-4 right-4">
+            <a href="{% url 'accounts:logout' %}"
+                class="flex items-center px-4 py-3 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition duration-200">
+                <i data-feather="log-out" class="w-5 h-5 mr-3"></i>
+                Sign Out
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="md:ml-64">
+        <!-- Top Navigation Bar -->
+        <header class="bg-white shadow-sm border-b border-gray-200">
+            <div class="flex items-center justify-between h-16 px-4 md:px-6">
+                <div class="flex items-center">
+                    <button id="openSidebar" class="md:hidden text-gray-500 hover:text-gray-700 mr-4">
+                        <i data-feather="menu" class="w-6 h-6"></i>
+                    </button>
+                    <div class="flex items-center">
+                        <a href="{% url 'accounts:dashboard' %}" class="text-gray-500 hover:text-gray-700 mr-2 hidden">
+                            <i data-feather="arrow-left" class="w-5 h-5"></i>
+                        </a>
+                        <h2 class="text-xl font-semibold text-gray-800 ml-2">Transfer Money</h2>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <!-- Notifications -->
+                    <a href="{% url 'accounts:notifications' %}" class="relative text-gray-500 hover:text-gray-700">
+                        <i data-feather="bell" class="w-6 h-6"></i>
+                        {% if unread_notifications > 0 %}
+                        <span class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
+                        {% endif %}
+                    </a>
+
+                    <!-- Profile Menu -->
+                    <div class="relative">
+                        <button class="flex items-center text-gray-700 hover:text-gray-900">
+                            <div class="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center mr-2">
+                                <span
+                                    class="text-indigo-600 text-sm font-semibold">{{user.first_name.0}}{{user.last_name.0}}</span>
+                            </div>
+                            <span class="hidden md:block text-sm font-medium">{{user.first_name}}
+                                {{user.last_name}}</span>
+                            <i data-feather="chevron-down" class="w-4 h-4 ml-1 hidden md:block"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Transfer Content -->
+        <main class="p-4 md:p-6 pb-20 md:pb-6">
+            <!-- Progress Steps -->
+            <div class="mb-8">
+                <div class="flex items-center justify-center space-x-4 mb-6">
+                    <div class="flex items-center">
+                        <div id="step1Indicator"
+                            class="step-indicator active w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold mr-2">
+                            1</div>
+                        <span class="text-sm font-medium text-gray-700 hidden md:block">Select Transfer Type</span>
+                    </div>
+                    <div class="w-12 h-0.5 bg-gray-300"></div>
+                    <div class="flex items-center">
+                        <div id="step2Indicator"
+                            class="step-indicator w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-sm font-semibold mr-2">
+                            2</div>
+                        <span class="text-sm font-medium text-gray-700 hidden md:block">Transfer Details</span>
+                    </div>
+                    <div class="w-12 h-0.5 bg-gray-300"></div>
+                    <div class="flex items-center">
+                        <div id="step3Indicator"
+                            class="step-indicator w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-sm font-semibold mr-2">
+                            3</div>
+                        <span class="text-sm font-medium text-gray-700 hidden md:block">OCCID Verification</span>
+                    </div>
+                    <div class="w-12 h-0.5 bg-gray-300"></div>
+                    <div class="flex items-center">
+                        <div id="step4Indicator"
+                            class="step-indicator w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-sm font-semibold mr-2">
+                            4</div>
+                        <span class="text-sm font-medium text-gray-700 hidden md:block">Confirmation</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 1: Transfer Type Selection -->
+            <div id="step1" class="max-w-4xl mx-auto fade-in">
+                <div class="text-center mb-8">
+                    <h1 class="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Choose Transfer Type</h1>
+                    <p class="text-gray-600">Select where you want to send money</p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6 max-w-2xl mx-auto">
+                    <!-- BetaBank Account Transfer -->
+                    <div class="transfer-type-card bg-white p-8 rounded-xl shadow-sm border-2 border-gray-200 cursor-pointer card-hover"
+                        data-type="betabank">
+                        <div class="text-center">
+                            <div
+                                class="w-16 h-16 bg-indigo-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+                                <i data-feather="home" class="w-8 h-8 text-indigo-600"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">BetaBank Account</h3>
+                            <p class="text-gray-600 mb-4">Transfer to another BetaBank customer</p>
+                            <ul class="text-sm text-gray-500 space-y-1">
+                                <li>• Instant transfer</li>
+                                <li>• No fees</li>
+                                <li>• Available 24/7</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Other Banks Transfer -->
+                    <div class="transfer-type-card bg-white p-8 rounded-xl shadow-sm border-2 border-gray-200 cursor-pointer card-hover"
+                        data-type="otherbank">
+                        <div class="text-center">
+                            <div
+                                class="w-16 h-16 bg-green-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+                                <i data-feather="globe" class="w-8 h-8 text-green-600"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">Other Banks</h3>
+                            <p class="text-gray-600 mb-4">Transfer to other banks (local & international)</p>
+                            <ul class="text-sm text-gray-500 space-y-1">
+                                <li>• Local & International</li>
+                                <li>• 1-3 business days</li>
+                                <li>• Competitive rates</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Transfer Details -->
+            <div id="step2" class="max-w-4xl mx-auto hidden">
+                <div class="text-center mb-8">
+                    <h1 class="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Transfer Details</h1>
+                    <p class="text-gray-600">Enter the transfer information</p>
+                </div>
+
+                <div class="grid lg:grid-cols-3 gap-8">
+                    <!-- Transfer Form -->
+                    <div class="lg:col-span-2">
+                        <div class="bg-white p-6 md:p-8 rounded-xl shadow-sm">
+                            <!-- BetaBank Transfer Form -->
+                            <div id="betabankForm" class="hidden">
+                                <h3 class="text-lg font-semibold text-gray-900 mb-6">BetaBank Transfer</h3>
+
+                                <div class="space-y-6">
+                                    <!-- From Account -->
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">From
+                                            Account</label>
+                                        <select id="betaBankFromAccount"
+                                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                                            <option value="">Select an account</option>
+                                            {% for account in bank_accounts %}
+                                            <option value="{{account.id}}">{{account.get_account_type_display}} Account
+                                                - ••••••••••••{{account.account_number|slice:"-4:"}}
+                                                (${{account.balance|floatformat:2}})</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+
+                                    <!-- Recipient Email/Username -->
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">Recipient Email,
+                                            Username, or Account Number</label>
+                                        <input type="text" id="betaBankRecipient"
+                                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                            placeholder="john.doe@example.com or johndoe123 or account number">
+                                        <div id="recipientInfo" class="mt-2 hidden">
+                                            <div class="bg-green-50 border border-green-200 rounded-lg p-3">
+                                                <div class="flex items-center">
+                                                    <i data-feather="check-circle"
+                                                        class="w-4 h-4 text-green-600 mr-2"></i>
+                                                    <div>
+                                                        <p id="recipientName"
+                                                            class="text-sm font-medium text-green-800"></p>
+                                                        <p id="recipientAccount" class="text-xs text-green-600"></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="recipientError" class="mt-2 hidden">
+                                            <div class="bg-red-50 border border-red-200 rounded-lg p-3">
+                                                <div class="flex items-center">
+                                                    <i data-feather="alert-circle"
+                                                        class="w-4 h-4 text-red-600 mr-2"></i>
+                                                    <p class="text-sm text-red-600">Recipient not found</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Amount -->
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">Amount</label>
+                                        <div class="relative">
+                                            <div
+                                                class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <span class="text-gray-500">$</span>
+                                            </div>
+                                            <input type="number" step="0.01" id="betaBankAmount"
+                                                class="w-full pl-8 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                                placeholder="0.00">
+                                        </div>
+                                    </div>
+
+                                    <!-- Description -->
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">Description
+                                            (Optional)</label>
+                                        <input type="text" id="betaBankDescription"
+                                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                            placeholder="What's this for?">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Other Banks Transfer Form -->
+                            <div id="otherbankForm" class="hidden">
+                                <h3 class="text-lg font-semibold text-gray-900 mb-6">Other Banks Transfer</h3>
+
+                                <div class="space-y-6">
+                                    <!-- From Account -->
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">From
+                                            Account</label>
+                                        <select id="otherBankFromAccount"
+                                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                                            <option value="">Select an account</option>
+                                            {% for account in bank_accounts %}
+                                            <option value="{{account.id}}">{{account.get_account_type_display}} Account
+                                                - ••••••••••••{{account.account_number|slice:"-4:"}}
+                                                (${{account.balance|floatformat:2}})</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+
+                                    <!-- Transfer Type -->
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">Transfer
+                                            Type</label>
+                                        <div class="grid grid-cols-2 gap-4">
+                                            <label
+                                                class="flex items-center p-3 border border-gray-300 rounded-lg cursor-pointer hover:border-indigo-500">
+                                                <input type="radio" name="bankTransferType" value="domestic"
+                                                    class="text-indigo-600 mr-3">
+                                                <span class="text-sm font-medium">Domestic</span>
+                                            </label>
+                                            <label
+                                                class="flex items-center p-3 border border-gray-300 rounded-lg cursor-pointer hover:border-indigo-500">
+                                                <input type="radio" name="bankTransferType" value="international"
+                                                    class="text-indigo-600 mr-3">
+                                                <span class="text-sm font-medium">International</span>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <!-- Recipient Bank Details -->
+                                    <div class="grid md:grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-sm font-semibold text-gray-700 mb-2">Bank
+                                                Name</label>
+                                            <input type="text" id="otherBankName"
+                                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                                placeholder="Recipient's bank name">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-semibold text-gray-700 mb-2">Routing/SWIFT
+                                                Code</label>
+                                            <input type="text" id="otherBankCode"
+                                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                                placeholder="Bank routing or SWIFT code">
+                                        </div>
+                                    </div>
+
+                                    <!-- Recipient Details -->
+                                    <div class="grid md:grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-sm font-semibold text-gray-700 mb-2">Account
+                                                Number</label>
+                                            <input type="text" id="otherBankAccountNumber"
+                                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                                placeholder="Recipient's account number">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-semibold text-gray-700 mb-2">Account Holder
+                                                Name</label>
+                                            <input type="text" id="otherBankAccountHolder"
+                                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                                placeholder="Full name as per bank records">
+                                        </div>
+                                    </div>
+
+                                    <!-- Amount -->
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">Amount</label>
+                                        <div class="relative">
+                                            <div
+                                                class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <span class="text-gray-500">$</span>
+                                            </div>
+                                            <input type="number" step="0.01" id="otherBankAmount"
+                                                class="w-full pl-8 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                                placeholder="0.00">
+                                        </div>
+                                    </div>
+
+                                    <!-- Purpose -->
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">Purpose of
+                                            Transfer</label>
+                                        <select id="otherBankPurpose"
+                                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                                            <option value="">Select purpose</option>
+                                            <option value="Personal Transfer">Personal Transfer</option>
+                                            <option value="Family Support">Family Support</option>
+                                            <option value="Business Payment">Business Payment</option>
+                                            <option value="Education">Education</option>
+                                            <option value="Medical">Medical</option>
+                                            <option value="Investment">Investment</option>
+                                            <option value="Other">Other</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Description -->
+                                    <div>
+                                        <label
+                                            class="block text-sm font-semibold text-gray-700 mb-2">Description</label>
+                                        <textarea rows="3" id="otherBankDescription"
+                                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                            placeholder="Additional details about the transfer"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="flex space-x-4 mt-8">
+                                <button id="backToStep1"
+                                    class="flex-1 bg-gray-300 text-gray-700 py-3 px-6 rounded-lg font-semibold hover:bg-gray-400 transition duration-300">
+                                    Back
+                                </button>
+                                <button id="continueToStep3"
+                                    class="flex-1 bg-indigo-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-indigo-700 transition duration-300">
+                                    Continue
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Transfer Summary -->
+                    <div class="lg:col-span-1">
+                        <div class="bg-white p-6 rounded-xl shadow-sm">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Transfer Summary</h3>
+                            <div class="space-y-3 text-sm">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Transfer Type:</span>
+                                    <span id="summaryType" class="font-medium">-</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Amount:</span>
+                                    <span id="summaryAmount" class="font-medium">$0.00</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Fee:</span>
+                                    <span id="summaryFee" class="font-medium">$0.00</span>
+                                </div>
+                                <hr class="my-3">
+                                <div class="flex justify-between text-lg font-semibold">
+                                    <span>Total:</span>
+                                    <span id="summaryTotal">$0.00</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: OCCID Verification -->
+            <div id="step3" class="max-w-2xl mx-auto hidden">
+                <div class="text-center mb-8">
+                    <h1 class="text-2xl md:text-3xl font-bold text-gray-900 mb-2">OCCID Verification</h1>
+                    <p class="text-gray-600">Enter your 6-digit OCCID key to authorize the transfer</p>
+                </div>
+
+                <div class="bg-white p-6 md:p-8 rounded-xl shadow-sm">
+                    <!-- OCCID Input Display -->
+                    <div class="text-center mb-8">
+                        <label class="block text-sm font-semibold text-gray-700 mb-4">Enter OCCID Key</label>
+                        <input type="password" id="occidInput"
+                            class="pin-input w-full max-w-xs mx-auto px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                            maxlength="6" readonly placeholder="••••••">
+                        <p class="text-xs text-gray-500 mt-2">Your OCCID will be hidden for security</p>
+                    </div>
+
+                    <!-- On-Screen Keypad -->
+                    <div class="max-w-xs mx-auto">
+                        <div class="grid grid-cols-3 gap-3 mb-4">
+                            <button
+                                class="keypad-button bg-white border-2 border-gray-300 text-xl font-semibold py-4 rounded-lg"
+                                data-number="1">1</button>
+                            <button
+                                class="keypad-button bg-white border-2 border-gray-300 text-xl font-semibold py-4 rounded-lg"
+                                data-number="2">2</button>
+                            <button
+                                class="keypad-button bg-white border-2 border-gray-300 text-xl font-semibold py-4 rounded-lg"
+                                data-number="3">3</button>
+                            <button
+                                class="keypad-button bg-white border-2 border-gray-300 text-xl font-semibold py-4 rounded-lg"
+                                data-number="4">4</button>
+                            <button
+                                class="keypad-button bg-white border-2 border-gray-300 text-xl font-semibold py-4 rounded-lg"
+                                data-number="5">5</button>
+                            <button
+                                class="keypad-button bg-white border-2 border-gray-300 text-xl font-semibold py-4 rounded-lg"
+                                data-number="6">6</button>
+                            <button
+                                class="keypad-button bg-white border-2 border-gray-300 text-xl font-semibold py-4 rounded-lg"
+                                data-number="7">7</button>
+                            <button
+                                class="keypad-button bg-white border-2 border-gray-300 text-xl font-semibold py-4 rounded-lg"
+                                data-number="8">8</button>
+                            <button
+                                class="keypad-button bg-white border-2 border-gray-300 text-xl font-semibold py-4 rounded-lg"
+                                data-number="9">9</button>
+                            <button
+                                class="keypad-button bg-white border-2 border-gray-300 text-xl font-semibold py-4 rounded-lg opacity-50"
+                                disabled></button>
+                            <button
+                                class="keypad-button bg-white border-2 border-gray-300 text-xl font-semibold py-4 rounded-lg"
+                                data-number="0">0</button>
+                            <button class="keypad-button bg-red-50 border-2 border-red-300 text-red-600 py-4 rounded-lg"
+                                id="clearOccid">
+                                <i data-feather="delete" class="w-5 h-5 mx-auto"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- OCCID Help Message -->
+                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+                        <div class="flex items-start">
+                            <i data-feather="info" class="w-5 h-5 text-yellow-600 mr-3 mt-0.5"></i>
+                            <div>
+                                <p class="text-sm text-yellow-800">
+                                    <strong>Don't have your OCCID key?</strong><br>
+                                    Please contact our customer service team to purchase an OCCID device for secure
+                                    transactions.
+                                </p>
+                                <button class="mt-2 text-sm text-yellow-800 underline hover:text-yellow-900">
+                                    Contact Customer Service
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex space-x-4">
+                        <button id="backToStep2"
+                            class="flex-1 bg-gray-300 text-gray-700 py-3 px-6 rounded-lg font-semibold hover:bg-gray-400 transition duration-300">
+                            Back
+                        </button>
+                        <button id="verifyOccid"
+                            class="flex-1 bg-indigo-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-indigo-700 transition duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                            disabled>
+                            Verify & Continue
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4: Confirmation -->
+            <div id="step4" class="max-w-2xl mx-auto hidden">
+                <div class="text-center mb-8">
+                    <div class="w-16 h-16 bg-green-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+                        <i data-feather="check-circle" class="w-8 h-8 text-green-600"></i>
+                    </div>
+                    <h1 class="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Transfer Successful!</h1>
+                    <p class="text-gray-600">Your transfer has been processed successfully</p>
+                </div>
+
+                <div class="bg-white p-6 md:p-8 rounded-xl shadow-sm">
+                    <div class="space-y-4 mb-6">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Transaction ID:</span>
+                            <span id="completionTransactionId" class="font-medium">#TXN123456789</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Reference Number:</span>
+                            <span id="completionReferenceNumber" class="font-medium">REF1234567890</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Amount Transferred:</span>
+                            <span id="completionAmount" class="font-medium text-green-600">$0.00</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Transfer Fee:</span>
+                            <span id="completionFee" class="font-medium">$0.00</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Date & Time:</span>
+                            <span id="completionDateTime" class="font-medium">-</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Status:</span>
+                            <span id="completionStatus" class="font-medium text-green-600">Completed</span>
+                        </div>
+                    </div>
+
+                    <div class="flex space-x-4">
+                        <button
+                            class="flex-1 bg-gray-100 text-gray-700 py-3 px-6 rounded-lg font-semibold hover:bg-gray-200 transition duration-300">
+                            Download Receipt
+                        </button>
+                        <a href="{% url 'accounts:dashboard' %}"
+                            class="flex-1 bg-indigo-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-indigo-700 transition duration-300 text-center">
+                            Back to Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Mobile Bottom Navigation -->
+    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 md:hidden z-30">
+        <div class="grid grid-cols-5 py-2">
+            <a href="{% url 'accounts:dashboard' %}" class="mobile-nav-item flex flex-col items-center py-2 px-1">
+                <i data-feather="home" class="w-5 h-5 text-gray-400"></i>
+                <span class="text-xs text-gray-400 mt-1">Dashboard</span>
+            </a>
+            <a href="#accounts" class="mobile-nav-item flex flex-col items-center py-2 px-1">
+                <i data-feather="credit-card" class="w-5 h-5 text-gray-400"></i>
+                <span class="text-xs text-gray-400 mt-1">Accounts</span>
+            </a>
+            <a href="{% url 'transactions:transfer' %}"
+                class="mobile-nav-item active flex flex-col items-center py-2 px-1">
+                <i data-feather="send" class="w-5 h-5 text-indigo-600"></i>
+                <span class="text-xs text-indigo-600 mt-1">Transfer</span>
+            </a>
+            <a href="#bills" class="mobile-nav-item flex flex-col items-center py-2 px-1">
+                <i data-feather="file-text" class="w-5 h-5 text-gray-400"></i>
+                <span class="text-xs text-gray-400 mt-1">Bills</span>
+            </a>
+            <a href="#more" class="mobile-nav-item flex flex-col items-center py-2 px-1">
+                <i data-feather="more-horizontal" class="w-5 h-5 text-gray-400"></i>
+                <span class="text-xs text-gray-400 mt-1">More</span>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Feather Icons
+        feather.replace();
+
+        // Global variables
+        let currentStep = 1;
+        let selectedTransferType = '';
+        let occidValue = '';
+        let currentSessionId = '';
+        let transferData = {};
+
+        // CSRF token for Django
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]')?.value ||
+            document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ||
+            '{{ csrf_token }}';
+
+        // Wrap all functionality in DOMContentLoaded to ensure elements are loaded
+        document.addEventListener('DOMContentLoaded', function () {
+            // Sidebar functionality
+            const sidebar = document.getElementById('sidebar');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
+            const openSidebarBtn = document.getElementById('openSidebar');
+            const closeSidebarBtn = document.getElementById('closeSidebar');
+
+            function openSidebar() {
+                sidebar.classList.remove('sidebar-hidden');
+                sidebarOverlay.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeSidebar() {
+                sidebar.classList.add('sidebar-hidden');
+                sidebarOverlay.classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+
+            if (openSidebarBtn) openSidebarBtn.addEventListener('click', openSidebar);
+            if (closeSidebarBtn) closeSidebarBtn.addEventListener('click', closeSidebar);
+            if (sidebarOverlay) sidebarOverlay.addEventListener('click', closeSidebar);
+
+            // Step management
+            function showStep(step) {
+                // Hide all steps
+                for (let i = 1; i <= 4; i++) {
+                    const stepElement = document.getElementById(`step${i}`);
+                    if (stepElement) stepElement.classList.add('hidden');
+
+                    const indicator = document.getElementById(`step${i}Indicator`);
+                    if (indicator) {
+                        indicator.classList.remove('active', 'completed');
+                        indicator.classList.add('bg-gray-300');
+                        indicator.innerHTML = i;
+                    }
+                }
+
+                // Show current step
+                const currentStepElement = document.getElementById(`step${step}`);
+                if (currentStepElement) currentStepElement.classList.remove('hidden');
+
+                // Update indicators
+                for (let i = 1; i <= step; i++) {
+                    const indicator = document.getElementById(`step${i}Indicator`);
+                    if (indicator) {
+                        indicator.classList.remove('bg-gray-300');
+
+                        if (i < step) {
+                            indicator.classList.add('completed');
+                            indicator.innerHTML = '<i data-feather="check" class="w-4 h-4"></i>';
+                        } else if (i === step) {
+                            indicator.classList.add('active');
+                            indicator.innerHTML = i;
+                        }
+                    }
+                }
+
+                feather.replace();
+                currentStep = step;
+            }
+
+            // Transfer type selection
+            document.querySelectorAll('.transfer-type-card').forEach(card => {
+                card.addEventListener('click', function () {
+                    // Remove active state from all cards
+                    document.querySelectorAll('.transfer-type-card').forEach(c => {
+                        c.classList.remove('border-indigo-500', 'bg-indigo-50');
+                        c.classList.add('border-gray-200');
+                    });
+
+                    // Add active state to clicked card
+                    this.classList.remove('border-gray-200');
+                    this.classList.add('border-indigo-500', 'bg-indigo-50');
+
+                    selectedTransferType = this.dataset.type;
+
+                    // Update summary
+                    const summaryType = document.getElementById('summaryType');
+                    if (summaryType) {
+                        summaryType.textContent = selectedTransferType === 'betabank' ? 'BetaBank Account' : 'Other Banks';
+                    }
+
+                    // Show appropriate form in step 2
+                    setTimeout(() => {
+                        showStep(2);
+                        if (selectedTransferType === 'betabank') {
+                            document.getElementById('betabankForm')?.classList.remove('hidden');
+                            document.getElementById('otherbankForm')?.classList.add('hidden');
+                        } else {
+                            document.getElementById('betabankForm')?.classList.add('hidden');
+                            document.getElementById('otherbankForm')?.classList.remove('hidden');
+                        }
+                    }, 300);
+                });
+            });
+
+            // Recipient validation for BetaBank transfers
+            const betaBankRecipient = document.getElementById('betaBankRecipient');
+            if (betaBankRecipient) {
+                let recipientTimeout;
+                betaBankRecipient.addEventListener('input', function () {
+                    const identifier = this.value.trim();
+
+                    // Clear previous timeout
+                    clearTimeout(recipientTimeout);
+
+                    // Hide previous results
+                    document.getElementById('recipientInfo')?.classList.add('hidden');
+                    document.getElementById('recipientError')?.classList.add('hidden');
+
+                    if (identifier.length >= 3) {
+                        recipientTimeout = setTimeout(() => {
+                            validateRecipient(identifier);
+                        }, 500);
+                    }
+                });
+            }
+
+            function validateRecipient(identifier) {
+                fetch(`/transactions/transfer/recipient-info/?identifier=${encodeURIComponent(identifier)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Show recipient info
+                            document.getElementById('recipientName').textContent = data.recipient_name;
+                            document.getElementById('recipientAccount').textContent = `${data.account_type} - ${data.account_number}`;
+                            document.getElementById('recipientInfo')?.classList.remove('hidden');
+                            document.getElementById('recipientError')?.classList.add('hidden');
+                        } else {
+                            // Show error
+                            document.getElementById('recipientInfo')?.classList.add('hidden');
+                            document.getElementById('recipientError')?.classList.remove('hidden');
+                        }
+                        feather.replace();
+                    })
+                    .catch(error => {
+                        console.error('Error validating recipient:', error);
+                        document.getElementById('recipientInfo')?.classList.add('hidden');
+                        document.getElementById('recipientError')?.classList.remove('hidden');
+                    });
+            }
+
+            // Amount input listeners for summary update
+            document.addEventListener('input', function (e) {
+                if (e.target.type === 'number' && (e.target.id === 'betaBankAmount' || e.target.id === 'otherBankAmount')) {
+                    const amount = parseFloat(e.target.value) || 0;
+                    const fee = selectedTransferType === 'betabank' ? 0 : Math.max(5, amount * 0.01);
+                    const total = amount + fee;
+
+                    document.getElementById('summaryAmount').textContent = `$${amount.toFixed(2)}`;
+                    document.getElementById('summaryFee').textContent = `$${fee.toFixed(2)}`;
+                    document.getElementById('summaryTotal').textContent = `$${total.toFixed(2)}`;
+                }
+            });
+
+            // Navigation buttons
+            document.getElementById('backToStep1')?.addEventListener('click', () => showStep(1));
+            document.getElementById('backToStep2')?.addEventListener('click', () => showStep(2));
+
+            // Continue to step 3 - initiate transfer
+            document.getElementById('continueToStep3')?.addEventListener('click', function () {
+                const transferData = collectTransferData();
+                if (validateTransferData(transferData)) {
+                    initiateTransfer(transferData);
+                }
+            });
+
+            function collectTransferData() {
+                if (selectedTransferType === 'betabank') {
+                    return {
+                        transfer_type: 'betabank',
+                        from_account_id: document.getElementById('betaBankFromAccount')?.value,
+                        amount: document.getElementById('betaBankAmount')?.value,
+                        description: document.getElementById('betaBankDescription')?.value,
+                        recipient_identifier: document.getElementById('betaBankRecipient')?.value
+                    };
+                } else {
+                    return {
+                        transfer_type: 'otherbank',
+                        from_account_id: document.getElementById('otherBankFromAccount')?.value,
+                        amount: document.getElementById('otherBankAmount')?.value,
+                        description: document.getElementById('otherBankDescription')?.value,
+                        bank_transfer_type: document.querySelector('input[name="bankTransferType"]:checked')?.value,
+                        recipient_bank_name: document.getElementById('otherBankName')?.value,
+                        recipient_account_number: document.getElementById('otherBankAccountNumber')?.value,
+                        recipient_account_holder: document.getElementById('otherBankAccountHolder')?.value,
+                        routing_swift_code: document.getElementById('otherBankCode')?.value,
+                        transfer_purpose: document.getElementById('otherBankPurpose')?.value
+                    };
+                }
+            }
+
+            function validateTransferData(data) {
+                if (!data.from_account_id) {
+                    alert('Please select a source account');
+                    return false;
+                }
+
+                if (!data.amount || parseFloat(data.amount) <= 0) {
+                    alert('Please enter a valid amount');
+                    return false;
+                }
+
+                if (selectedTransferType === 'betabank') {
+                    if (!data.recipient_identifier) {
+                        alert('Please enter recipient information');
+                        return false;
+                    }
+                } else {
+                    if (!data.bank_transfer_type || !data.recipient_bank_name || !data.recipient_account_number || !data.recipient_account_holder) {
+                        alert('Please fill in all required fields');
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+
+            function initiateTransfer(data) {
+                // Show loading state
+                const continueBtn = document.getElementById('continueToStep3');
+                if (continueBtn) {
+                    continueBtn.disabled = true;
+                    continueBtn.textContent = 'Processing...';
+                }
+
+                fetch('/transactions/transfer/initiate/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrftoken
+                    },
+                    body: JSON.stringify(data)
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            currentSessionId = data.session_id;
+                            transferData = data;
+
+                            // Update summary with final amounts
+                            document.getElementById('summaryAmount').textContent = `$${data.amount}`;
+                            document.getElementById('summaryFee').textContent = `$${data.fee}`;
+                            document.getElementById('summaryTotal').textContent = `$${data.total}`;
+
+                            showStep(3);
+                        } else {
+                            alert(data.error || 'Failed to initiate transfer');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error initiating transfer:', error);
+                        alert('An error occurred. Please try again.');
+                    })
+                    .finally(() => {
+                        // Reset button state
+                        if (continueBtn) {
+                            continueBtn.disabled = false;
+                            continueBtn.textContent = 'Continue';
+                        }
+                    });
+            }
+
+            // OCCID Keypad functionality
+            document.querySelectorAll('.keypad-button[data-number]').forEach(button => {
+                button.addEventListener('click', function () {
+                    if (occidValue.length < 6) {
+                        occidValue += this.dataset.number;
+                        const occidInput = document.getElementById('occidInput');
+                        if (occidInput) {
+                            occidInput.value = '•'.repeat(occidValue.length);
+                        }
+
+                        // Enable verify button when 6 digits entered
+                        const verifyBtn = document.getElementById('verifyOccid');
+                        if (occidValue.length === 6 && verifyBtn) {
+                            verifyBtn.disabled = false;
+                        }
+                    }
+                });
+            });
+
+            // Clear OCCID
+            document.getElementById('clearOccid')?.addEventListener('click', function () {
+                if (occidValue.length > 0) {
+                    occidValue = occidValue.slice(0, -1);
+                    const occidInput = document.getElementById('occidInput');
+                    if (occidInput) {
+                        occidInput.value = '•'.repeat(occidValue.length);
+                    }
+
+                    const verifyBtn = document.getElementById('verifyOccid');
+                    if (occidValue.length < 6 && verifyBtn) {
+                        verifyBtn.disabled = true;
+                    }
+                }
+            });
+
+            // Verify OCCID
+            document.getElementById('verifyOccid')?.addEventListener('click', function () {
+                const verifyBtn = this;
+                verifyBtn.innerHTML = 'Verifying...';
+                verifyBtn.disabled = true;
+
+                fetch('/transactions/transfer/verify-occid/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrftoken
+                    },
+                    body: JSON.stringify({
+                        session_id: currentSessionId,
+                        occid_pin: occidValue
+                    })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Update completion step with transaction data
+                            document.getElementById('completionTransactionId').textContent = data.transaction_id;
+                            document.getElementById('completionReferenceNumber').textContent = data.reference_number;
+                            document.getElementById('completionAmount').textContent = `$${data.amount}`;
+                            document.getElementById('completionFee').textContent = `$${data.fee}`;
+                            document.getElementById('completionDateTime').textContent = new Date().toLocaleString();
+                            document.getElementById('completionStatus').textContent = data.status === 'completed' ? 'Completed' : 'Processing';
+
+                            showStep(4);
+                        } else {
+                            alert(data.error || 'OCCID verification failed');
+                            verifyBtn.innerHTML = 'Verify & Continue';
+                            verifyBtn.disabled = false;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error verifying OCCID:', error);
+                        alert('Verification failed. Please try again.');
+                        verifyBtn.innerHTML = 'Verify & Continue';
+                        verifyBtn.disabled = false;
+                    });
+            });
+
+            // Handle window resize
+            window.addEventListener('resize', function () {
+                if (window.innerWidth >= 768) {
+                    closeSidebar();
+                }
+            });
+
+            // Initialize
+            showStep(1);
+        });
+    </script>
+</body>
+
+</html>

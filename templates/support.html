@@ -1,0 +1,667 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support - BetaBank</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+        * {
+            font-family: 'Montserrat', sans-serif;
+        }
+        .support-card {
+            transition: all 0.3s ease;
+        }
+        .support-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+        .chat-container {
+            height: 400px;
+            overflow-y: auto;
+        }
+        .chat-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        .chat-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .chat-container::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 3px;
+        }
+        .chat-container::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+        .message {
+            animation: fadeInUp 0.3s ease;
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .typing-indicator {
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <a href="index.html">
+                            <img src="{% static 'photos/beta_logo.png' %}" alt="BetaBank Logo" class="h-10 w-auto">
+                        </a>
+                    </div>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="{% url 'accounts:dashboard' %}" class="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Dashboard</a>
+                        <a href="#" class="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Settings</a>
+                        <a href="{% url 'accounts:logout' %}" class="bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-red-700 transition duration-300">Sign Out</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="bg-white border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="py-6">
+                <div class="text-center">
+                    <h1 class="text-3xl font-bold text-gray-900">Support Center</h1>
+                    <p class="text-gray-600 mt-2">We're here to help you with any questions or concerns</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Support Options -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Quick Help Section -->
+        <div class="mb-12">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">How can we help you today?</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- In-App Chat -->
+                <div class="support-card bg-white rounded-xl shadow-lg p-6 cursor-pointer border-2 border-transparent hover:border-indigo-500 hidden" onclick="openChat()">
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i data-feather="message-circle" class="w-8 h-8 text-indigo-600"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Live Chat</h3>
+                        <p class="text-gray-600 text-sm mb-4">Chat with our support team in real-time</p>
+                        <div class="flex items-center justify-center text-green-600 text-sm">
+                            <div class="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                            Available 24/7
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Email Support -->
+                <div class="support-card bg-white rounded-xl shadow-lg p-6 cursor-pointer border-2 border-transparent hover:border-blue-500 hidden" onclick="openEmailSupport()">
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i data-feather="mail" class="w-8 h-8 text-blue-600"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Email Support</h3>
+                        <p class="text-gray-600 text-sm mb-4">Send us an email and we'll respond within 24 hours</p>
+                        <div class="text-blue-600 text-sm">
+                            support@betabank.com
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Telegram Support -->
+                <div class="support-card bg-white rounded-xl shadow-lg p-6 cursor-pointer border-2 border-transparent hover:border-cyan-500" onclick="openTelegramSupport()">
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-cyan-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i data-feather="send" class="w-8 h-8 text-cyan-600"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Telegram</h3>
+                        <p class="text-gray-600 text-sm mb-4">Quick responses via our Telegram bot</p>
+                        <div class="text-cyan-600 text-sm">
+                            @BetaBankService
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tido Support -->
+                <div class="support-card bg-white rounded-xl shadow-lg p-6 cursor-pointer border-2 border-transparent hover:border-purple-500" onclick="openTidoSupport()">
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i data-feather="headphones" class="w-8 h-8 text-purple-600"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Tido Support</h3>
+                        <p class="text-gray-600 text-sm mb-4">Professional support via Tido platform</p>
+                        <div class="text-purple-600 text-sm">
+                            Advanced Help
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAQ Section -->
+        <div class="mb-12">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">Frequently Asked Questions</h2>
+            <div class="max-w-4xl mx-auto">
+                <div class="space-y-4">
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex items-center justify-between cursor-pointer" onclick="toggleFAQ(1)">
+                            <h3 class="text-lg font-semibold text-gray-900">How do I reset my password?</h3>
+                            <i data-feather="chevron-down" class="w-5 h-5 text-gray-500 transform transition-transform" id="faq-icon-1"></i>
+                        </div>
+                        <div class="hidden mt-4 text-gray-600" id="faq-content-1">
+                            <p>You can reset your password by clicking on "Forgot Password" on the login page. We'll send you a secure link to reset your password via email.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex items-center justify-between cursor-pointer" onclick="toggleFAQ(2)">
+                            <h3 class="text-lg font-semibold text-gray-900">How long does a transfer take?</h3>
+                            <i data-feather="chevron-down" class="w-5 h-5 text-gray-500 transform transition-transform" id="faq-icon-2"></i>
+                        </div>
+                        <div class="hidden mt-4 text-gray-600" id="faq-content-2">
+                            <p>Internal transfers are instant. External transfers typically take 1-3 business days depending on the receiving bank and transfer method.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex items-center justify-between cursor-pointer" onclick="toggleFAQ(3)">
+                            <h3 class="text-lg font-semibold text-gray-900">What are your fees?</h3>
+                            <i data-feather="chevron-down" class="w-5 h-5 text-gray-500 transform transition-transform" id="faq-icon-3"></i>
+                        </div>
+                        <div class="hidden mt-4 text-gray-600" id="faq-content-3">
+                            <p>We offer transparent pricing with no hidden fees. Check our fee schedule in your account settings or contact support for detailed information.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex items-center justify-between cursor-pointer" onclick="toggleFAQ(4)">
+                            <h3 class="text-lg font-semibold text-gray-900">Is my money safe with BetaBank?</h3>
+                            <i data-feather="chevron-down" class="w-5 h-5 text-gray-500 transform transition-transform" id="faq-icon-4"></i>
+                        </div>
+                        <div class="hidden mt-4 text-gray-600" id="faq-content-4">
+                            <p>Yes, your money is protected by FDIC insurance up to $250,000. We also use bank-level security and encryption to protect your data and transactions.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Information -->
+        <div class="bg-white rounded-xl shadow-lg p-8 text-center">
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">Need More Help?</h2>
+            <p class="text-gray-600 mb-6">Our support team is available 24/7 to assist you with any questions or concerns.</p>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div>
+                    <i data-feather="phone" class="w-8 h-8 text-indigo-600 mx-auto mb-2"></i>
+                    <h3 class="font-semibold text-gray-900">Phone</h3>
+                    <p class="text-gray-600">1-800-BETA-BANK</p>
+                </div>
+                <div>
+                    <i data-feather="clock" class="w-8 h-8 text-indigo-600 mx-auto mb-2"></i>
+                    <h3 class="font-semibold text-gray-900">Hours</h3>
+                    <p class="text-gray-600">24/7 Support</p>
+                </div>
+                <div>
+                    <i data-feather="map-pin" class="w-8 h-8 text-indigo-600 mx-auto mb-2"></i>
+                    <h3 class="font-semibold text-gray-900">Location</h3>
+                    <p class="text-gray-600">Global Support</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chat Modal -->
+    <div id="chatModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-xl shadow-2xl w-full max-w-md mx-auto">
+                <!-- Chat Header -->
+                <div class="bg-indigo-600 text-white p-4 rounded-t-xl">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center mr-3">
+                                <i data-feather="headphones" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold">BetaBank Support</h3>
+                                <p class="text-xs opacity-90">
+                                    <span class="inline-block w-2 h-2 bg-green-400 rounded-full mr-1"></span>
+                                    Online
+                                </p>
+                            </div>
+                        </div>
+                        <button onclick="closeChat()" class="text-white hover:text-gray-200">
+                            <i data-feather="x" class="w-6 h-6"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Chat Messages -->
+                <div class="chat-container p-4 bg-gray-50" id="chatMessages">
+                    <!-- Welcome Message -->
+                    <div class="message mb-4">
+                        <div class="flex items-start">
+                            <div class="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                                <i data-feather="headphones" class="w-4 h-4 text-indigo-600"></i>
+                            </div>
+                            <div class="bg-white rounded-lg p-3 shadow-sm max-w-xs">
+                                <p class="text-sm text-gray-800">Hello! I'm Sarah from BetaBank support. How can I help you today?</p>
+                                <p class="text-xs text-gray-500 mt-1">Just now</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat Input -->
+                <div class="p-4 border-t">
+                    <div class="flex items-center space-x-2">
+                        <button 
+                            onclick="triggerFileUpload()" 
+                            class="bg-gray-100 text-gray-600 p-2 rounded-lg hover:bg-gray-200 transition duration-300"
+                            title="Upload photo"
+                        >
+                            <i data-feather="camera" class="w-5 h-5"></i>
+                        </button>
+                        <input 
+                            type="text" 
+                            id="chatInput" 
+                            placeholder="Type your message..." 
+                            class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                            onkeypress="handleChatKeyPress(event)"
+                        >
+                        <button 
+                            onclick="sendMessage()" 
+                            class="bg-indigo-600 text-white p-2 rounded-lg hover:bg-indigo-700 transition duration-300"
+                        >
+                            <i data-feather="send" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Hidden file input -->
+                    <input 
+                        type="file" 
+                        id="fileInput" 
+                        accept="image/*" 
+                        style="display: none;" 
+                        onchange="handleFileUpload(event)"
+                    >
+                    
+                    <!-- File preview area -->
+                    <div id="filePreview" class="mt-2 hidden">
+                        <div class="bg-gray-100 rounded-lg p-2 flex items-center justify-between">
+                            <div class="flex items-center">
+                                <i data-feather="image" class="w-4 h-4 text-gray-500 mr-2"></i>
+                                <span id="fileName" class="text-sm text-gray-700"></span>
+                            </div>
+                            <button onclick="removeFile()" class="text-red-500 hover:text-red-700">
+                                <i data-feather="x" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Quick Actions -->
+                    <div class="mt-3 flex flex-wrap gap-2">
+                        <button onclick="sendQuickMessage('I need help with my account')" class="text-xs bg-gray-200 text-gray-700 px-3 py-1 rounded-full hover:bg-gray-300">
+                            Account Help
+                        </button>
+                        <button onclick="sendQuickMessage('I have a transaction question')" class="text-xs bg-gray-200 text-gray-700 px-3 py-1 rounded-full hover:bg-gray-300">
+                            Transaction Issue
+                        </button>
+                        <button onclick="sendQuickMessage('I need technical support')" class="text-xs bg-gray-200 text-gray-700 px-3 py-1 rounded-full hover:bg-gray-300">
+                            Technical Support
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="flex justify-center items-center mb-4">
+                <img src="{% static 'photos/beta_logo.png' %}" alt="BetaBank Logo" class="h-8 w-auto mr-3">
+                <h3 class="text-xl font-bold">BetaBank</h3>
+            </div>
+            <p class="text-gray-300 mb-4">Your trusted financial partner.</p>
+            <div class="text-sm text-gray-400">
+                <p>&copy; 2025 BetaBank. All rights reserved. | Member FDIC | Equal Housing Lender</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Feather Icons
+        feather.replace();
+
+        // Chat functionality
+        let messageCounter = 0;
+        let selectedFile = null;
+
+        function openChat() {
+            document.getElementById('chatModal').classList.remove('hidden');
+            document.getElementById('chatInput').focus();
+        }
+
+        function closeChat() {
+            document.getElementById('chatModal').classList.add('hidden');
+            // Clear any selected file when closing chat
+            removeFile();
+        }
+
+        function handleChatKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function triggerFileUpload() {
+            document.getElementById('fileInput').click();
+        }
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                // Check file size (limit to 5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('File size must be less than 5MB');
+                    return;
+                }
+                
+                // Check file type
+                if (!file.type.startsWith('image/')) {
+                    alert('Please select an image file');
+                    return;
+                }
+                
+                selectedFile = file;
+                showFilePreview(file);
+            }
+        }
+
+        function showFilePreview(file) {
+            const preview = document.getElementById('filePreview');
+            const fileName = document.getElementById('fileName');
+            
+            fileName.textContent = file.name;
+            preview.classList.remove('hidden');
+            feather.replace();
+        }
+
+        function removeFile() {
+            selectedFile = null;
+            document.getElementById('filePreview').classList.add('hidden');
+            document.getElementById('fileInput').value = '';
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (message || selectedFile) {
+                if (selectedFile) {
+                    addUserMessageWithImage(message, selectedFile);
+                    removeFile();
+                } else {
+                    addUserMessage(message);
+                }
+                input.value = '';
+                
+                // Simulate agent response
+                setTimeout(() => {
+                    showTypingIndicator();
+                    setTimeout(() => {
+                        hideTypingIndicator();
+                        addAgentResponse(message || 'image');
+                    }, 2000);
+                }, 500);
+            }
+        }
+
+        function sendQuickMessage(message) {
+            addUserMessage(message);
+            
+            // Simulate agent response
+            setTimeout(() => {
+                showTypingIndicator();
+                setTimeout(() => {
+                    hideTypingIndicator();
+                    addAgentResponse(message);
+                }, 2000);
+            }, 500);
+        }
+
+        function addUserMessage(message) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message mb-4';
+            messageDiv.innerHTML = `
+                <div class="flex items-start justify-end">
+                    <div class="bg-indigo-600 text-white rounded-lg p-3 shadow-sm max-w-xs">
+                        <p class="text-sm">${message}</p>
+                        <p class="text-xs opacity-75 mt-1">Just now</p>
+                    </div>
+                    <div class="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center ml-3 flex-shrink-0">
+                        <i data-feather="user" class="w-4 h-4 text-white"></i>
+                    </div>
+                </div>
+            `;
+            chatMessages.appendChild(messageDiv);
+            feather.replace();
+            scrollToBottom();
+        }
+
+        function addUserMessageWithImage(message, file) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message mb-4';
+            
+            // Create image preview URL
+            const imageUrl = URL.createObjectURL(file);
+            
+            let messageContent = '';
+            if (message) {
+                messageContent = `<p class="text-sm mb-2">${message}</p>`;
+            }
+            
+            messageDiv.innerHTML = `
+                <div class="flex items-start justify-end">
+                    <div class="bg-indigo-600 text-white rounded-lg p-3 shadow-sm max-w-xs">
+                        ${messageContent}
+                        <div class="bg-white bg-opacity-20 rounded p-2">
+                            <img src="${imageUrl}" alt="Uploaded image" class="max-w-full h-auto rounded cursor-pointer" onclick="openImageModal('${imageUrl}')">
+                            <p class="text-xs opacity-75 mt-1">📎 ${file.name}</p>
+                        </div>
+                        <p class="text-xs opacity-75 mt-1">Just now</p>
+                    </div>
+                    <div class="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center ml-3 flex-shrink-0">
+                        <i data-feather="user" class="w-4 h-4 text-white"></i>
+                    </div>
+                </div>
+            `;
+            chatMessages.appendChild(messageDiv);
+            feather.replace();
+            scrollToBottom();
+        }
+
+        function addAgentResponse(userMessage) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message mb-4';
+            
+            let response = getAgentResponse(userMessage);
+            
+            messageDiv.innerHTML = `
+                <div class="flex items-start">
+                    <div class="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                        <i data-feather="headphones" class="w-4 h-4 text-indigo-600"></i>
+                    </div>
+                    <div class="bg-white rounded-lg p-3 shadow-sm max-w-xs">
+                        <p class="text-sm text-gray-800">${response}</p>
+                        <p class="text-xs text-gray-500 mt-1">Just now</p>
+                    </div>
+                </div>
+            `;
+            chatMessages.appendChild(messageDiv);
+            feather.replace();
+            scrollToBottom();
+        }
+
+        function getAgentResponse(userMessage) {
+            const responses = {
+                'account': "I'd be happy to help you with your account. Can you please provide more details about the specific issue you're experiencing?",
+                'transaction': "I can help you with transaction-related questions. Could you please share the transaction ID or more details about the transaction you're asking about?",
+                'technical': "I'll connect you with our technical support team. In the meantime, have you tried refreshing your browser or clearing your cache?",
+                'password': "For password-related issues, I recommend using the 'Forgot Password' feature on the login page. If you continue to have issues, I can help you reset it manually.",
+                'balance': "I can help you check your account balance. For security purposes, I'll need to verify your identity first. Can you please confirm your registered email address?",
+                'image': "Thank you for sharing the image. I can see the screenshot/document you've uploaded. Let me review this and get back to you with a solution. Is there anything specific about this image you'd like me to address?",
+                'default': "Thank you for reaching out! I understand you need assistance. Could you please provide more details about your specific question or concern so I can better help you?"
+            };
+
+            const message = userMessage.toLowerCase();
+            
+            if (message.includes('account')) return responses.account;
+            if (message.includes('transaction')) return responses.transaction;
+            if (message.includes('technical') || message.includes('support')) return responses.technical;
+            if (message.includes('password') || message.includes('login')) return responses.password;
+            if (message.includes('balance') || message.includes('money')) return responses.balance;
+            if (message === 'image') return responses.image;
+            
+            return responses.default;
+        }
+
+        function showTypingIndicator() {
+            const chatMessages = document.getElementById('chatMessages');
+            const typingDiv = document.createElement('div');
+            typingDiv.id = 'typingIndicator';
+            typingDiv.className = 'message mb-4';
+            typingDiv.innerHTML = `
+                <div class="flex items-start">
+                    <div class="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                        <i data-feather="headphones" class="w-4 h-4 text-indigo-600"></i>
+                    </div>
+                    <div class="bg-white rounded-lg p-3 shadow-sm">
+                        <div class="typing-indicator flex space-x-1">
+                            <div class="w-2 h-2 bg-gray-400 rounded-full"></div>
+                            <div class="w-2 h-2 bg-gray-400 rounded-full"></div>
+                            <div class="w-2 h-2 bg-gray-400 rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            chatMessages.appendChild(typingDiv);
+            feather.replace();
+            scrollToBottom();
+        }
+
+        function hideTypingIndicator() {
+            const typingIndicator = document.getElementById('typingIndicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+
+        function scrollToBottom() {
+            const chatMessages = document.getElementById('chatMessages');
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Support option functions
+        function openEmailSupport() {
+            // You can replace this with the actual email support link
+            window.open('mailto:support@betabank.com?subject=Support Request', '_blank');
+        }
+
+        function openTelegramSupport() {
+            // You can replace this with the actual Telegram support link
+            window.open('https://t.me/BetaBankservice', '_blank');
+        }
+
+        function openTidoSupport() {
+            // You can replace this with the actual Tido support link
+            window.open('https://tido.com/betabank-support', '_blank');
+        }
+
+        // FAQ functionality
+        function toggleFAQ(id) {
+            const content = document.getElementById(`faq-content-${id}`);
+            const icon = document.getElementById(`faq-icon-${id}`);
+            
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                icon.style.transform = 'rotate(180deg)';
+            } else {
+                content.classList.add('hidden');
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        // Close chat modal when clicking outside
+        document.getElementById('chatModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeChat();
+            }
+        });
+
+        // Image modal functionality
+        function openImageModal(imageUrl) {
+            // Create modal overlay
+            const modal = document.createElement('div');
+            modal.id = 'imageModal';
+            modal.className = 'fixed inset-0 bg-black bg-opacity-75 z-60 flex items-center justify-center p-4';
+            modal.onclick = function(e) {
+                if (e.target === this) {
+                    closeImageModal();
+                }
+            };
+            
+            modal.innerHTML = `
+                <div class="relative max-w-4xl max-h-full">
+                    <button onclick="closeImageModal()" class="absolute top-4 right-4 text-white hover:text-gray-300 z-10">
+                        <i data-feather="x" class="w-8 h-8"></i>
+                    </button>
+                    <img src="${imageUrl}" alt="Enlarged image" class="max-w-full max-h-full object-contain rounded-lg">
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            feather.replace();
+        }
+
+        function closeImageModal() {
+            const modal = document.getElementById('imageModal');
+            if (modal) {
+                modal.remove();
+            }
+        }
+
+        // Handle escape key for image modal
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeImageModal();
+            }
+        });
+    </script>
+</body>
+</html>

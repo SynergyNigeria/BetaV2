@@ -1,0 +1,715 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BetaBank - Your Trusted Financial Partner</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
+    <link rel="shortcut icon" href="{% static 'photos/favicon.ico' %}" type="image/x-icon">
+    <link rel="apple-touch-icon" href="{% static 'photos/apple-touch-icon.png' %}" type="image/x-icon">
+    <link rel="chrome" href="{% static 'photos/android-chrome-192x192.png' %}" type="image/x-icon">
+    <style>
+        * {
+            font-family: 'Montserrat', sans-serif;
+        }
+        .gradient-bg {
+            background: 
+                linear-gradient(135deg, rgba(102, 126, 234, 0.8) 0%, rgba(118, 75, 162, 0.8) 100%),
+                url("{% static 'photos/banker.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        .card-hover {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        /* Scroll Animation Classes */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        
+        .fade-in-down {
+            opacity: 0;
+            transform: translateY(-30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        
+        .fade-in-left {
+            opacity: 0;
+            transform: translateX(-30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        
+        .fade-in-right {
+            opacity: 0;
+            transform: translateX(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        
+        .scale-in {
+            opacity: 0;
+            transform: scale(0.9);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        
+        .visible {
+            opacity: 1;
+            transform: translateY(0) translateX(0) scale(1);
+        }
+        
+        .stagger-1 { transition-delay: 0.1s; }
+        .stagger-2 { transition-delay: 0.2s; }
+        .stagger-3 { transition-delay: 0.3s; }
+        .stagger-4 { transition-delay: 0.4s; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <img src="{% static 'photos/beta_logo.png' %}" alt="BetaBank Logo" class="h-10 w-auto">
+                    </div>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#home" class="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Home</a>
+                        <a href="#services" class="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Services</a>
+                        <a href="#loans" class="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Loans</a>
+                        <a href="#about" class="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">About</a>
+                        <a href="#contact" class="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Contact</a>
+                        <a href="{% url 'accounts:login' %}" class="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-indigo-700 transition duration-300">Online Banking</a>
+
+                    </div>
+                </div>
+                <div class="md:hidden">
+                    <button id="mobile-menu-btn" class="text-gray-700 hover:text-indigo-600 focus:outline-none">
+                        <i data-feather="menu" class="h-6 w-6"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="md:hidden hidden">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t">
+                <a href="#home" class="text-gray-700 hover:text-indigo-600 block px-3 py-2 rounded-md text-base font-medium">Home</a>
+                <a href="#services" class="text-gray-700 hover:text-indigo-600 block px-3 py-2 rounded-md text-base font-medium">Services</a>
+                <a href="#loans" class="text-gray-700 hover:text-indigo-600 block px-3 py-2 rounded-md text-base font-medium">Loans</a>
+                <a href="#about" class="text-gray-700 hover:text-indigo-600 block px-3 py-2 rounded-md text-base font-medium">About</a>
+                <a href="#contact" class="text-gray-700 hover:text-indigo-600 block px-3 py-2 rounded-md text-base font-medium">Contact</a>
+                <a href="{% url 'accounts:login' %}" class="bg-indigo-600 text-white block px-3 py-2 rounded-md text-base font-medium">Online Banking</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="gradient-bg min-h-screen flex items-center pt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="text-white">
+                    <h1 class="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+                        Banking Made <span class="text-yellow-300">Simple</span> & Secure
+                    </h1>
+                    <p class="text-xl mb-8 text-gray-200">
+                        Experience the future of banking with our innovative solutions, personalized services, and unmatched security for all your financial needs.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <a href="{% url 'accounts:register' %}" class="bg-white text-indigo-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition duration-300">
+                            Open Account
+                        </a>
+                        <button class="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-indigo-600 transition duration-300">
+                            Learn More
+                        </button>
+                    </div>
+                </div>
+                <div class="hidden md:block">
+                    <div class="relative">
+                        <div class="animate-float bg-white p-8 rounded-2xl shadow-2xl">
+                            <div class="flex items-center mb-4">
+                                <div class="w-4 h-4 bg-red-500 rounded-full mr-2"></div>
+                                <div class="w-4 h-4 bg-yellow-500 rounded-full mr-2"></div>
+                                <div class="w-4 h-4 bg-green-500 rounded-full"></div>
+                            </div>
+                            <h3 class="text-gray-800 font-semibold mb-4">Account Balance</h3>
+                            <p class="text-3xl font-bold text-indigo-600 mb-4">$24,580.50</p>
+                            <div class="space-y-2">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Checking</span>
+                                    <span class="font-semibold">$12,340.25</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Savings</span>
+                                    <span class="font-semibold">$12,240.25</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Actions -->
+    <section class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div class="text-center p-6 border rounded-lg hover:shadow-lg transition duration-300 fade-in-up stagger-1">
+                    <div class="w-12 h-12 bg-indigo-100 rounded-lg mx-auto mb-4 flex items-center justify-center">
+                        <i data-feather="dollar-sign" class="text-indigo-600"></i>
+                    </div>
+                    <h3 class="font-semibold mb-2">Transfer Money</h3>
+                    <p class="text-gray-600 text-sm">Send money instantly</p>
+                </div>
+                <div class="text-center p-6 border rounded-lg hover:shadow-lg transition duration-300 fade-in-up stagger-2">
+                    <div class="w-12 h-12 bg-indigo-100 rounded-lg mx-auto mb-4 flex items-center justify-center">
+                        <i data-feather="credit-card" class="text-indigo-600"></i>
+                    </div>
+                    <h3 class="font-semibold mb-2">Pay Bills</h3>
+                    <p class="text-gray-600 text-sm">Quick bill payments</p>
+                </div>
+                <div class="text-center p-6 border rounded-lg hover:shadow-lg transition duration-300 fade-in-up stagger-3">
+                    <div class="w-12 h-12 bg-indigo-100 rounded-lg mx-auto mb-4 flex items-center justify-center">
+                        <i data-feather="smartphone" class="text-indigo-600"></i>
+                    </div>
+                    <h3 class="font-semibold mb-2">Mobile Banking</h3>
+                    <p class="text-gray-600 text-sm">Bank on the go</p>
+                </div>
+                <div class="text-center p-6 border rounded-lg hover:shadow-lg transition duration-300 fade-in-up stagger-4">
+                    <div class="w-12 h-12 bg-indigo-100 rounded-lg mx-auto mb-4 flex items-center justify-center">
+                        <i data-feather="users" class="text-indigo-600"></i>
+                    </div>
+                    <h3 class="font-semibold mb-2">Customer Support</h3>
+                    <p class="text-gray-600 text-sm">24/7 assistance</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 fade-in-up">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">Our Banking Services</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Comprehensive financial solutions designed to meet all your banking needs
+                </p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white p-8 rounded-xl shadow-lg card-hover fade-in-left stagger-1">
+                    <div class="w-16 h-16 bg-indigo-100 rounded-xl mb-6 flex items-center justify-center">
+                        <i data-feather="home" class="text-indigo-600 w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Personal Banking</h3>
+                    <p class="text-gray-600 mb-6">Checking and savings accounts, CDs, and personal financial management tools.</p>
+                    <ul class="space-y-2 mb-6">
+                        <li class="flex items-center"><i data-feather="check" class="text-green-500 w-4 h-4 mr-2"></i>Free checking accounts</li>
+                        <li class="flex items-center"><i data-feather="check" class="text-green-500 w-4 h-4 mr-2"></i>High-yield savings</li>
+                        <li class="flex items-center"><i data-feather="check" class="text-green-500 w-4 h-4 mr-2"></i>Online banking</li>
+                    </ul>
+                    <button class="text-indigo-600 font-semibold hover:text-indigo-800 transition duration-300">Learn More →</button>
+                </div>
+                
+                <div class="bg-white p-8 rounded-xl shadow-lg card-hover fade-in-up stagger-2">
+                    <div class="w-16 h-16 bg-indigo-100 rounded-xl mb-6 flex items-center justify-center">
+                        <i data-feather="briefcase" class="text-indigo-600 w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Business Banking</h3>
+                    <p class="text-gray-600 mb-6">Complete business solutions including merchant services and business loans.</p>
+                    <ul class="space-y-2 mb-6">
+                        <li class="flex items-center"><i data-feather="check" class="text-green-500 w-4 h-4 mr-2"></i>Business accounts</li>
+                        <li class="flex items-center"><i data-feather="check" class="text-green-500 w-4 h-4 mr-2"></i>Merchant services</li>
+                        <li class="flex items-center"><i data-feather="check" class="text-green-500 w-4 h-4 mr-2"></i>Payroll solutions</li>
+                    </ul>
+                    <button class="text-indigo-600 font-semibold hover:text-indigo-800 transition duration-300">Learn More →</button>
+                </div>
+                
+                <div class="bg-white p-8 rounded-xl shadow-lg card-hover fade-in-right stagger-3">
+                    <div class="w-16 h-16 bg-indigo-100 rounded-xl mb-6 flex items-center justify-center">
+                        <i data-feather="trending-up" class="text-indigo-600 w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Investment Services</h3>
+                    <p class="text-gray-600 mb-6">Grow your wealth with our investment and retirement planning services.</p>
+                    <ul class="space-y-2 mb-6">
+                        <li class="flex items-center"><i data-feather="check" class="text-green-500 w-4 h-4 mr-2"></i>Investment portfolios</li>
+                        <li class="flex items-center"><i data-feather="check" class="text-green-500 w-4 h-4 mr-2"></i>Retirement planning</li>
+                        <li class="flex items-center"><i data-feather="check" class="text-green-500 w-4 h-4 mr-2"></i>Financial advisory</li>
+                    </ul>
+                    <button class="text-indigo-600 font-semibold hover:text-indigo-800 transition duration-300">Learn More →</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Loans Section -->
+    <section id="loans" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 fade-in-down">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">Loan Solutions</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Competitive rates and flexible terms for all your borrowing needs
+                </p>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-gradient-to-br from-blue-50 to-indigo-100 p-6 rounded-xl scale-in stagger-1">
+                    <div class="w-12 h-12 bg-indigo-600 rounded-lg mb-4 flex items-center justify-center">
+                        <i data-feather="home" class="text-white w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Home Loans</h3>
+                    <p class="text-gray-600 mb-4">Starting from 3.5% APR</p>
+                    <button class="text-indigo-600 font-semibold">Apply Now</button>
+                </div>
+                
+                <div class="bg-gradient-to-br from-green-50 to-emerald-100 p-6 rounded-xl scale-in stagger-2">
+                    <div class="w-12 h-12 bg-emerald-600 rounded-lg mb-4 flex items-center justify-center">
+                        <i data-feather="car" class="text-white w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Auto Loans</h3>
+                    <p class="text-gray-600 mb-4">Starting from 2.9% APR</p>
+                    <button class="text-emerald-600 font-semibold">Apply Now</button>
+                </div>
+                
+                <div class="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-xl scale-in stagger-3">
+                    <div class="w-12 h-12 bg-purple-600 rounded-lg mb-4 flex items-center justify-center">
+                        <i data-feather="user" class="text-white w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Personal Loans</h3>
+                    <p class="text-gray-600 mb-4">Starting from 5.9% APR</p>
+                    <button class="text-purple-600 font-semibold">Apply Now</button>
+                </div>
+                
+                <div class="bg-gradient-to-br from-orange-50 to-orange-100 p-6 rounded-xl scale-in stagger-4">
+                    <div class="w-12 h-12 bg-orange-600 rounded-lg mb-4 flex items-center justify-center">
+                        <i data-feather="briefcase" class="text-white w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Business Loans</h3>
+                    <p class="text-gray-600 mb-4">Starting from 4.5% APR</p>
+                    <button class="text-orange-600 font-semibold">Apply Now</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Us Section -->
+    <section class="py-20 bg-gray-900 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 fade-in-up">
+                <h2 class="text-4xl font-bold mb-4">Why Choose BetaBank?</h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                    Trusted by over 2 million customers worldwide
+                </p>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="text-center fade-in-up stagger-1">
+                    <div class="text-4xl font-bold text-yellow-400 mb-2">99.9%</div>
+                    <div class="text-lg font-semibold mb-2">Uptime</div>
+                    <div class="text-gray-300">Reliable banking services</div>
+                </div>
+                <div class="text-center fade-in-up stagger-2">
+                    <div class="text-4xl font-bold text-yellow-400 mb-2">2M+</div>
+                    <div class="text-lg font-semibold mb-2">Customers</div>
+                    <div class="text-gray-300">Trust our services</div>
+                </div>
+                <div class="text-center fade-in-up stagger-3">
+                    <div class="text-4xl font-bold text-yellow-400 mb-2">24/7</div>
+                    <div class="text-lg font-semibold mb-2">Support</div>
+                    <div class="text-gray-300">Always here to help</div>
+                </div>
+                <div class="text-center fade-in-up stagger-4">
+                    <div class="text-4xl font-bold text-yellow-400 mb-2">50+</div>
+                    <div class="text-lg font-semibold mb-2">Years</div>
+                    <div class="text-gray-300">Of banking excellence</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Security Section -->
+    <section class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="fade-in-left">
+                    <h2 class="text-4xl font-bold text-gray-900 mb-6">
+                        Your Security is Our <span class="text-indigo-600">Priority</span>
+                    </h2>
+                    <p class="text-xl text-gray-600 mb-8">
+                        Advanced security measures to protect your financial information and transactions.
+                    </p>
+                    <div class="space-y-6">
+                        <div class="flex items-start">
+                            <div class="w-8 h-8 bg-indigo-100 rounded-lg mr-4 flex items-center justify-center flex-shrink-0">
+                                <i data-feather="shield" class="text-indigo-600 w-4 h-4"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold mb-2">256-bit SSL Encryption</h3>
+                                <p class="text-gray-600">Bank-grade encryption protects all your data</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="w-8 h-8 bg-indigo-100 rounded-lg mr-4 flex items-center justify-center flex-shrink-0">
+                                <i data-feather="lock" class="text-indigo-600 w-4 h-4"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold mb-2">Two-Factor Authentication</h3>
+                                <p class="text-gray-600">Extra layer of security for your account</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="w-8 h-8 bg-indigo-100 rounded-lg mr-4 flex items-center justify-center flex-shrink-0">
+                                <i data-feather="eye" class="text-indigo-600 w-4 h-4"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold mb-2">24/7 Fraud Monitoring</h3>
+                                <p class="text-gray-600">Continuous monitoring for suspicious activities</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-8 rounded-2xl shadow-xl fade-in-right">
+                    <div class="text-center mb-6">
+                        <div class="w-20 h-20 bg-green-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+                            <i data-feather="check-circle" class="text-green-600 w-10 h-10"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-900">Secure Banking</h3>
+                        <p class="text-gray-600">Your account is protected</p>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">Security Level</span>
+                            <span class="text-green-600 font-semibold">Maximum</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-green-600 h-2 rounded-full w-full"></div>
+                        </div>
+                        <div class="text-sm text-gray-500 text-center">
+                            Last security check: Just now
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 fade-in-up">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">About BetaBank</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    For over 50 years, we've been committed to providing exceptional banking services and building lasting relationships with our customers.
+                </p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="text-center fade-in-up stagger-1">
+                    <div class="w-16 h-16 bg-indigo-100 rounded-full mx-auto mb-6 flex items-center justify-center">
+                        <i data-feather="award" class="text-indigo-600 w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Award-Winning Service</h3>
+                    <p class="text-gray-600">Recognized for excellence in customer service and innovation in banking technology.</p>
+                </div>
+                <div class="text-center fade-in-up stagger-2">
+                    <div class="w-16 h-16 bg-indigo-100 rounded-full mx-auto mb-6 flex items-center justify-center">
+                        <i data-feather="globe" class="text-indigo-600 w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Global Reach</h3>
+                    <p class="text-gray-600">Serving customers across 25 countries with local expertise and global capabilities.</p>
+                </div>
+                <div class="text-center fade-in-up stagger-3">
+                    <div class="w-16 h-16 bg-indigo-100 rounded-full mx-auto mb-6 flex items-center justify-center">
+                        <i data-feather="heart" class="text-indigo-600 w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Community Focused</h3>
+                    <p class="text-gray-600">Committed to supporting local communities through various social initiatives and programs.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 fade-in-down">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">What Our Customers Say</h2>
+                <p class="text-xl text-gray-600">Don't just take our word for it</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white p-8 rounded-xl shadow-lg fade-in-left stagger-1">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 bg-gray-300 rounded-full mr-4"></div>
+                        <div>
+                            <h4 class="font-semibold">Sarah Johnson</h4>
+                            <p class="text-gray-600 text-sm">Small Business Owner</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 mb-4">"BetaBank has been instrumental in helping my business grow. Their business banking solutions are top-notch, and the customer service is exceptional."</p>
+                    <div class="flex text-yellow-400">
+                        <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                        <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                        <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                        <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                        <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                    </div>
+                </div>
+                
+                <div class="bg-white p-8 rounded-xl shadow-lg fade-in-up stagger-2">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 bg-gray-300 rounded-full mr-4"></div>
+                        <div>
+                            <h4 class="font-semibold">Michael Chen</h4>
+                            <p class="text-gray-600 text-sm">Software Engineer</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 mb-4">"The mobile app is incredibly user-friendly, and I love the real-time notifications. Banking has never been this convenient!"</p>
+                    <div class="flex text-yellow-400">
+                        <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                        <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                        <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                        <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                        <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                    </div>
+                </div>
+                
+                <div class="bg-white p-8 rounded-xl shadow-lg fade-in-right stagger-3">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 bg-gray-300 rounded-full mr-4"></div>
+                        <div>
+                            <h4 class="font-semibold">Emily Rodriguez</h4>
+                            <p class="text-gray-600 text-sm">Financial Advisor</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 mb-4">"I've been with BetaBank for over 10 years. Their investment services have helped me build a solid financial future."</p>
+                    <div class="flex text-yellow-400">
+                        <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                        <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                        <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                        <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                        <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 fade-in-up">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">Get in Touch</h2>
+                <p class="text-xl text-gray-600">We're here to help with all your banking needs</p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-12">
+                <div class="fade-in-left">
+                    <h3 class="text-2xl font-bold mb-6">Contact Information</h3>
+                    <div class="space-y-6">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-indigo-100 rounded-lg mr-4 flex items-center justify-center">
+                                <i data-feather="phone" class="text-indigo-600 w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold">Phone</h4>
+                                <p class="text-gray-600">1-800-BETA-BANK</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-indigo-100 rounded-lg mr-4 flex items-center justify-center">
+                                <i data-feather="mail" class="text-indigo-600 w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold">Email</h4>
+                                <p class="text-gray-600">support@betabank.com</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-indigo-100 rounded-lg mr-4 flex items-center justify-center">
+                                <i data-feather="map-pin" class="text-indigo-600 w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold">Address</h4>
+                                <p class="text-gray-600">123 Banking Street<br>Financial District, NY 10001</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-indigo-100 rounded-lg mr-4 flex items-center justify-center">
+                                <i data-feather="clock" class="text-indigo-600 w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold">Hours</h4>
+                                <p class="text-gray-600">Mon-Fri: 9AM-6PM<br>Sat: 9AM-2PM</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="fade-in-right">
+                    <form class="space-y-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Name</label>
+                            <input type="text" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                            <input type="email" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Subject</label>
+                            <select class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                                <option>General Inquiry</option>
+                                <option>Account Support</option>
+                                <option>Loan Information</option>
+                                <option>Investment Services</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Message</label>
+                            <textarea rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-indigo-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition duration-300">
+                            Send Message
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-2xl font-bold mb-4">BetaBank</h3>
+                    <p class="text-gray-300 mb-6">Your trusted financial partner for over 50 years. Building relationships, securing futures.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center hover:bg-indigo-700 transition duration-300">
+                            <i data-feather="facebook" class="w-5 h-5"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center hover:bg-indigo-700 transition duration-300">
+                            <i data-feather="twitter" class="w-5 h-5"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center hover:bg-indigo-700 transition duration-300">
+                            <i data-feather="linkedin" class="w-5 h-5"></i>
+                        </a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Services</h4>
+                    <ul class="space-y-2 text-gray-300">
+                        <li><a href="{% url 'route:personal_banking' %}" class="hover:text-white transition duration-300">Personal Banking</a></li>
+                        <li><a href="{% url 'route:business_banking' %}" class="hover:text-white transition duration-300">Business Banking</a></li>
+                        <li><a href="{% url 'route:investment_services' %}" class="hover:text-white transition duration-300">Investment Services</a></li>
+                        <li><a href="{% url 'route:loans_mortgages' %}" class="hover:text-white transition duration-300">Loans & Mortgages</a></li>
+                        <li><a href="{% url 'route:credit_cards' %}" class="hover:text-white transition duration-300">Credit Cards</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Support</h4>
+                    <ul class="space-y-2 text-gray-300">
+                        <li><a href="{% url 'route:customer_service' %}" class="hover:text-white transition duration-300">Customer Service</a></li>
+                        <li><a href="{% url 'route:online_banking_help' %}" class="hover:text-white transition duration-300">Online Banking Help</a></li>
+                        <li><a href="{% url 'route:security_center' %}" class="hover:text-white transition duration-300">Security Center</a></li>
+                        <li><a href="{% url 'route:privacy_policy' %}" class="hover:text-white transition duration-300">Privacy Policy</a></li>
+                        <li><a href="{% url 'route:terms_of_service' %}" class="hover:text-white transition duration-300">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Newsletter</h4>
+                    <p class="text-gray-300 mb-4">Stay updated with our latest news and offers</p>
+                    <div class="flex">
+                        <input type="email" placeholder="Your email" class="flex-1 px-4 py-2 bg-gray-800 border border-gray-700 rounded-l-lg focus:outline-none focus:border-indigo-500">
+                        <button class="bg-indigo-600 px-4 py-2 rounded-r-lg hover:bg-indigo-700 transition duration-300">
+                            <i data-feather="send" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-300">
+                <p>&copy; 2025 BetaBank. All rights reserved. | FDIC Insured | Equal Housing Lender</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Feather Icons
+        feather.replace();
+        
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Add scroll effect to navigation
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 100) {
+                nav.classList.add('shadow-xl');
+            } else {
+                nav.classList.remove('shadow-xl');
+            }
+        });
+        
+        // Scroll Animation Observer
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                } else {
+                    // Remove visible class when scrolling back up
+                    entry.target.classList.remove('visible');
+                }
+            });
+        }, observerOptions);
+        
+        // Observe all animated elements
+        document.addEventListener('DOMContentLoaded', () => {
+            const animatedElements = document.querySelectorAll(
+                '.fade-in-up, .fade-in-down, .fade-in-left, .fade-in-right, .scale-in'
+            );
+            
+            animatedElements.forEach(el => {
+                observer.observe(el);
+            });
+        });
+    </script>
+</body>
+</html>

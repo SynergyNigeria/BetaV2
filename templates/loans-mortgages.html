@@ -1,0 +1,278 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loans & Mortgages - BetaBank</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+        * {
+            font-family: 'Montserrat', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <img src="{% static 'photos/beta_logo.png' %}" alt="BetaBank Logo" class="h-10 w-auto">
+                    </div>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="{% url 'home' %}" class="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Home</a>
+                        <a href="{% url 'accounts:login' %}" class="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-indigo-700 transition duration-300">Loan Dashboard</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-20 pt-32">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h1 class="text-4xl md:text-6xl font-bold mb-6">Loans & Mortgages</h1>
+                <p class="text-xl mb-8 max-w-3xl mx-auto">
+                    Flexible financing solutions to help you achieve your dreams
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Home Loans -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">Home Loans & Mortgages</h2>
+                <p class="text-xl text-gray-600">Make homeownership a reality with our competitive mortgage options</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+                <div class="bg-gray-50 p-8 rounded-xl">
+                    <div class="w-16 h-16 bg-blue-100 rounded-xl mb-6 flex items-center justify-center">
+                        <i data-feather="home" class="text-blue-600 w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Conventional Mortgages</h3>
+                    <p class="text-gray-600 mb-4">Traditional home loans with competitive rates for qualified buyers.</p>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li>✓ 15 & 30-year terms</li>
+                        <li>✓ Fixed or adjustable rates</li>
+                        <li>✓ Down payments as low as 3%</li>
+                        <li>✓ Refinancing options</li>
+                    </ul>
+                </div>
+                
+                <div class="bg-gray-50 p-8 rounded-xl">
+                    <div class="w-16 h-16 bg-green-100 rounded-xl mb-6 flex items-center justify-center">
+                        <i data-feather="shield" class="text-green-600 w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">FHA Loans</h3>
+                    <p class="text-gray-600 mb-4">Government-backed loans with lower down payment requirements.</p>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li>✓ Down payments as low as 3.5%</li>
+                        <li>✓ Flexible credit requirements</li>
+                        <li>✓ Fixed-rate options</li>
+                        <li>✓ First-time buyer friendly</li>
+                    </ul>
+                </div>
+                
+                <div class="bg-gray-50 p-8 rounded-xl">
+                    <div class="w-16 h-16 bg-purple-100 rounded-xl mb-6 flex items-center justify-center">
+                        <i data-feather="star" class="text-purple-600 w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">VA Loans</h3>
+                    <p class="text-gray-600 mb-4">Exclusive benefits for eligible veterans and active military personnel.</p>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li>✓ No down payment required</li>
+                        <li>✓ No private mortgage insurance</li>
+                        <li>✓ Competitive interest rates</li>
+                        <li>✓ Reusable benefit</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <button class="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-300 mr-4">
+                    Calculate Monthly Payment
+                </button>
+                <button class="border-2 border-blue-600 text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-blue-600 hover:text-white transition duration-300">
+                    Get Pre-Qualified
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Personal Loans -->
+    <section class="py-20 bg-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">Personal Loans</h2>
+                <p class="text-xl text-gray-600">Flexible personal financing for life's important moments</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-white p-6 rounded-xl text-center">
+                    <div class="w-12 h-12 bg-orange-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+                        <i data-feather="credit-card" class="text-orange-600 w-6 h-6"></i>
+                    </div>
+                    <h3 class="font-bold mb-2">Debt Consolidation</h3>
+                    <p class="text-sm text-gray-600">Combine multiple debts into one payment</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-xl text-center">
+                    <div class="w-12 h-12 bg-green-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+                        <i data-feather="tool" class="text-green-600 w-6 h-6"></i>
+                    </div>
+                    <h3 class="font-bold mb-2">Home Improvement</h3>
+                    <p class="text-sm text-gray-600">Finance your home renovation projects</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-xl text-center">
+                    <div class="w-12 h-12 bg-blue-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+                        <i data-feather="heart" class="text-blue-600 w-6 h-6"></i>
+                    </div>
+                    <h3 class="font-bold mb-2">Medical Expenses</h3>
+                    <p class="text-sm text-gray-600">Cover unexpected medical costs</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-xl text-center">
+                    <div class="w-12 h-12 bg-purple-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+                        <i data-feather="calendar" class="text-purple-600 w-6 h-6"></i>
+                    </div>
+                    <h3 class="font-bold mb-2">Life Events</h3>
+                    <p class="text-sm text-gray-600">Weddings, vacations, and more</p>
+                </div>
+            </div>
+
+            <div class="mt-12 bg-white p-8 rounded-xl">
+                <h3 class="text-2xl font-bold mb-6 text-center">Personal Loan Features</h3>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="text-center">
+                        <h4 class="font-bold text-lg mb-2">Loan Amounts</h4>
+                        <p class="text-gray-600">$2,000 - $50,000</p>
+                    </div>
+                    <div class="text-center">
+                        <h4 class="font-bold text-lg mb-2">Terms</h4>
+                        <p class="text-gray-600">2 - 7 years</p>
+                    </div>
+                    <div class="text-center">
+                        <h4 class="font-bold text-lg mb-2">Fixed APR</h4>
+                        <p class="text-gray-600">Starting at 5.99%*</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Auto Loans -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-3xl font-bold mb-6">Auto Loans</h2>
+                    <p class="text-lg text-gray-600 mb-6">
+                        Drive away with confidence with our competitive auto financing options for new and used vehicles.
+                    </p>
+                    <ul class="space-y-3 text-gray-600">
+                        <li class="flex items-center"><i data-feather="check" class="text-green-500 w-5 h-5 mr-3"></i>New and used vehicle financing</li>
+                        <li class="flex items-center"><i data-feather="check" class="text-green-500 w-5 h-5 mr-3"></i>Competitive rates as low as 2.99% APR*</li>
+                        <li class="flex items-center"><i data-feather="check" class="text-green-500 w-5 h-5 mr-3"></i>Terms up to 84 months</li>
+                        <li class="flex items-center"><i data-feather="check" class="text-green-500 w-5 h-5 mr-3"></i>Pre-approval available</li>
+                        <li class="flex items-center"><i data-feather="check" class="text-green-500 w-5 h-5 mr-3"></i>Refinancing options</li>
+                    </ul>
+                </div>
+                <div class="bg-gradient-to-br from-blue-50 to-purple-50 p-8 rounded-2xl">
+                    <h3 class="text-2xl font-bold mb-4">Get Pre-Approved</h3>
+                    <p class="text-gray-600 mb-6">Check your rate in minutes without affecting your credit score</p>
+                    <button class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-300 mb-4">
+                        Start Application
+                    </button>
+                    <button class="w-full border-2 border-blue-600 text-blue-600 py-3 rounded-lg font-semibold hover:bg-blue-600 hover:text-white transition duration-300">
+                        Payment Calculator
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard CTA -->
+    <section class="py-16 bg-blue-600 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl font-bold mb-4">Manage Your Loans Online</h2>
+            <p class="text-xl mb-8 max-w-3xl mx-auto">
+                Track your loan applications, make payments, and access all loan documents through your secure dashboard. Get personalized assistance from our loan specialists whenever you need it.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button class="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition duration-300">
+                    Loan Dashboard
+                </button>
+                <button class="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition duration-300">
+                    Speak with Loan Officer
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Loan Process -->
+    <section class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold mb-4">Simple Loan Application Process</h2>
+                <p class="text-xl text-gray-600">Get approved quickly with our streamlined application</p>
+            </div>
+            <div class="grid md:grid-cols-4 gap-6">
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+                        <span class="text-blue-600 font-bold text-xl">1</span>
+                    </div>
+                    <h3 class="font-semibold mb-2">Apply Online</h3>
+                    <p class="text-gray-600 text-sm">Complete our secure application in minutes</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-green-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+                        <span class="text-green-600 font-bold text-xl">2</span>
+                    </div>
+                    <h3 class="font-semibold mb-2">Get Approved</h3>
+                    <p class="text-gray-600 text-sm">Receive decision within 24 hours</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-purple-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+                        <span class="text-purple-600 font-bold text-xl">3</span>
+                    </div>
+                    <h3 class="font-semibold mb-2">Review Terms</h3>
+                    <p class="text-gray-600 text-sm">Review and sign loan documents</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-orange-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+                        <span class="text-orange-600 font-bold text-xl">4</span>
+                    </div>
+                    <h3 class="font-semibold mb-2">Get Funded</h3>
+                    <p class="text-gray-600 text-sm">Receive funds as soon as next business day</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h3 class="text-2xl font-bold mb-4">BetaBank</h3>
+            <p class="text-gray-300 mb-6">Your trusted lending partner.</p>
+            <p class="text-sm text-gray-400">&copy; 2025 BetaBank. All rights reserved. | *APR = Annual Percentage Rate. Rates subject to credit approval.</p>
+        </div>
+    </footer>
+
+    <script>
+        feather.replace();
+    </script>
+</body>
+</html>

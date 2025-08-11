@@ -1,0 +1,340 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Banking Help - BetaBank</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+        * {
+            font-family: 'Montserrat', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <img src="{% static 'photos/beta_logo.png' %}" alt="BetaBank Logo" class="h-10 w-auto">
+                    </div>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="{% url 'home' %}" class="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Home</a>
+                        <a href="{% url 'accounts:login' %}" class="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-indigo-700 transition duration-300">Online Banking</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-r from-teal-600 to-cyan-600 text-white py-20 pt-32">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h1 class="text-4xl md:text-6xl font-bold mb-6">Online Banking Help</h1>
+                <p class="text-xl mb-8 max-w-3xl mx-auto">
+                    Everything you need to know about managing your finances online
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Access Dashboard -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-teal-50 p-8 rounded-2xl text-center mb-16">
+                <h2 class="text-3xl font-bold mb-4">Your Dashboard is Your Control Center</h2>
+                <p class="text-xl text-gray-700 mb-6">
+                    Most online banking tasks can be completed instantly through your secure dashboard - no waiting, no phone calls needed.
+                </p>
+                <button class="bg-teal-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-teal-700 transition duration-300">
+                    Access Your Dashboard Now
+                </button>
+            </div>
+
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">Getting Started Guide</h2>
+                <p class="text-xl text-gray-600">Step-by-step instructions for online banking</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-gray-50 p-8 rounded-xl">
+                    <div class="w-16 h-16 bg-teal-100 rounded-xl mb-6 flex items-center justify-center">
+                        <i data-feather="user-plus" class="text-teal-600 w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Account Setup</h3>
+                    <ul class="space-y-2 text-gray-600">
+                        <li>• Create your online profile</li>
+                        <li>• Set up security questions</li>
+                        <li>• Enable two-factor authentication</li>
+                        <li>• Download mobile app</li>
+                    </ul>
+                    <button class="mt-4 text-teal-600 font-semibold hover:text-teal-700">
+                        Start Setup →
+                    </button>
+                </div>
+                
+                <div class="bg-gray-50 p-8 rounded-xl">
+                    <div class="w-16 h-16 bg-blue-100 rounded-xl mb-6 flex items-center justify-center">
+                        <i data-feather="eye" class="text-blue-600 w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Account Overview</h3>
+                    <ul class="space-y-2 text-gray-600">
+                        <li>• View account balances</li>
+                        <li>• Check recent transactions</li>
+                        <li>• Download statements</li>
+                        <li>• Set up account alerts</li>
+                    </ul>
+                    <button class="mt-4 text-blue-600 font-semibold hover:text-blue-700">
+                        View Accounts →
+                    </button>
+                </div>
+                
+                <div class="bg-gray-50 p-8 rounded-xl">
+                    <div class="w-16 h-16 bg-green-100 rounded-xl mb-6 flex items-center justify-center">
+                        <i data-feather="send" class="text-green-600 w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Money Transfers</h3>
+                    <ul class="space-y-2 text-gray-600">
+                        <li>• Transfer between accounts</li>
+                        <li>• Send money to others</li>
+                        <li>• Schedule recurring transfers</li>
+                        <li>• International wire transfers</li>
+                    </ul>
+                    <button class="mt-4 text-green-600 font-semibold hover:text-green-700">
+                        Transfer Money →
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Feature Tutorials -->
+    <section class="py-20 bg-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">Feature Tutorials</h2>
+                <p class="text-xl text-gray-600">Learn how to use our online banking features</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white p-8 rounded-xl">
+                    <h3 class="text-2xl font-bold mb-6">Bill Pay & Scheduling</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <div class="w-8 h-8 bg-teal-100 rounded-full mr-4 flex items-center justify-center flex-shrink-0 mt-1">
+                                <span class="text-teal-600 font-bold text-sm">1</span>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold">Add Payees</h4>
+                                <p class="text-gray-600 text-sm">Add companies or individuals you want to pay</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="w-8 h-8 bg-teal-100 rounded-full mr-4 flex items-center justify-center flex-shrink-0 mt-1">
+                                <span class="text-teal-600 font-bold text-sm">2</span>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold">Schedule Payments</h4>
+                                <p class="text-gray-600 text-sm">Set one-time or recurring payment schedules</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="w-8 h-8 bg-teal-100 rounded-full mr-4 flex items-center justify-center flex-shrink-0 mt-1">
+                                <span class="text-teal-600 font-bold text-sm">3</span>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold">Track Status</h4>
+                                <p class="text-gray-600 text-sm">Monitor payment history and upcoming bills</p>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="mt-6 bg-teal-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-teal-700 transition duration-300">
+                        Set Up Bill Pay
+                    </button>
+                </div>
+
+                <div class="bg-white p-8 rounded-xl">
+                    <h3 class="text-2xl font-bold mb-6">Mobile Check Deposit</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <div class="w-8 h-8 bg-blue-100 rounded-full mr-4 flex items-center justify-center flex-shrink-0 mt-1">
+                                <span class="text-blue-600 font-bold text-sm">1</span>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold">Endorse Check</h4>
+                                <p class="text-gray-600 text-sm">Sign the back "For Mobile Deposit Only"</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="w-8 h-8 bg-blue-100 rounded-full mr-4 flex items-center justify-center flex-shrink-0 mt-1">
+                                <span class="text-blue-600 font-bold text-sm">2</span>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold">Take Photos</h4>
+                                <p class="text-gray-600 text-sm">Capture clear images of front and back</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="w-8 h-8 bg-blue-100 rounded-full mr-4 flex items-center justify-center flex-shrink-0 mt-1">
+                                <span class="text-blue-600 font-bold text-sm">3</span>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold">Submit Deposit</h4>
+                                <p class="text-gray-600 text-sm">Review details and submit for processing</p>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="mt-6 bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-300">
+                        Download Mobile App
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Security & Settings -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">Security & Account Settings</h2>
+                <p class="text-xl text-gray-600">Keep your accounts safe and customize your experience</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-red-50 p-6 rounded-xl text-center">
+                    <div class="w-12 h-12 bg-red-100 rounded-lg mx-auto mb-4 flex items-center justify-center">
+                        <i data-feather="shield" class="text-red-600 w-6 h-6"></i>
+                    </div>
+                    <h3 class="font-bold mb-2">Password Security</h3>
+                    <p class="text-sm text-gray-600 mb-4">Create strong passwords and enable 2FA</p>
+                    <button class="text-red-600 font-semibold text-sm hover:text-red-700">
+                        Security Settings →
+                    </button>
+                </div>
+                
+                <div class="bg-orange-50 p-6 rounded-xl text-center">
+                    <div class="w-12 h-12 bg-orange-100 rounded-lg mx-auto mb-4 flex items-center justify-center">
+                        <i data-feather="bell" class="text-orange-600 w-6 h-6"></i>
+                    </div>
+                    <h3 class="font-bold mb-2">Account Alerts</h3>
+                    <p class="text-sm text-gray-600 mb-4">Set up notifications for transactions</p>
+                    <button class="text-orange-600 font-semibold text-sm hover:text-orange-700">
+                        Manage Alerts →
+                    </button>
+                </div>
+                
+                <div class="bg-purple-50 p-6 rounded-xl text-center">
+                    <div class="w-12 h-12 bg-purple-100 rounded-lg mx-auto mb-4 flex items-center justify-center">
+                        <i data-feather="user" class="text-purple-600 w-6 h-6"></i>
+                    </div>
+                    <h3 class="font-bold mb-2">Profile Settings</h3>
+                    <p class="text-sm text-gray-600 mb-4">Update contact info and preferences</p>
+                    <button class="text-purple-600 font-semibold text-sm hover:text-purple-700">
+                        Edit Profile →
+                    </button>
+                </div>
+                
+                <div class="bg-green-50 p-6 rounded-xl text-center">
+                    <div class="w-12 h-12 bg-green-100 rounded-lg mx-auto mb-4 flex items-center justify-center">
+                        <i data-feather="smartphone" class="text-green-600 w-6 h-6"></i>
+                    </div>
+                    <h3 class="font-bold mb-2">Device Management</h3>
+                    <p class="text-sm text-gray-600 mb-4">Manage trusted devices and sessions</p>
+                    <button class="text-green-600 font-semibold text-sm hover:text-green-700">
+                        Manage Devices →
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Troubleshooting -->
+    <section class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold mb-4">Common Issues & Solutions</h2>
+                <p class="text-xl text-gray-600">Quick fixes for frequent problems</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-xl">
+                    <h3 class="text-xl font-bold mb-4 text-red-600">Login Issues</h3>
+                    <div class="space-y-3">
+                        <div>
+                            <h4 class="font-semibold">Forgot Password?</h4>
+                            <p class="text-gray-600 text-sm">Use "Forgot Password" link on login page or reset through dashboard</p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold">Account Locked?</h4>
+                            <p class="text-gray-600 text-sm">Contact support or use account recovery in your dashboard</p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold">Browser Issues?</h4>
+                            <p class="text-gray-600 text-sm">Clear cache, try incognito mode, or switch browsers</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl">
+                    <h3 class="text-xl font-bold mb-4 text-blue-600">Transaction Problems</h3>
+                    <div class="space-y-3">
+                        <div>
+                            <h4 class="font-semibold">Transfer Failed?</h4>
+                            <p class="text-gray-600 text-sm">Check account balances and daily limits in dashboard</p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold">Missing Transaction?</h4>
+                            <p class="text-gray-600 text-sm">Transactions may take 1-3 business days to appear</p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold">Dispute Charge?</h4>
+                            <p class="text-gray-600 text-sm">Report disputes directly through transaction details in dashboard</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard CTA -->
+    <section class="py-16 bg-teal-600 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl font-bold mb-4">Your Dashboard Has All The Answers</h2>
+            <p class="text-xl mb-8 max-w-3xl mx-auto">
+                Skip the wait times and phone calls. Access tutorials, manage settings, and resolve most banking issues instantly through your personalized dashboard. When you need additional help, our representatives are available 24/7.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button class="bg-white text-teal-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition duration-300">
+                    Go to Dashboard
+                </button>
+                <button class="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-teal-600 transition duration-300">
+                    Chat with Support
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h3 class="text-2xl font-bold mb-4">BetaBank</h3>
+            <p class="text-gray-300 mb-6">Banking made simple.</p>
+            <p class="text-sm text-gray-400">&copy; 2025 BetaBank. All rights reserved. | Online banking available 24/7</p>
+        </div>
+    </footer>
+
+    <script>
+        feather.replace();
+    </script>
+</body>
+</html>

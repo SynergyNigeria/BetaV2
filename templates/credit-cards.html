@@ -1,0 +1,284 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credit Cards - BetaBank</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+        * {
+            font-family: 'Montserrat', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <img src="{% static 'photos/beta_logo.png' %}" alt="BetaBank Logo" class="h-10 w-auto">
+                    </div>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="{% url 'home' %}" class="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Home</a>
+                        <a href="{% url 'accounts:login' %}" class="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-indigo-700 transition duration-300">Card Management</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-r from-purple-600 to-pink-600 text-white py-20 pt-32">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h1 class="text-4xl md:text-6xl font-bold mb-6">Credit Cards</h1>
+                <p class="text-xl mb-8 max-w-3xl mx-auto">
+                    Find the perfect credit card for your lifestyle and financial goals
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Cards -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">Choose Your Perfect Card</h2>
+                <p class="text-xl text-gray-600">Rewards, benefits, and features tailored to your needs</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Cash Back Card -->
+                <div class="bg-gradient-to-br from-blue-500 to-blue-700 text-white p-8 rounded-2xl relative overflow-hidden">
+                    <div class="relative z-10">
+                        <h3 class="text-2xl font-bold mb-4">BetaBank Cash Rewards</h3>
+                        <div class="mb-6">
+                            <div class="text-3xl font-bold">1.5%</div>
+                            <div class="text-sm">Cash back on all purchases</div>
+                        </div>
+                        <ul class="space-y-2 text-sm mb-6">
+                            <li>✓ No annual fee</li>
+                            <li>✓ 0% APR for 15 months</li>
+                            <li>✓ $200 welcome bonus</li>
+                            <li>✓ No foreign transaction fees</li>
+                        </ul>
+                        <button class="w-full bg-white text-blue-700 py-3 rounded-lg font-semibold hover:bg-gray-100 transition duration-300">
+                            Apply Now
+                        </button>
+                    </div>
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-16 -mt-16"></div>
+                </div>
+
+                <!-- Travel Card -->
+                <div class="bg-gradient-to-br from-purple-500 to-purple-700 text-white p-8 rounded-2xl relative overflow-hidden">
+                    <div class="relative z-10">
+                        <h3 class="text-2xl font-bold mb-4">BetaBank Travel Elite</h3>
+                        <div class="mb-6">
+                            <div class="text-3xl font-bold">2X</div>
+                            <div class="text-sm">Points on travel & dining</div>
+                        </div>
+                        <ul class="space-y-2 text-sm mb-6">
+                            <li>✓ 60,000 bonus points</li>
+                            <li>✓ Priority boarding</li>
+                            <li>✓ TSA PreCheck credit</li>
+                            <li>✓ Travel insurance included</li>
+                        </ul>
+                        <button class="w-full bg-white text-purple-700 py-3 rounded-lg font-semibold hover:bg-gray-100 transition duration-300">
+                            Apply Now
+                        </button>
+                    </div>
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-16 -mt-16"></div>
+                </div>
+
+                <!-- Premium Card -->
+                <div class="bg-gradient-to-br from-gold-500 to-gold-700 text-white p-8 rounded-2xl relative overflow-hidden" style="background: linear-gradient(135deg, #d4af37, #b8860b);">
+                    <div class="relative z-10">
+                        <h3 class="text-2xl font-bold mb-4">BetaBank Platinum</h3>
+                        <div class="mb-6">
+                            <div class="text-3xl font-bold">3X</div>
+                            <div class="text-sm">Points on premium purchases</div>
+                        </div>
+                        <ul class="space-y-2 text-sm mb-6">
+                            <li>✓ Concierge service</li>
+                            <li>✓ Airport lounge access</li>
+                            <li>✓ Premium benefits</li>
+                            <li>✓ 24/7 customer support</li>
+                        </ul>
+                        <button class="w-full bg-white text-gold-700 py-3 rounded-lg font-semibold hover:bg-gray-100 transition duration-300" style="color: #b8860b;">
+                            Apply Now
+                        </button>
+                    </div>
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-16 -mt-16"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Card Categories -->
+    <section class="py-20 bg-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">Find Your Card Type</h2>
+                <p class="text-xl text-gray-600">Explore cards designed for different lifestyles and needs</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-white p-6 rounded-xl text-center hover:shadow-lg transition duration-300">
+                    <div class="w-16 h-16 bg-green-100 rounded-xl mx-auto mb-4 flex items-center justify-center">
+                        <i data-feather="dollar-sign" class="text-green-600 w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Cash Back</h3>
+                    <p class="text-gray-600 text-sm">Earn cash rewards on everyday purchases</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-xl text-center hover:shadow-lg transition duration-300">
+                    <div class="w-16 h-16 bg-blue-100 rounded-xl mx-auto mb-4 flex items-center justify-center">
+                        <i data-feather="map-pin" class="text-blue-600 w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Travel</h3>
+                    <p class="text-gray-600 text-sm">Maximize rewards on travel and dining</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-xl text-center hover:shadow-lg transition duration-300">
+                    <div class="w-16 h-16 bg-purple-100 rounded-xl mx-auto mb-4 flex items-center justify-center">
+                        <i data-feather="trending-up" class="text-purple-600 w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Balance Transfer</h3>
+                    <p class="text-gray-600 text-sm">Pay off debt with 0% intro APR</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-xl text-center hover:shadow-lg transition duration-300">
+                    <div class="w-16 h-16 bg-orange-100 rounded-xl mx-auto mb-4 flex items-center justify-center">
+                        <i data-feather="user-plus" class="text-orange-600 w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Student</h3>
+                    <p class="text-gray-600 text-sm">Build credit with student-friendly cards</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Business Cards -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-3xl font-bold mb-6">Business Credit Cards</h2>
+                    <p class="text-lg text-gray-600 mb-6">
+                        Powerful financial tools designed to help your business grow and manage expenses efficiently.
+                    </p>
+                    <ul class="space-y-3 text-gray-600">
+                        <li class="flex items-center"><i data-feather="check" class="text-green-500 w-5 h-5 mr-3"></i>Expense management tools</li>
+                        <li class="flex items-center"><i data-feather="check" class="text-green-500 w-5 h-5 mr-3"></i>Employee cards with controls</li>
+                        <li class="flex items-center"><i data-feather="check" class="text-green-500 w-5 h-5 mr-3"></i>Detailed spending reports</li>
+                        <li class="flex items-center"><i data-feather="check" class="text-green-500 w-5 h-5 mr-3"></i>Higher credit limits</li>
+                        <li class="flex items-center"><i data-feather="check" class="text-green-500 w-5 h-5 mr-3"></i>Business rewards categories</li>
+                    </ul>
+                </div>
+                <div class="bg-gradient-to-br from-indigo-50 to-purple-50 p-8 rounded-2xl">
+                    <h3 class="text-2xl font-bold mb-4">Business Card Benefits</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-indigo-100 rounded-lg mr-4 flex items-center justify-center">
+                                <i data-feather="briefcase" class="text-indigo-600 w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold">Expense Tracking</h4>
+                                <p class="text-sm text-gray-600">Categorize and track business expenses</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-green-100 rounded-lg mr-4 flex items-center justify-center">
+                                <i data-feather="users" class="text-green-600 w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold">Employee Cards</h4>
+                                <p class="text-sm text-gray-600">Issue cards to employees with spending limits</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-purple-100 rounded-lg mr-4 flex items-center justify-center">
+                                <i data-feather="bar-chart" class="text-purple-600 w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold">Reporting</h4>
+                                <p class="text-sm text-gray-600">Detailed monthly and annual reports</p>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition duration-300 mt-6">
+                        Explore Business Cards
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Credit Education -->
+    <section class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold mb-4">Credit Education Center</h2>
+                <p class="text-xl text-gray-600">Learn how to build and maintain excellent credit</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white p-6 rounded-xl">
+                    <h3 class="text-xl font-bold mb-4">Understanding Credit Scores</h3>
+                    <p class="text-gray-600 mb-4">Learn what factors affect your credit score and how to improve it.</p>
+                    <a href="#" class="text-blue-600 font-semibold hover:text-blue-700">Read More →</a>
+                </div>
+                <div class="bg-white p-6 rounded-xl">
+                    <h3 class="text-xl font-bold mb-4">Responsible Credit Use</h3>
+                    <p class="text-gray-600 mb-4">Best practices for using credit cards wisely and avoiding debt.</p>
+                    <a href="#" class="text-blue-600 font-semibold hover:text-blue-700">Read More →</a>
+                </div>
+                <div class="bg-white p-6 rounded-xl">
+                    <h3 class="text-xl font-bold mb-4">Rewards Optimization</h3>
+                    <p class="text-gray-600 mb-4">Maximize your credit card rewards and benefits.</p>
+                    <a href="#" class="text-blue-600 font-semibold hover:text-blue-700">Read More →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard CTA -->
+    <section class="py-16 bg-purple-600 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl font-bold mb-4">Manage Your Credit Cards Online</h2>
+            <p class="text-xl mb-8 max-w-3xl mx-auto">
+                View statements, make payments, track rewards, and manage all your credit card needs through your secure online dashboard. Get instant support from our credit card specialists.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button class="bg-white text-purple-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition duration-300">
+                    Card Management Dashboard
+                </button>
+                <button class="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-purple-600 transition duration-300">
+                    Chat with Card Specialist
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h3 class="text-2xl font-bold mb-4">BetaBank</h3>
+            <p class="text-gray-300 mb-6">Your trusted credit partner.</p>
+            <p class="text-sm text-gray-400">&copy; 2025 BetaBank. All rights reserved. | Credit approval required. Terms and conditions apply.</p>
+        </div>
+    </footer>
+
+    <script>
+        feather.replace();
+    </script>
+</body>
+</html>

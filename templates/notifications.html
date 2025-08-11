@@ -1,0 +1,161 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications - BetaBank</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+        * {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card-hover {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 min-h-screen">
+    <div class="max-w-3xl mx-auto py-10 px-4">
+        <div class="mb-6 flex justify-start">
+            <a href="{% url 'accounts:dashboard' %}"
+                class="inline-flex items-center bg-gray-200 hover:bg-gray-300 text-gray-800 px-3 py-2 rounded-lg font-medium transition duration-200">
+                <i data-feather="arrow-left" class="w-4 h-4 mr-2"></i> Back to Dashboard
+            </a>
+        </div>
+        <div class="flex items-center justify-between mb-8">
+            <h1 class="text-3xl font-bold text-gray-900">Notifications</h1>
+            <form method="post" action="{% url 'accounts:mark_all_notifications_read' %}">
+                {% csrf_token %}
+                <button type="submit"
+                    class="bg-indigo-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-indigo-700 transition duration-300">Mark
+                    All as Read</button>
+            </form>
+        </div>
+        <div class="mb-6 flex gap-2">
+            <button class="filter-btn bg-indigo-100 text-indigo-700 px-3 py-1 rounded font-medium"
+                data-filter="day">Today</button>
+            <button class="filter-btn bg-gray-100 text-gray-700 px-3 py-1 rounded font-medium" data-filter="week">This
+                Week</button>
+            <button class="filter-btn bg-gray-100 text-gray-700 px-3 py-1 rounded font-medium" data-filter="month">This
+                Month</button>
+            <button class="filter-btn bg-gray-100 text-gray-700 px-3 py-1 rounded font-medium"
+                data-filter="all">All</button>
+        </div>
+        <div id="notifications-list">
+            {% if notifications %}
+            {% regroup notifications by created_at.date as day_list %}
+            {% for day in day_list %}
+            <div class="mb-6">
+                <h2 class="text-lg font-semibold text-gray-700 mb-3">{{ day.grouper|date:'M d, Y' }}</h2>
+                <div class="space-y-3">
+                    {% for notification in day.list %}
+                    <div class="flex items-center justify-between p-4 bg-white rounded-lg shadow card-hover fade-in notification-item {% if not notification.is_read %}border-l-4 border-indigo-500{% endif %}"
+                        data-date="{{ notification.created_at|date:'Y-m-d' }}"
+                        data-week="{{ notification.created_at|date:'W' }}"
+                        data-month="{{ notification.created_at|date:'Y-m' }}" data-read="{{ notification.is_read }}">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center mr-3">
+                                <i data-feather="bell" class="w-5 h-5 text-indigo-600"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">{{ notification.title }}</p>
+                                <p class="text-xs text-gray-500">{{ notification.message }}</p>
+                                <p class="text-xs text-gray-400 mt-1">{{ notification.created_at|timesince }} ago</p>
+                            </div>
+                        </div>
+                        {% if not notification.is_read %}
+                        <form method="post" action="{% url 'accounts:mark_notification_read' notification.id %}">
+                            {% csrf_token %}
+                            <button type="submit"
+                                class="ml-4 text-indigo-600 hover:text-indigo-800 font-semibold text-xs">Mark as
+                                Read</button>
+                        </form>
+                        {% else %}
+                        <span class="ml-4 text-green-500 font-semibold text-xs">Read</span>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="text-center py-12">
+                <i data-feather="bell" class="h-16 w-16 mx-auto text-gray-400 mb-4"></i>
+                <p class="text-gray-500">No notifications found</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    <script>
+        feather.replace();
+        // Filtering logic
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('bg-indigo-100', 'text-indigo-700'));
+                this.classList.add('bg-indigo-100', 'text-indigo-700');
+                const filter = this.getAttribute('data-filter');
+                const today = new Date().toISOString().slice(0, 10);
+                const week = (d => {
+                    d = new Date();
+                    d.setHours(0, 0, 0, 0);
+                    d.setDate(d.getDate() - d.getDay() + 1);
+                    return d.toISOString().slice(0, 10);
+                })();
+                const month = new Date().toISOString().slice(0, 7);
+                document.querySelectorAll('.notification-item').forEach(item => {
+                    let show = false;
+                    if (filter === 'day') {
+                        show = item.getAttribute('data-date') === today;
+                    } else if (filter === 'week') {
+                        show = item.getAttribute('data-month') === month || item.getAttribute('data-week') === (new Date()).getWeek();
+                    } else if (filter === 'month') {
+                        show = item.getAttribute('data-month') === month;
+                    } else {
+                        show = true;
+                    }
+                    item.style.display = show ? '' : 'none';
+                });
+            });
+        });
+        // Helper for week number
+        Date.prototype.getWeek = function () {
+            var d = new Date(Date.UTC(this.getFullYear(), this.getMonth(), this.getDate()));
+            var dayNum = d.getUTCDay() || 7;
+            d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+            var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+            return Math.ceil((((d - yearStart) / 86400000) + 1) / 7)
+        };
+    </script>
+</body>
+
+</html>

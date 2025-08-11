@@ -1,0 +1,338 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - BetaBank</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+        * {
+            font-family: 'Montserrat', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <img src="{% static 'photos/beta_logo.png' %}" alt="BetaBank Logo" class="h-10 w-auto">
+                    </div>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="{% url 'home' %}" class="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Home</a>
+                        <a href="{% url 'accounts:login' %}" class="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-indigo-700 transition duration-300">Privacy Settings</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-r from-gray-700 to-gray-900 text-white py-20 pt-32">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h1 class="text-4xl md:text-6xl font-bold mb-6">Privacy Policy</h1>
+                <p class="text-xl mb-8 max-w-3xl mx-auto">
+                    Your privacy matters to us. Learn how we collect, use, and protect your personal information.
+                </p>
+                <p class="text-sm opacity-75">Last updated: July 28, 2025</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Summary -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-blue-50 p-8 rounded-2xl mb-16">
+                <h2 class="text-3xl font-bold mb-6 text-center">Privacy at a Glance</h2>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-blue-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+                            <i data-feather="shield" class="text-blue-600 w-8 h-8"></i>
+                        </div>
+                        <h3 class="font-bold mb-2">We Protect Your Data</h3>
+                        <p class="text-gray-600 text-sm">Bank-level encryption and security measures protect all your personal information</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-green-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+                            <i data-feather="user-check" class="text-green-600 w-8 h-8"></i>
+                        </div>
+                        <h3 class="font-bold mb-2">You Control Your Privacy</h3>
+                        <p class="text-gray-600 text-sm">Manage privacy settings and data sharing preferences through your dashboard</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-purple-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+                            <i data-feather="eye-off" class="text-purple-600 w-8 h-8"></i>
+                        </div>
+                        <h3 class="font-bold mb-2">No Data Sales</h3>
+                        <p class="text-gray-600 text-sm">We never sell your personal information to third parties for marketing purposes</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="max-w-4xl mx-auto">
+                <!-- Information We Collect -->
+                <section class="mb-12">
+                    <h2 class="text-3xl font-bold mb-6">Information We Collect</h2>
+                    
+                    <div class="space-y-6">
+                        <div class="bg-gray-50 p-6 rounded-xl">
+                            <h3 class="text-xl font-bold mb-4">Personal Information</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>• Name, address, phone number, and email address</li>
+                                <li>• Social Security number and date of birth</li>
+                                <li>• Employment information and income details</li>
+                                <li>• Government-issued ID and verification documents</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="bg-gray-50 p-6 rounded-xl">
+                            <h3 class="text-xl font-bold mb-4">Account Information</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>• Account balances, transaction history, and payment information</li>
+                                <li>• Credit history and credit scores</li>
+                                <li>• Investment preferences and financial goals</li>
+                                <li>• Communication preferences and service usage</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="bg-gray-50 p-6 rounded-xl">
+                            <h3 class="text-xl font-bold mb-4">Technical Information</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>• Device information, IP address, and browser type</li>
+                                <li>• Login times and session activity</li>
+                                <li>• Cookies and website usage data</li>
+                                <li>• Mobile app usage and push notification preferences</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- How We Use Information -->
+                <section class="mb-12">
+                    <h2 class="text-3xl font-bold mb-6">How We Use Your Information</h2>
+                    
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-blue-50 p-6 rounded-xl">
+                            <h3 class="text-lg font-bold mb-4 text-blue-800">Banking Services</h3>
+                            <ul class="space-y-2 text-gray-700 text-sm">
+                                <li>• Process transactions and maintain accounts</li>
+                                <li>• Provide customer service and support</li>
+                                <li>• Offer personalized financial products</li>
+                                <li>• Generate account statements and reports</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="bg-green-50 p-6 rounded-xl">
+                            <h3 class="text-lg font-bold mb-4 text-green-800">Security & Compliance</h3>
+                            <ul class="space-y-2 text-gray-700 text-sm">
+                                <li>• Prevent fraud and unauthorized access</li>
+                                <li>• Comply with legal and regulatory requirements</li>
+                                <li>• Verify identity and creditworthiness</li>
+                                <li>• Monitor for suspicious activity</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="bg-purple-50 p-6 rounded-xl">
+                            <h3 class="text-lg font-bold mb-4 text-purple-800">Communication</h3>
+                            <ul class="space-y-2 text-gray-700 text-sm">
+                                <li>• Send account alerts and notifications</li>
+                                <li>• Provide customer service communications</li>
+                                <li>• Share important policy updates</li>
+                                <li>• Offer relevant financial education</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="bg-orange-50 p-6 rounded-xl">
+                            <h3 class="text-lg font-bold mb-4 text-orange-800">Service Improvement</h3>
+                            <ul class="space-y-2 text-gray-700 text-sm">
+                                <li>• Improve website and app functionality</li>
+                                <li>• Develop new products and services</li>
+                                <li>• Analyze usage patterns and preferences</li>
+                                <li>• Enhance security measures</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Information Sharing -->
+                <section class="mb-12">
+                    <h2 class="text-3xl font-bold mb-6">When We Share Information</h2>
+                    
+                    <div class="bg-yellow-50 border-l-4 border-yellow-500 p-6 rounded-lg mb-6">
+                        <h3 class="font-bold text-yellow-800 mb-2">Important: We Never Sell Your Data</h3>
+                        <p class="text-yellow-700">BetaBank does not sell, rent, or trade your personal information to third parties for marketing purposes.</p>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="bg-white border p-4 rounded-lg">
+                            <h4 class="font-bold mb-2">Service Providers</h4>
+                            <p class="text-gray-600 text-sm">We share information with trusted partners who help us provide banking services (payment processors, credit bureaus, technology providers).</p>
+                        </div>
+                        
+                        <div class="bg-white border p-4 rounded-lg">
+                            <h4 class="font-bold mb-2">Legal Requirements</h4>
+                            <p class="text-gray-600 text-sm">We may share information when required by law, court orders, or to comply with regulatory requirements.</p>
+                        </div>
+                        
+                        <div class="bg-white border p-4 rounded-lg">
+                            <h4 class="font-bold mb-2">With Your Consent</h4>
+                            <p class="text-gray-600 text-sm">We share information when you explicitly authorize us to do so, such as connecting to third-party financial apps.</p>
+                        </div>
+                        
+                        <div class="bg-white border p-4 rounded-lg">
+                            <h4 class="font-bold mb-2">Business Transfers</h4>
+                            <p class="text-gray-600 text-sm">In the event of a merger or acquisition, customer information may be transferred as part of business assets.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Your Rights -->
+                <section class="mb-12">
+                    <h2 class="text-3xl font-bold mb-6">Your Privacy Rights</h2>
+                    
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-gray-50 p-6 rounded-xl">
+                            <h3 class="text-lg font-bold mb-4">Access & Control</h3>
+                            <ul class="space-y-2 text-gray-700 text-sm">
+                                <li>• View and update your personal information</li>
+                                <li>• Download your account data</li>
+                                <li>• Manage communication preferences</li>
+                                <li>• Control cookie and tracking settings</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="bg-gray-50 p-6 rounded-xl">
+                            <h3 class="text-lg font-bold mb-4">Data Protection</h3>
+                            <ul class="space-y-2 text-gray-700 text-sm">
+                                <li>• Request deletion of certain personal data</li>
+                                <li>• Correct inaccurate information</li>
+                                <li>• Opt out of marketing communications</li>
+                                <li>• Limit data sharing with affiliates</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Data Security -->
+                <section class="mb-12">
+                    <h2 class="text-3xl font-bold mb-6">How We Protect Your Data</h2>
+                    
+                    <div class="bg-red-50 p-6 rounded-xl">
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <h3 class="text-lg font-bold mb-4">Technical Safeguards</h3>
+                                <ul class="space-y-2 text-gray-700 text-sm">
+                                    <li>• 256-bit SSL encryption</li>
+                                    <li>• Multi-factor authentication</li>
+                                    <li>• Secure data centers</li>
+                                    <li>• Regular security audits</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold mb-4">Administrative Controls</h3>
+                                <ul class="space-y-2 text-gray-700 text-sm">
+                                    <li>• Employee background checks</li>
+                                    <li>• Limited access to customer data</li>
+                                    <li>• Privacy training programs</li>
+                                    <li>• Incident response procedures</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Cookie Policy -->
+                <section class="mb-12">
+                    <h2 class="text-3xl font-bold mb-6">Cookies & Tracking</h2>
+                    
+                    <div class="space-y-4">
+                        <p class="text-gray-700">We use cookies and similar technologies to enhance your experience and provide personalized services.</p>
+                        
+                        <div class="grid md:grid-cols-3 gap-4">
+                            <div class="bg-green-50 p-4 rounded-lg">
+                                <h4 class="font-bold text-green-800 mb-2">Essential Cookies</h4>
+                                <p class="text-gray-600 text-sm">Required for basic website functionality and security</p>
+                            </div>
+                            <div class="bg-blue-50 p-4 rounded-lg">
+                                <h4 class="font-bold text-blue-800 mb-2">Analytics Cookies</h4>
+                                <p class="text-gray-600 text-sm">Help us understand how you use our services</p>
+                            </div>
+                            <div class="bg-purple-50 p-4 rounded-lg">
+                                <h4 class="font-bold text-purple-800 mb-2">Preference Cookies</h4>
+                                <p class="text-gray-600 text-sm">Remember your settings and preferences</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Contact & Updates -->
+                <section class="mb-12">
+                    <h2 class="text-3xl font-bold mb-6">Policy Updates & Contact</h2>
+                    
+                    <div class="bg-gray-50 p-6 rounded-xl">
+                        <h3 class="text-lg font-bold mb-4">Policy Changes</h3>
+                        <p class="text-gray-700 mb-4">We may update this Privacy Policy periodically. We'll notify you of significant changes through your dashboard, email, or our website.</p>
+                        
+                        <h3 class="text-lg font-bold mb-4">Contact Our Privacy Team</h3>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <p class="text-gray-700 text-sm">
+                                    <strong>Email:</strong> privacy@betabank.com<br>
+                                    <strong>Phone:</strong> 1-800-BETA-PRIVACY<br>
+                                    <strong>Mail:</strong> BetaBank Privacy Office<br>
+                                    123 Financial Street<br>
+                                    Banking City, BC 12345
+                                </p>
+                            </div>
+                            <div>
+                                <p class="text-gray-700 text-sm">For immediate privacy concerns or to exercise your rights, contact us through your secure dashboard messaging system for the fastest response.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard CTA -->
+    <section class="py-16 bg-gray-800 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl font-bold mb-4">Manage Your Privacy Settings</h2>
+            <p class="text-xl mb-8 max-w-3xl mx-auto">
+                Control your privacy preferences, update personal information, and manage data sharing settings directly through your secure dashboard. Have privacy questions? Our specialists are available 24/7.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button class="bg-white text-gray-800 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition duration-300">
+                    Privacy Settings Dashboard
+                </button>
+                <button class="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-gray-800 transition duration-300">
+                    Contact Privacy Team
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h3 class="text-2xl font-bold mb-4">BetaBank</h3>
+            <p class="text-gray-300 mb-6">Your privacy is our commitment.</p>
+            <p class="text-sm text-gray-400">&copy; 2025 BetaBank. All rights reserved. | Member FDIC | Equal Housing Lender</p>
+        </div>
+    </footer>
+
+    <script>
+        feather.replace();
+    </script>
+</body>
+</html>

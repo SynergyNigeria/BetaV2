@@ -1,0 +1,847 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - BetaBank</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+        * {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(118, 75, 162, 0.9) 100%),
+            url("{% static 'photos/banker.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        .step-progress {
+            transition: all 0.3s ease;
+        }
+
+        .step-progress.active {
+            background-color: #4F46E5;
+            color: white;
+        }
+
+        .step-progress.completed {
+            background-color: #10B981;
+            color: white;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <a href="index.html">
+                            <img src="{% static 'photos/beta_logo.png' %}" alt="BetaBank Logo" class="h-10 w-auto">
+                        </a>
+                    </div>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="{% url 'home' %}"
+                            class="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Home</a>
+                        <a href="{% url 'accounts:login' %}"
+                            class="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-indigo-700 transition duration-300">Sign
+                            In</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Registration Section -->
+    <section class="gradient-bg min-h-screen flex items-center pt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+            <div class="grid md:grid-cols-2 gap-12 items-start">
+                <!-- Left Side - Welcome Message -->
+                <div class="text-white">
+                    <h1 class="text-4xl md:text-5xl font-bold mb-6">Join BetaBank</h1>
+                    <p class="text-xl mb-8 text-gray-200">
+                        Start your journey with us and experience the future of banking. Secure, innovative, and
+                        tailored to your financial needs.
+                    </p>
+
+                    <!-- Benefits -->
+                    <div class="space-y-6 mb-8">
+                        <div class="flex items-start">
+                            <div
+                                class="w-8 h-8 bg-white bg-opacity-20 rounded-lg mr-4 flex items-center justify-center flex-shrink-0">
+                                <i data-feather="shield" class="text-white w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold mb-1">Bank-Level Security</h3>
+                                <p class="text-gray-200 text-sm">Advanced encryption and fraud protection</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div
+                                class="w-8 h-8 bg-white bg-opacity-20 rounded-lg mr-4 flex items-center justify-center flex-shrink-0">
+                                <i data-feather="smartphone" class="text-white w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold mb-1">Mobile Banking</h3>
+                                <p class="text-gray-200 text-sm">Manage your finances anywhere, anytime</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div
+                                class="w-8 h-8 bg-white bg-opacity-20 rounded-lg mr-4 flex items-center justify-center flex-shrink-0">
+                                <i data-feather="credit-card" class="text-white w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold mb-1">No Hidden Fees</h3>
+                                <p class="text-gray-200 text-sm">Transparent pricing with no surprises</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div
+                                class="w-8 h-8 bg-white bg-opacity-20 rounded-lg mr-4 flex items-center justify-center flex-shrink-0">
+                                <i data-feather="headphones" class="text-white w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold mb-1">24/7 Support</h3>
+                                <p class="text-gray-200 text-sm">Expert assistance whenever you need it</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Progress Steps -->
+                    <div class="hidden md:block">
+                        <h3 class="font-semibold mb-4">Registration Steps</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center">
+                                <div class="step-progress w-8 h-8 rounded-full bg-white bg-opacity-20 flex items-center justify-center mr-3"
+                                    id="step1">
+                                    <span class="text-sm font-semibold">1</span>
+                                </div>
+                                <span class="text-sm">Personal Information</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="step-progress w-8 h-8 rounded-full bg-white bg-opacity-20 flex items-center justify-center mr-3"
+                                    id="step2">
+                                    <span class="text-sm font-semibold">2</span>
+                                </div>
+                                <span class="text-sm">Account Security</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="step-progress w-8 h-8 rounded-full bg-white bg-opacity-20 flex items-center justify-center mr-3"
+                                    id="step3">
+                                    <span class="text-sm font-semibold">3</span>
+                                </div>
+                                <span class="text-sm">Verification</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Side - Registration Form -->
+                <div class="bg-white p-8 md:p-10 rounded-2xl shadow-2xl">
+                    <div class="text-center mb-8">
+                        <h2 class="text-3xl font-bold text-gray-900 mb-2">Create Account</h2>
+                        <p class="text-gray-600">Join thousands of satisfied customers</p>
+                    </div>
+
+                    <!-- Display Django Messages -->
+                    {% if messages %}
+                    <div class="mb-6">
+                        {% for message in messages %}
+                        <div
+                            class="alert alert-{{ message.tags }} p-4 mb-3 rounded-lg {% if message.tags == 'error' %}bg-red-100 text-red-700 border border-red-300{% elif message.tags == 'success' %}bg-green-100 text-green-700 border border-green-300{% elif message.tags == 'warning' %}bg-yellow-100 text-yellow-700 border border-yellow-300{% else %}bg-blue-100 text-blue-700 border border-blue-300{% endif %}">
+                            {{ message }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <form method="post" id="registrationForm" class="space-y-6">
+                        {% csrf_token %}
+                        <!-- Step 1: Personal Information -->
+                        <div id="step1Form" class="step-form">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                                <span
+                                    class="w-6 h-6 bg-indigo-100 text-indigo-600 rounded-full text-sm flex items-center justify-center mr-2">1</span>
+                                Personal Information
+                            </h3>
+
+                            <!-- First Name & Last Name -->
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label for="{{ form.first_name.id_for_label }}"
+                                        class="block text-sm font-semibold text-gray-700 mb-2">
+                                        First Name *
+                                    </label>
+                                    {{ form.first_name }}
+                                    {% if form.first_name.errors %}
+                                    <div class="text-red-600 text-sm mt-1">{{ form.first_name.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <label for="{{ form.last_name.id_for_label }}"
+                                        class="block text-sm font-semibold text-gray-700 mb-2">
+                                        Last Name *
+                                    </label>
+                                    {{ form.last_name }}
+                                    {% if form.last_name.errors %}
+                                    <div class="text-red-600 text-sm mt-1">{{ form.last_name.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <!-- Email -->
+                            <div>
+                                <label for="{{ form.email.id_for_label }}"
+                                    class="block text-sm font-semibold text-gray-700 mb-2">
+                                    Email Address *
+                                </label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i data-feather="mail" class="h-5 w-5 text-gray-400"></i>
+                                    </div>
+                                    {{ form.email }}
+                                </div>
+                                {% if form.email.errors %}
+                                <div class="text-red-600 text-sm mt-1">{{ form.email.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Phone Number -->
+                            <div>
+                                <label for="{{ form.phone_number.id_for_label }}"
+                                    class="block text-sm font-semibold text-gray-700 mb-2">
+                                    Phone Number *
+                                </label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i data-feather="phone" class="h-5 w-5 text-gray-400"></i>
+                                    </div>
+                                    {{ form.phone_number }}
+                                </div>
+                                {% if form.phone_number.errors %}
+                                <div class="text-red-600 text-sm mt-1">{{ form.phone_number.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Date of Birth -->
+                            <div>
+                                <label for="{{ form.date_of_birth.id_for_label }}"
+                                    class="block text-sm font-semibold text-gray-700 mb-2">
+                                    Date of Birth *
+                                </label>
+                                {{ form.date_of_birth }}
+                                {% if form.date_of_birth.errors %}
+                                <div class="text-red-600 text-sm mt-1">{{ form.date_of_birth.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Country -->
+                            <div>
+                                <label for="{{ form.country.id_for_label }}"
+                                    class="block text-sm font-semibold text-gray-700 mb-2">
+                                    Country of Residence *
+                                </label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i data-feather="globe" class="h-5 w-5 text-gray-400"></i>
+                                    </div>
+                                    {{ form.country }}
+                                </div>
+                                {% if form.country.errors %}
+                                <div class="text-red-600 text-sm mt-1">{{ form.country.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Address -->
+                            <div>
+                                <label for="{{ form.address.id_for_label }}"
+                                    class="block text-sm font-semibold text-gray-700 mb-2">
+                                    Street Address *
+                                </label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i data-feather="map-pin" class="h-5 w-5 text-gray-400"></i>
+                                    </div>
+                                    {{ form.address }}
+                                </div>
+                                {% if form.address.errors %}
+                                <div class="text-red-600 text-sm mt-1">{{ form.address.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- City & State -->
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label for="{{ form.city.id_for_label }}"
+                                        class="block text-sm font-semibold text-gray-700 mb-2">
+                                        City *
+                                    </label>
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <i data-feather="home" class="h-5 w-5 text-gray-400"></i>
+                                        </div>
+                                        {{ form.city }}
+                                    </div>
+                                    {% if form.city.errors %}
+                                    <div class="text-red-600 text-sm mt-1">{{ form.city.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <label for="{{ form.state.id_for_label }}"
+                                        class="block text-sm font-semibold text-gray-700 mb-2">
+                                        State *
+                                    </label>
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <i data-feather="flag" class="h-5 w-5 text-gray-400"></i>
+                                        </div>
+                                        {{ form.state }}
+                                    </div>
+                                    {% if form.state.errors %}
+                                    <div class="text-red-600 text-sm mt-1">{{ form.state.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <!-- Zip Code -->
+                            <div>
+                                <label for="{{ form.zip_code.id_for_label }}"
+                                    class="block text-sm font-semibold text-gray-700 mb-2">
+                                    Zip / Postal Code *
+                                </label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i data-feather="hash" class="h-5 w-5 text-gray-400"></i>
+                                    </div>
+                                    {{ form.zip_code }}
+                                </div>
+                                {% if form.zip_code.errors %}
+                                <div class="text-red-600 text-sm mt-1">{{ form.zip_code.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <button type="button" id="nextStep1"
+                                class="w-full bg-indigo-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition duration-300">
+                                Continue to Security Setup
+                            </button>
+                        </div>
+
+                        <!-- Step 2: Account Security -->
+                        <div id="step2Form" class="step-form hidden">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                                <span
+                                    class="w-6 h-6 bg-indigo-100 text-indigo-600 rounded-full text-sm flex items-center justify-center mr-2">2</span>
+                                Account Security
+                            </h3>
+
+                            <!-- Username -->
+                            <div>
+                                <label for="{{ form.username.id_for_label }}"
+                                    class="block text-sm font-semibold text-gray-700 mb-2">
+                                    Username *
+                                </label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i data-feather="user" class="h-5 w-5 text-gray-400"></i>
+                                    </div>
+                                    {{ form.username }}
+                                </div>
+                                {% if form.username.errors %}
+                                <div class="text-red-600 text-sm mt-1">{{ form.username.errors.0 }}</div>
+                                {% endif %}
+                                <p class="text-xs text-gray-500 mt-1">Must be 6-20 characters, letters and numbers only
+                                </p>
+                            </div>
+
+                            <!-- Password -->
+                            <div>
+                                <label for="{{ form.password1.id_for_label }}"
+                                    class="block text-sm font-semibold text-gray-700 mb-2">
+                                    Password *
+                                </label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i data-feather="lock" class="h-5 w-5 text-gray-400"></i>
+                                    </div>
+                                    {{ form.password1 }}
+                                    <button type="button" id="togglePassword"
+                                        class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                                        <i data-feather="eye"
+                                            class="h-5 w-5 text-gray-400 hover:text-gray-600 cursor-pointer"></i>
+                                    </button>
+                                </div>
+                                {% if form.password1.errors %}
+                                <div class="text-red-600 text-sm mt-1">{{ form.password1.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Confirm Password -->
+                            <div>
+                                <label for="{{ form.password2.id_for_label }}"
+                                    class="block text-sm font-semibold text-gray-700 mb-2">
+                                    Confirm Password *
+                                </label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i data-feather="lock" class="h-5 w-5 text-gray-400"></i>
+                                    </div>
+                                    {{ form.password2 }}
+                                </div>
+                                {% if form.password2.errors %}
+                                <div class="text-red-600 text-sm mt-1">{{ form.password2.errors.0 }}</div>
+                                {% endif %}
+                            </div> <!-- Security Questions -->
+                            <div>
+                                <label for="{{ form.security_question.id_for_label }}"
+                                    class="block text-sm font-semibold text-gray-700 mb-2">
+                                    Security Question *
+                                </label>
+                                {{ form.security_question }}
+                                {% if form.security_question.errors %}
+                                <div class="text-red-600 text-sm mt-1">{{ form.security_question.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div>
+                                <label for="{{ form.security_answer.id_for_label }}"
+                                    class="block text-sm font-semibold text-gray-700 mb-2">
+                                    Security Answer *
+                                </label>
+                                {{ form.security_answer }}
+                                {% if form.security_answer.errors %}
+                                <div class="text-red-600 text-sm mt-1">{{ form.security_answer.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="flex space-x-4">
+                                <button type="button" id="backStep1"
+                                    class="flex-1 bg-gray-300 text-gray-700 py-3 px-4 rounded-lg font-semibold hover:bg-gray-400 transition duration-300">
+                                    Back
+                                </button>
+                                <button type="button" id="nextStep2"
+                                    class="flex-1 bg-indigo-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-indigo-700 transition duration-300">
+                                    Continue to Verification
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Step 3: Verification & Terms -->
+                        <div id="step3Form" class="step-form hidden">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                                <span
+                                    class="w-6 h-6 bg-indigo-100 text-indigo-600 rounded-full text-sm flex items-center justify-center mr-2">3</span>
+                                Verification & Agreement
+                            </h3>
+
+                            <!-- Account Type -->
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-3">
+                                    Account Type *
+                                </label>
+                                <div class="grid grid-cols-1 gap-4">
+                                    <div class="relative">
+                                        <input type="radio" id="personal" name="accountType" value="personal"
+                                            class="sr-only" required checked>
+                                        <label for="personal"
+                                            class="flex items-center p-4 border-2 border-indigo-500 bg-indigo-50 rounded-lg cursor-pointer transition duration-300">
+                                            <i data-feather="user" class="w-6 h-6 text-indigo-600 mr-3"></i>
+                                            <div>
+                                                <div class="font-semibold">Personal Account</div>
+                                                <div class="text-sm text-gray-600">Individual banking account for
+                                                    personal use</div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Initial Deposit -->
+                            <div>
+                                <label for="initialDeposit" class="block text-sm font-semibold text-gray-700 mb-2">
+                                    Initial Deposit Amount
+                                </label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <span class="text-gray-500">$</span>
+                                    </div>
+                                    <input type="number" id="initialDeposit" name="initialDeposit" min="25" step="0.01"
+                                        class="w-full pl-8 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-300"
+                                        placeholder="25.00">
+                                </div>
+                                <p class="text-xs text-gray-500 mt-1">Minimum deposit: $25.00</p>
+                            </div>
+
+                            <!-- Terms and Conditions -->
+                            <div class="space-y-4">
+                                <div class="flex items-start">
+                                    {{ form.agree_terms }}
+                                    <label for="{{ form.agree_terms.id_for_label }}" class="ml-3 text-sm text-gray-700">
+                                        I agree to the <a href="terms-of-service.html"
+                                            class="text-indigo-600 hover:text-indigo-500 underline"
+                                            target="_blank">Terms of Service</a> and <a href="privacy-policy.html"
+                                            class="text-indigo-600 hover:text-indigo-500 underline"
+                                            target="_blank">Privacy Policy</a>
+                                    </label>
+                                </div>
+                                {% if form.agree_terms.errors %}
+                                <div class="text-red-600 text-sm">{{ form.agree_terms.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="flex space-x-4">
+                                <button type="button" id="backStep2"
+                                    class="flex-1 bg-gray-300 text-gray-700 py-3 px-4 rounded-lg font-semibold hover:bg-gray-400 transition duration-300">
+                                    Back
+                                </button>
+                                <button type="submit"
+                                    class="flex-1 bg-green-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-green-700 transition duration-300">
+                                    Create Account
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Already have account -->
+                        <div class="text-center pt-4">
+                            <p class="text-gray-600">
+                                Already have an account?
+                                <a href="{% url 'accounts:login' %}"
+                                    class="text-indigo-600 font-semibold hover:text-indigo-500 transition duration-300">
+                                    Sign in here
+                                </a>
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Security Notice -->
+    <section class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <div class="flex justify-center items-center mb-4">
+                    <i data-feather="shield-check" class="w-8 h-8 text-green-400 mr-3"></i>
+                    <h3 class="text-xl font-bold">Your Information is Protected</h3>
+                </div>
+                <p class="text-gray-300 max-w-3xl mx-auto">
+                    All personal information is encrypted and securely stored. We never share your data with third
+                    parties
+                    and comply with all banking security regulations.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="flex justify-center items-center mb-4">
+                <img src="{% static 'photos/beta_logo.png' %}" alt="BetaBank Logo" class="h-8 w-auto mr-3">
+                <h3 class="text-xl font-bold">BetaBank</h3>
+            </div>
+            <p class="text-gray-300 mb-4">Your trusted financial partner.</p>
+            <div class="text-sm text-gray-400">
+                <p>&copy; 2025 BetaBank. All rights reserved. | Member FDIC | Equal Housing Lender</p>
+                <div class="mt-2">
+                    <a href="privacy-policy.html" class="hover:text-white transition duration-300 mr-4">Privacy
+                        Policy</a>
+                    <a href="terms-of-service.html" class="hover:text-white transition duration-300 mr-4">Terms of
+                        Service</a>
+                    <a href="security-center.html" class="hover:text-white transition duration-300">Security Center</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Feather Icons
+        feather.replace();
+
+        // Multi-step form management
+        let currentStep = 1;
+        const totalSteps = 3;
+
+        // Step navigation functions
+        function showStep(step) {
+            // Hide all steps
+            document.querySelectorAll('.step-form').forEach(form => {
+                form.classList.add('hidden');
+            });
+
+            // Show current step
+            document.getElementById(`step${step}Form`).classList.remove('hidden');
+
+            // Update progress indicators
+            updateProgress(step);
+            currentStep = step;
+        }
+
+        function updateProgress(step) {
+            for (let i = 1; i <= totalSteps; i++) {
+                const stepElement = document.getElementById(`step${i}`);
+                if (i < step) {
+                    stepElement.classList.remove('active');
+                    stepElement.classList.add('completed');
+                    stepElement.innerHTML = '<i data-feather="check" class="w-4 h-4"></i>';
+                } else if (i === step) {
+                    stepElement.classList.remove('completed');
+                    stepElement.classList.add('active');
+                    stepElement.innerHTML = `<span class="text-sm font-semibold">${i}</span>`;
+                } else {
+                    stepElement.classList.remove('active', 'completed');
+                    stepElement.innerHTML = `<span class="text-sm font-semibold">${i}</span>`;
+                }
+            }
+            feather.replace();
+        }
+
+        // Step navigation event listeners
+        document.getElementById('nextStep1').addEventListener('click', function () {
+            if (validateStep1()) {
+                showStep(2);
+            }
+        });
+
+        document.getElementById('nextStep2').addEventListener('click', function () {
+            if (validateStep2()) {
+                showStep(3);
+            }
+        });
+
+        document.getElementById('backStep1').addEventListener('click', function () {
+            showStep(1);
+        });
+
+        document.getElementById('backStep2').addEventListener('click', function () {
+            showStep(2);
+        });
+
+        // Validation functions
+        function validateStep1() {
+            // Get Django form field IDs
+            const requiredFields = ['id_first_name', 'id_last_name', 'id_email', 'id_phone_number', 'id_date_of_birth', 'id_country'];
+            let isValid = true;
+
+            requiredFields.forEach(field => {
+                const input = document.getElementById(field);
+                if (input && !input.value.trim()) {
+                    input.classList.add('border-red-500');
+                    isValid = false;
+                } else if (input) {
+                    input.classList.remove('border-red-500');
+                }
+            });
+
+            // Email validation
+            const email = document.getElementById('id_email');
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (email && email.value && !emailRegex.test(email.value)) {
+                email.classList.add('border-red-500');
+                isValid = false;
+            }
+
+            // Age validation (must be 18+)
+            const dob = document.getElementById('id_date_of_birth');
+            if (dob && dob.value) {
+                const dobDate = new Date(dob.value);
+                const today = new Date();
+                const age = today.getFullYear() - dobDate.getFullYear();
+                if (age < 18) {
+                    dob.classList.add('border-red-500');
+                    alert('You must be at least 18 years old to open an account.');
+                    isValid = false;
+                }
+            }
+
+            return isValid;
+        }
+
+        function validateStep2() {
+            const password = document.getElementById('id_password1');
+            const confirmPassword = document.getElementById('id_password2');
+            const username = document.getElementById('id_username');
+            let isValid = true;
+
+            // Username validation
+            if (username && (username.value.length < 6 || username.value.length > 20)) {
+                username.classList.add('border-red-500');
+                isValid = false;
+            } else if (username) {
+                username.classList.remove('border-red-500');
+            }
+
+            // Password match validation
+            if (password && confirmPassword && password.value !== confirmPassword.value) {
+                confirmPassword.classList.add('border-red-500');
+                isValid = false;
+            } else if (confirmPassword) {
+                confirmPassword.classList.remove('border-red-500');
+            }
+
+            // Security question validation
+            const securityQuestion = document.getElementById('id_security_question');
+            const securityAnswer = document.getElementById('id_security_answer');
+            if ((securityQuestion && !securityQuestion.value) || (securityAnswer && !securityAnswer.value.trim())) {
+                if (securityQuestion) securityQuestion.classList.add('border-red-500');
+                if (securityAnswer) securityAnswer.classList.add('border-red-500');
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        // Password visibility toggle
+        document.getElementById('togglePassword').addEventListener('click', function () {
+            const passwordInput = document.getElementById('id_password1');
+            const eyeIcon = this.querySelector('i');
+
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+
+            if (type === 'password') {
+                eyeIcon.setAttribute('data-feather', 'eye');
+            } else {
+                eyeIcon.setAttribute('data-feather', 'eye-off');
+            }
+            feather.replace();
+        });
+
+        // Password strength indicator
+        function getPasswordStrength(password) {
+            let strength = 0;
+            if (password.length >= 8) strength++;
+            if (/[a-z]/.test(password)) strength++;
+            if (/[A-Z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[^A-Za-z0-9]/.test(password)) strength++;
+            return strength;
+        }
+
+        function updatePasswordStrength() {
+            const passwordField = document.getElementById('id_password1');
+            if (!passwordField) return;
+
+            const password = passwordField.value;
+            const strength = getPasswordStrength(password);
+            const strengthBar = document.getElementById('passwordStrength');
+            const strengthText = document.getElementById('passwordStrengthText');
+
+            if (!strengthBar || !strengthText) return;
+
+            const colors = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#16a34a'];
+            const texts = ['Very Weak', 'Weak', 'Fair', 'Good', 'Strong'];
+            const widths = ['20%', '40%', '60%', '80%', '100%'];
+
+            if (password.length > 0) {
+                strengthBar.style.width = widths[strength - 1] || '20%';
+                strengthBar.style.backgroundColor = colors[strength - 1] || colors[0];
+                strengthText.textContent = texts[strength - 1] || texts[0];
+            } else {
+                strengthBar.style.width = '0%';
+                strengthText.textContent = '';
+            }
+        }
+
+        // Add event listener for password strength if field exists
+        const passwordField = document.getElementById('id_password1');
+        if (passwordField) {
+            passwordField.addEventListener('input', updatePasswordStrength);
+        }
+
+        // Password match validation
+        function checkPasswordMatch() {
+            const password = document.getElementById('id_password1');
+            const confirmPassword = document.getElementById('id_password2');
+            const matchIndicator = document.getElementById('passwordMatch');
+
+            if (!password || !confirmPassword || !matchIndicator) return;
+
+            if (confirmPassword.value.length > 0) {
+                if (password.value === confirmPassword.value) {
+                    matchIndicator.textContent = 'Passwords match';
+                    matchIndicator.className = 'text-xs mt-1 text-green-600';
+                    matchIndicator.classList.remove('hidden');
+                } else {
+                    matchIndicator.textContent = 'Passwords do not match';
+                    matchIndicator.className = 'text-xs mt-1 text-red-600';
+                    matchIndicator.classList.remove('hidden');
+                }
+            } else {
+                matchIndicator.classList.add('hidden');
+            }
+        }
+
+        // Add event listener for password match if field exists
+        const confirmPasswordField = document.getElementById('id_password2');
+        if (confirmPasswordField) {
+            confirmPasswordField.addEventListener('input', checkPasswordMatch);
+        }
+
+        // Account type - since only personal is available, no dynamic handling needed
+        // The personal account option is pre-selected and styled
+
+        // Phone number formatting
+        const phoneField = document.getElementById('id_phone_number');
+        if (phoneField) {
+            phoneField.addEventListener('input', function () {
+                let value = this.value.replace(/\D/g, '');
+                if (value.length >= 6) {
+                    value = `(${value.slice(0, 3)}) ${value.slice(3, 6)}-${value.slice(6, 10)}`;
+                } else if (value.length >= 3) {
+                    value = `(${value.slice(0, 3)}) ${value.slice(3)}`;
+                }
+                this.value = value;
+            });
+        }
+
+        // Country field validation (basic)
+        const countryField = document.getElementById('id_country');
+        if (countryField) {
+            countryField.addEventListener('input', function () {
+                // Capitalize first letter of each word
+                this.value = this.value.replace(/\b\w/g, l => l.toUpperCase());
+            });
+        }
+
+        // Form submission
+        document.getElementById('registrationForm').addEventListener('submit', function (e) {
+            // Final validation before submission
+            const agreeTermsCheckbox = document.querySelector('input[name="agree_terms"]');
+            if (!agreeTermsCheckbox.checked) {
+                e.preventDefault();
+                alert('You must agree to the Terms of Service and Privacy Policy to continue.');
+                return;
+            }
+
+            // Show loading state
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Creating Account...';
+            submitBtn.disabled = true;
+
+            // Form will now submit normally to Django backend
+            // No need to prevent default or simulate - let Django handle it
+        });
+
+        // Initialize first step
+        showStep(1);
+    </script>
+</body>
+
+</html>

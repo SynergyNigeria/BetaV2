@@ -1,0 +1,943 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deposit Funds - BetaBank</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+        * {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .deposit-method {
+            transition: all 0.3s ease;
+        }
+
+        .deposit-method:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        .usdt-gradient {
+            background: linear-gradient(135deg, #26a17b 0%, #1db584 100%);
+        }
+
+        .giftcard-gradient {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+        }
+
+        .modal-overlay {
+            backdrop-filter: blur(5px);
+        }
+
+        .file-drop-zone {
+            border: 2px dashed #d1d5db;
+            transition: all 0.3s ease;
+        }
+
+        .file-drop-zone:hover,
+        .file-drop-zone.dragover {
+            border-color: #4f46e5;
+            background-color: #f8fafc;
+        }
+
+        .qr-code {
+            background: linear-gradient(45deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .verification-steps {
+            counter-reset: step-counter;
+        }
+
+        .verification-step {
+            counter-increment: step-counter;
+            position: relative;
+        }
+
+        .verification-step::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: -40px;
+            top: 0;
+            width: 24px;
+            height: 24px;
+            background: #4f46e5;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <a href="index.html">
+                            <img src="{% static 'photos/beta_logo.png' %}" alt="BetaBank Logo" class="h-10 w-auto">
+                        </a>
+                    </div>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="{% url 'accounts:dashboard' %}"
+                            class="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Dashboard</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="bg-white border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="py-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-900">Deposit Funds</h1>
+                        <p class="text-gray-600 mt-1">Add money to your account using USDT or Gift Cards</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-sm text-gray-600">Current Balance</p>
+                        <p class="text-2xsm font-bold text-gray-900">
+                            ${{ bank_accounts.0.balance|floatformat:2 }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Deposit Methods -->
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Choose Deposit Method</h2>
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- USDT Deposit -->
+                <div class="deposit-method bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer"
+                    onclick="selectDepositMethod('usdt')">
+                    <div class="usdt-gradient p-8 text-white text-center">
+                        <div
+                            class="w-20 h-20 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-12 h-12" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.568 7.568h-2.176V6.176h-2.784v1.392H10.43V6.176H7.646v1.392H5.47v2.784h1.392v3.296H5.47v2.784h2.176v1.392h2.784v-1.392h2.177v1.392h2.784v-1.392h2.176v-2.784h-1.392V9.152h1.392V6.368zm-1.392 2.784v3.296h-8.352V9.152h8.352zm-6.176 1.648v1.392h3.968v-1.392h-3.968z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-2">USDT Deposit</h3>
+                        <p class="text-sm opacity-90">Deposit using Tether (USDT)</p>
+                        <p class="text-lg font-semibold mt-4">Instant Processing</p>
+                    </div>
+                    <div class="p-6">
+                        <ul class="text-sm text-gray-600 space-y-2 mb-6">
+                            <li class="flex items-center">
+                                <i data-feather="check" class="w-4 h-4 text-green-600 mr-2"></i>
+                                Fast and secure transactions
+                            </li>
+                            <li class="flex items-center">
+                                <i data-feather="check" class="w-4 h-4 text-green-600 mr-2"></i>
+                                Low transaction fees
+                            </li>
+                            <li class="flex items-center">
+                                <i data-feather="check" class="w-4 h-4 text-green-600 mr-2"></i>
+                                24/7 processing
+                            </li>
+                            <li class="flex items-center">
+                                <i data-feather="check" class="w-4 h-4 text-green-600 mr-2"></i>
+                                Minimum: $10.00
+                            </li>
+                        </ul>
+                        <button
+                            class="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition duration-300">
+                            Deposit with USDT
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Gift Card Deposit -->
+                <div class="deposit-method bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer"
+                    onclick="selectDepositMethod('giftcard')">
+                    <div class="giftcard-gradient p-8 text-white text-center">
+                        <div
+                            class="w-20 h-20 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i data-feather="gift" class="w-12 h-12"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-2">Gift Card Deposit</h3>
+                        <p class="text-sm opacity-90">Deposit using various gift cards</p>
+                        <p class="text-lg font-semibold mt-4">Manual Verification</p>
+                    </div>
+                    <div class="p-6">
+                        <ul class="text-sm text-gray-600 space-y-2 mb-6">
+                            <li class="flex items-center">
+                                <i data-feather="check" class="w-4 h-4 text-green-600 mr-2"></i>
+                                Multiple gift card options
+                            </li>
+                            <li class="flex items-center">
+                                <i data-feather="check" class="w-4 h-4 text-green-600 mr-2"></i>
+                                Easy upload process
+                            </li>
+                            <li class="flex items-center">
+                                <i data-feather="check" class="w-4 h-4 text-green-600 mr-2"></i>
+                                Secure verification
+                            </li>
+                            <li class="flex items-center">
+                                <i data-feather="check" class="w-4 h-4 text-green-600 mr-2"></i>
+                                Minimum: $25.00
+                            </li>
+                        </ul>
+                        <button
+                            class="w-full bg-red-600 text-white py-3 rounded-lg font-semibold hover:bg-red-700 transition duration-300">
+                            Deposit with Gift Card
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Deposits -->
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <h2 class="text-xl font-bold text-gray-900 mb-4">Recent Deposits</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="border-b border-gray-200">
+                            <th class="text-left py-3 px-4 font-semibold text-gray-900">Date</th>
+                            <th class="text-left py-3 px-4 font-semibold text-gray-900">Method</th>
+                            <th class="text-left py-3 px-4 font-semibold text-gray-900">Amount</th>
+                            <th class="text-left py-3 px-4 font-semibold text-gray-900">Status</th>
+                            <th class="text-left py-3 px-4 font-semibold text-gray-900">Reference</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for deposit in recent_deposits %}
+                        <tr class="border-b border-gray-100 hover:bg-gray-50">
+                            <td class="py-3 px-4 text-gray-900">{{ deposit.created_at|date:"M d, Y" }}</td>
+                            <td class="py-3 px-4">
+                                {% if deposit.deposit_method == "usdt" %}
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center mr-3">
+                                        <svg class="w-4 h-4 text-green-600" viewBox="0 0 24 24" fill="currentColor">
+                                            <circle cx="12" cy="12" r="10" />
+                                        </svg>
+                                    </div><span>USDT</span>
+                                </div>
+                                {% elif deposit.deposit_method == "giftcard" %}
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center mr-3"><i
+                                            data-feather="gift" class="w-4 h-4 text-red-600"></i></div><span>{{
+                                        deposit.recipient_account_holder|default:"Gift Card" }}</span>
+                                </div>
+                                {% else %}
+                                <span>-</span>
+                                {% endif %}
+                            </td>
+                            <td class="py-3 px-4 text-gray-900 font-semibold">${{ deposit.amount|floatformat:2 }}</td>
+                            <td class="py-3 px-4">
+                                {% if deposit.verified %}
+                                <span
+                                    class="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">Completed</span>
+                                {% else %}
+                                <span
+                                    class="px-2 py-1 text-xs bg-yellow-100 text-yellow-800 rounded-full">Pending</span>
+                                {% endif %}
+                            </td>
+                            <td class="py-3 px-4 text-gray-600 font-mono text-sm">{{ deposit.reference_number }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center text-gray-500 py-4">No deposits yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- USDT Deposit Modal -->
+    <div id="usdtModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden modal-overlay">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl mx-auto max-h-screen overflow-y-auto">
+                <!-- Modal Header -->
+                <div class="usdt-gradient text-white p-6 rounded-t-xl">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-xl font-semibold">USDT Deposit</h3>
+                        <button onclick="closeDepositModal()" class="text-white hover:text-gray-200">
+                            <i data-feather="x" class="w-6 h-6"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Modal Content -->
+                <div class="p-6">
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <!-- Left Column: QR Code and Address -->
+                        <div>
+                            <h4 class="text-lg font-semibold text-gray-900 mb-4">Send USDT to this address:</h4>
+
+                            <!-- QR Code -->
+                            <div class="qr-code text-center mb-6">
+                                <div
+                                    class="w-48 h-48 mx-auto bg-white border-2 border-gray-200 rounded-lg flex items-center justify-center mb-4">
+                                    <!-- QR Code placeholder -->
+                                    <div class="text-gray-400">
+                                        <i data-feather="grid" class="w-24 h-24"></i>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-gray-600">Scan this QR code with your wallet</p>
+                            </div>
+
+                            <!-- USDT Address -->
+                            <div class="mb-6">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">USDT Address (TRC20)</label>
+                                <div class="flex">
+                                    <input type="text" id="usdtAddress" value="TQrZ9H3w3cFhZJG8KmBTgxsKcK9NJJKjTZ"
+                                        readonly
+                                        class="flex-1 px-4 py-3 bg-gray-50 border border-gray-300 rounded-l-lg text-sm font-mono">
+                                    <button onclick="copyUSDTAddress()"
+                                        class="px-4 py-3 bg-green-600 text-white rounded-r-lg hover:bg-green-700 transition duration-300">
+                                        <i data-feather="copy" class="w-4 h-4"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Important Notes -->
+                            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                                <div class="flex items-start">
+                                    <i data-feather="alert-triangle" class="w-5 h-5 text-yellow-600 mr-2 mt-0.5"></i>
+                                    <div class="text-sm text-yellow-800">
+                                        <p class="font-medium mb-1">Important Notes:</p>
+                                        <ul class="list-disc list-inside space-y-1">
+                                            <li>Only send USDT (TRC20) to this address</li>
+                                            <li>Minimum deposit: $10.00</li>
+                                            <li>Network fees apply</li>
+                                            <li>Upload proof after sending</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Upload Form -->
+                        <div>
+                            <h4 class="text-lg font-semibold text-gray-900 mb-4">Upload Proof of Payment:</h4>
+
+                            <form id="usdtDepositForm" class="space-y-6" method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Amount Sent
+                                        (USD)</label>
+                                    <div class="relative">
+                                        <span
+                                            class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
+                                        <input type="number" id="usdtAmount" placeholder="100.00" min="10" step="0.01"
+                                            class="w-full pl-8 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                                            required>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Transaction Hash
+                                        (TxID)</label>
+                                    <input type="text" id="usdtTxHash"
+                                        placeholder="Enter the transaction hash from your wallet"
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 font-mono text-sm"
+                                        required>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Upload
+                                        Screenshot</label>
+                                    <div class="file-drop-zone" id="usdtFileDropZone"
+                                        onclick="document.getElementById('usdtFileInput').click()">
+                                        <input type="file" id="usdtFileInput" accept="image/*" class="hidden"
+                                            onchange="handleUSDTFileUpload(event)">
+                                        <div class="p-8 text-center">
+                                            <i data-feather="upload" class="w-12 h-12 text-gray-400 mx-auto mb-4"></i>
+                                            <p class="text-gray-600 mb-2">Click to upload or drag and drop</p>
+                                            <p class="text-sm text-gray-500">PNG, JPG up to 10MB</p>
+                                        </div>
+                                    </div>
+                                    <div id="usdtFilePreview" class="mt-4 hidden">
+                                        <div class="bg-gray-100 rounded-lg p-4 flex items-center justify-between">
+                                            <div class="flex items-center">
+                                                <i data-feather="image" class="w-5 h-5 text-gray-500 mr-3"></i>
+                                                <span id="usdtFileName" class="text-sm text-gray-700"></span>
+                                            </div>
+                                            <button type="button" onclick="removeUSDTFile()"
+                                                class="text-red-500 hover:text-red-700">
+                                                <i data-feather="x" class="w-4 h-4"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="flex justify-end space-x-3">
+                                    <button type="button" onclick="closeDepositModal()"
+                                        class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition duration-300">
+                                        Cancel
+                                    </button>
+                                    <button type="submit"
+                                        class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-300">
+                                        Submit Deposit
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gift Card Deposit Modal -->
+    <div id="giftcardModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden modal-overlay">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl mx-auto max-h-screen overflow-y-auto">
+                <!-- Modal Header -->
+                <div class="giftcard-gradient text-white p-6 rounded-t-xl">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-xl font-semibold">Gift Card Deposit</h3>
+                        <button onclick="closeDepositModal()" class="text-white hover:text-gray-200">
+                            <i data-feather="x" class="w-6 h-6"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Modal Content -->
+                <div class="p-6">
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <!-- Left Column: Gift Card Options -->
+                        <div>
+                            <h4 class="text-lg font-semibold text-gray-900 mb-4">Select Gift Card Type:</h4>
+
+                            <div class="grid grid-cols-2 gap-4 mb-6">
+                                <!-- Apple Gift Card -->
+                                <div class="gift-card-option border-2 border-gray-200 rounded-lg p-4 cursor-pointer hover:border-indigo-500 transition duration-300"
+                                    onclick="selectGiftCardType('apple')">
+                                    <div class="text-center">
+                                        <div
+                                            class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mx-auto mb-2">
+                                            <i data-feather="smartphone" class="w-6 h-6 text-gray-600"></i>
+                                        </div>
+                                        <p class="text-sm font-medium">Apple Gift Card</p>
+                                    </div>
+                                </div>
+
+                                <!-- Steam Gift Card -->
+                                <div class="gift-card-option border-2 border-gray-200 rounded-lg p-4 cursor-pointer hover:border-indigo-500 transition duration-300"
+                                    onclick="selectGiftCardType('steam')">
+                                    <div class="text-center">
+                                        <div
+                                            class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mx-auto mb-2">
+                                            <i data-feather="gaming" class="w-6 h-6 text-gray-600"></i>
+                                        </div>
+                                        <p class="text-sm font-medium">Steam Gift Card</p>
+                                    </div>
+                                </div>
+
+                                <!-- Google Play -->
+                                <div class="gift-card-option border-2 border-gray-200 rounded-lg p-4 cursor-pointer hover:border-indigo-500 transition duration-300"
+                                    onclick="selectGiftCardType('googleplay')">
+                                    <div class="text-center">
+                                        <div
+                                            class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mx-auto mb-2">
+                                            <i data-feather="play" class="w-6 h-6 text-gray-600"></i>
+                                        </div>
+                                        <p class="text-sm font-medium">Google Play</p>
+                                    </div>
+                                </div>
+
+                                <!-- Amazon -->
+                                <div class="gift-card-option border-2 border-gray-200 rounded-lg p-4 cursor-pointer hover:border-indigo-500 transition duration-300"
+                                    onclick="selectGiftCardType('amazon')">
+                                    <div class="text-center">
+                                        <div
+                                            class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mx-auto mb-2">
+                                            <i data-feather="shopping-bag" class="w-6 h-6 text-gray-600"></i>
+                                        </div>
+                                        <p class="text-sm font-medium">Amazon</p>
+                                    </div>
+                                </div>
+
+                                <!-- Spotify -->
+                                <div class="gift-card-option border-2 border-gray-200 rounded-lg p-4 cursor-pointer hover:border-indigo-500 transition duration-300"
+                                    onclick="selectGiftCardType('spotify')">
+                                    <div class="text-center">
+                                        <div
+                                            class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mx-auto mb-2">
+                                            <i data-feather="music" class="w-6 h-6 text-gray-600"></i>
+                                        </div>
+                                        <p class="text-sm font-medium">Spotify</p>
+                                    </div>
+                                </div>
+
+                                <!-- Netflix -->
+                                <div class="gift-card-option border-2 border-gray-200 rounded-lg p-4 cursor-pointer hover:border-indigo-500 transition duration-300"
+                                    onclick="selectGiftCardType('netflix')">
+                                    <div class="text-center">
+                                        <div
+                                            class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mx-auto mb-2">
+                                            <i data-feather="tv" class="w-6 h-6 text-gray-600"></i>
+                                        </div>
+                                        <p class="text-sm font-medium">Netflix</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Verification Steps -->
+                            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                                <h5 class="font-semibold text-blue-900 mb-3">Verification Process:</h5>
+                                <div class="verification-steps pl-10 space-y-2">
+                                    <div class="verification-step text-sm text-blue-800">Upload clear photo of gift card
+                                    </div>
+                                    <div class="verification-step text-sm text-blue-800">Our team verifies the card
+                                    </div>
+                                    <div class="verification-step text-sm text-blue-800">Funds credited to your account
+                                    </div>
+                                </div>
+                                <p class="text-xs text-blue-700 mt-3">Processing time: 5-15 minutes</p>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Upload Form -->
+                        <div>
+                            <h4 class="text-lg font-semibold text-gray-900 mb-4">Gift Card Details:</h4>
+
+                            <form id="giftcardDepositForm" class="space-y-6" method="post"
+                                enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Selected Gift
+                                        Card</label>
+                                    <input type="text" id="selectedGiftCard" placeholder="Select a gift card type"
+                                        readonly class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg">
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Gift Card Amount
+                                        (USD)</label>
+                                    <div class="relative">
+                                        <span
+                                            class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
+                                        <input type="number" id="giftcardAmount" placeholder="25.00" min="25"
+                                            step="0.01"
+                                            class="w-full pl-8 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                                            required>
+                                    </div>
+                                    <p class="text-sm text-gray-500 mt-1">Minimum amount: $25.00</p>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Gift Card Code
+                                        (Optional)</label>
+                                    <input type="text" id="giftcardCode" placeholder="Enter gift card code if visible"
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 font-mono">
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Upload Gift Card
+                                        Photo</label>
+                                    <div class="file-drop-zone" id="giftcardFileDropZone"
+                                        onclick="document.getElementById('giftcardFileInput').click()">
+                                        <input type="file" id="giftcardFileInput" accept="image/*" class="hidden"
+                                            onchange="handleGiftCardFileUpload(event)">
+                                        <div class="p-8 text-center">
+                                            <i data-feather="camera" class="w-12 h-12 text-gray-400 mx-auto mb-4"></i>
+                                            <p class="text-gray-600 mb-2">Click to upload or drag and drop</p>
+                                            <p class="text-sm text-gray-500">PNG, JPG up to 10MB</p>
+                                            <p class="text-xs text-gray-400 mt-2">Ensure card details are clearly
+                                                visible</p>
+                                        </div>
+                                    </div>
+                                    <div id="giftcardFilePreview" class="mt-4 hidden">
+                                        <div class="bg-gray-100 rounded-lg p-4 flex items-center justify-between">
+                                            <div class="flex items-center">
+                                                <i data-feather="image" class="w-5 h-5 text-gray-500 mr-3"></i>
+                                                <span id="giftcardFileName" class="text-sm text-gray-700"></span>
+                                            </div>
+                                            <button type="button" onclick="removeGiftCardFile()"
+                                                class="text-red-500 hover:text-red-700">
+                                                <i data-feather="x" class="w-4 h-4"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="flex justify-end space-x-3">
+                                    <button type="button" onclick="closeDepositModal()"
+                                        class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition duration-300">
+                                        Cancel
+                                    </button>
+                                    <button type="submit"
+                                        class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition duration-300">
+                                        Submit for Verification
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Processing Modal -->
+    <div id="processingModal" class="fixed inset-0 bg-black bg-opacity-50 z-60 hidden modal-overlay">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-xl shadow-2xl w-full max-w-md mx-auto">
+                <div class="p-8 text-center">
+                    <div class="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <div class="animate-spin">
+                            <i data-feather="loader" class="w-8 h-8 text-indigo-600"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">Processing Deposit</h3>
+                    <p class="text-gray-600 mb-4">Our team is verifying your deposit. This usually takes 5-15 minutes.
+                    </p>
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 text-left">
+                        <p class="text-sm text-blue-800"><strong>Reference ID:</strong> <span id="depositReference"
+                                class="font-mono"></span></p>
+                        <p class="text-sm text-blue-800 mt-1"><strong>Status:</strong> Pending Verification</p>
+                    </div>
+                    <button onclick="closeProcessingModal()"
+                        class="w-full mt-6 px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition duration-300">
+                        Continue Banking
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="flex justify-center items-center mb-4">
+                <img src="{% static 'photos/beta_logo.png' %}" alt="BetaBank Logo" class="h-8 w-auto mr-3">
+                <h3 class="text-xl font-bold">BetaBank</h3>
+            </div>
+            <p class="text-gray-300 mb-4">Your trusted financial partner.</p>
+            <div class="text-sm text-gray-400">
+                <p>&copy; 2025 BetaBank. All rights reserved. | Member FDIC | Secure Deposits</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+
+        // CSRF token for AJAX
+        let csrftoken = null;
+        const csrfInput = document.querySelector('input[name="csrfmiddlewaretoken"]');
+        if (csrfInput) {
+            csrftoken = csrfInput.value;
+        } else {
+            // fallback: try to get from cookie
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+            csrftoken = getCookie('csrftoken');
+        }
+
+        // Initialize Feather Icons
+        feather.replace();
+
+        let selectedGiftCardType = '';
+        let usdtFile = null;
+        let giftcardFile = null;
+
+        // Deposit method selection
+        function selectDepositMethod(method) {
+            if (method === 'usdt') {
+                document.getElementById('usdtModal').classList.remove('hidden');
+            } else if (method === 'giftcard') {
+                document.getElementById('giftcardModal').classList.remove('hidden');
+            }
+            feather.replace();
+        }
+
+        // Close modals
+        function closeDepositModal() {
+            document.getElementById('usdtModal').classList.add('hidden');
+            document.getElementById('giftcardModal').classList.add('hidden');
+            resetForms();
+        }
+
+        function closeProcessingModal() {
+            document.getElementById('processingModal').classList.add('hidden');
+        }
+
+        // Reset forms
+        function resetForms() {
+            document.getElementById('usdtDepositForm').reset();
+            document.getElementById('giftcardDepositForm').reset();
+            removeUSDTFile();
+            removeGiftCardFile();
+            selectedGiftCardType = '';
+            document.getElementById('selectedGiftCard').value = '';
+            // Reset gift card selection
+            document.querySelectorAll('.gift-card-option').forEach(option => {
+                option.classList.remove('border-indigo-500', 'bg-indigo-50');
+                option.classList.add('border-gray-200');
+            });
+        }
+
+        // Copy USDT address
+        function copyUSDTAddress() {
+            const address = document.getElementById('usdtAddress');
+            address.select();
+            document.execCommand('copy');
+
+            // Show feedback
+            const button = event.target.closest('button');
+            const originalContent = button.innerHTML;
+            button.innerHTML = '<i data-feather="check" class="w-4 h-4"></i>';
+            feather.replace();
+
+            setTimeout(() => {
+                button.innerHTML = originalContent;
+                feather.replace();
+            }, 2000);
+        }
+
+        // Gift card type selection
+        function selectGiftCardType(type) {
+            selectedGiftCardType = type;
+
+            // Reset all options
+            document.querySelectorAll('.gift-card-option').forEach(option => {
+                option.classList.remove('border-indigo-500', 'bg-indigo-50');
+                option.classList.add('border-gray-200');
+            });
+
+            // Highlight selected option
+            event.currentTarget.classList.remove('border-gray-200');
+            event.currentTarget.classList.add('border-indigo-500', 'bg-indigo-50');
+
+            // Update input field
+            const typeNames = {
+                'apple': 'Apple Gift Card',
+                'steam': 'Steam Gift Card',
+                'googleplay': 'Google Play Gift Card',
+                'amazon': 'Amazon Gift Card',
+                'spotify': 'Spotify Gift Card',
+                'netflix': 'Netflix Gift Card'
+            };
+
+            document.getElementById('selectedGiftCard').value = typeNames[type];
+        }
+
+        // File upload handlers
+        function handleUSDTFileUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                if (file.size > 10 * 1024 * 1024) {
+                    alert('File size must be less than 10MB');
+                    return;
+                }
+
+                if (!file.type.startsWith('image/')) {
+                    alert('Please select an image file');
+                    return;
+                }
+
+                usdtFile = file;
+                showUSDTFilePreview(file);
+            }
+        }
+
+        function handleGiftCardFileUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                if (file.size > 10 * 1024 * 1024) {
+                    alert('File size must be less than 10MB');
+                    return;
+                }
+
+                if (!file.type.startsWith('image/')) {
+                    alert('Please select an image file');
+                    return;
+                }
+
+                giftcardFile = file;
+                showGiftCardFilePreview(file);
+            }
+        }
+
+        function showUSDTFilePreview(file) {
+            document.getElementById('usdtFileName').textContent = file.name;
+            document.getElementById('usdtFilePreview').classList.remove('hidden');
+            feather.replace();
+        }
+
+        function showGiftCardFilePreview(file) {
+            document.getElementById('giftcardFileName').textContent = file.name;
+            document.getElementById('giftcardFilePreview').classList.remove('hidden');
+            feather.replace();
+        }
+
+        function removeUSDTFile() {
+            usdtFile = null;
+            document.getElementById('usdtFileInput').value = '';
+            document.getElementById('usdtFilePreview').classList.add('hidden');
+        }
+
+        function removeGiftCardFile() {
+            giftcardFile = null;
+            document.getElementById('giftcardFileInput').value = '';
+            document.getElementById('giftcardFilePreview').classList.add('hidden');
+        }
+
+        // Form submissions
+
+        // --- AJAX Deposit Submission ---
+        document.getElementById('usdtDepositForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const amount = document.getElementById('usdtAmount').value;
+            const txHash = document.getElementById('usdtTxHash').value;
+            const usdtAddress = document.getElementById('usdtAddress') ? document.getElementById('usdtAddress').value : '';
+            if (!amount || !txHash || !usdtFile) {
+                alert('Please fill in all fields and upload a screenshot.');
+                return;
+            }
+            if (parseFloat(amount) < 10) {
+                alert('Minimum deposit amount is $10.00');
+                return;
+            }
+            const formData = new FormData();
+            formData.append('amount', amount);
+            formData.append('txHash', txHash);
+            formData.append('usdtAddress', usdtAddress);
+            formData.append('file', usdtFile);
+            fetch('/transactions/deposit/usdt/submit/', {
+                method: 'POST',
+                headers: { 'X-CSRFToken': csrftoken },
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('depositReference').textContent = 'Pending';
+                        closeDepositModal();
+                        document.getElementById('processingModal').classList.remove('hidden');
+                    } else {
+                        alert(data.error || 'Deposit failed.');
+                    }
+                })
+                .catch(() => alert('Deposit failed.'));
+        });
+
+        document.getElementById('giftcardDepositForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const amount = document.getElementById('giftcardAmount').value;
+            const code = document.getElementById('giftcardCode').value;
+            if (!selectedGiftCardType || !amount || !giftcardFile) {
+                alert('Please select a gift card type, enter amount, and upload a photo.');
+                return;
+            }
+            if (parseFloat(amount) < 25) {
+                alert('Minimum deposit amount is $25.00');
+                return;
+            }
+            const formData = new FormData();
+            formData.append('amount', amount);
+            formData.append('type', selectedGiftCardType);
+            formData.append('code', code);
+            formData.append('file', giftcardFile);
+            fetch('/transactions/deposit/giftcard/submit/', {
+                method: 'POST',
+                headers: { 'X-CSRFToken': csrftoken },
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('depositReference').textContent = 'Pending';
+                        closeDepositModal();
+                        document.getElementById('processingModal').classList.remove('hidden');
+                    } else {
+                        alert(data.error || 'Deposit failed.');
+                    }
+                })
+                .catch(() => alert('Deposit failed.'));
+        });
+
+        // Drag and drop functionality
+        ['usdtFileDropZone', 'giftcardFileDropZone'].forEach(zoneId => {
+            const dropZone = document.getElementById(zoneId);
+
+            dropZone.addEventListener('dragover', function (e) {
+                e.preventDefault();
+                this.classList.add('dragover');
+            });
+
+            dropZone.addEventListener('dragleave', function (e) {
+                e.preventDefault();
+                this.classList.remove('dragover');
+            });
+
+            dropZone.addEventListener('drop', function (e) {
+                e.preventDefault();
+                this.classList.remove('dragover');
+
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    if (zoneId === 'usdtFileDropZone') {
+                        document.getElementById('usdtFileInput').files = files;
+                        handleUSDTFileUpload({ target: { files: files } });
+                    } else {
+                        document.getElementById('giftcardFileInput').files = files;
+                        handleGiftCardFileUpload({ target: { files: files } });
+                    }
+                }
+            });
+        });
+
+        // Close modals when clicking outside
+        document.getElementById('usdtModal').addEventListener('click', function (e) {
+            if (e.target === this) closeDepositModal();
+        });
+
+        document.getElementById('giftcardModal').addEventListener('click', function (e) {
+            if (e.target === this) closeDepositModal();
+        });
+
+        // Handle escape key
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                closeDepositModal();
+                closeProcessingModal();
+            }
+        });
+    </script>
+</body>
+
+</html>

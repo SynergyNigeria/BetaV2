@@ -1,0 +1,240 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investment Services - BetaBank</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+        * {
+            font-family: 'Montserrat', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <img src="{% static 'photos/beta_logo.png' %}" alt="BetaBank Logo" class="h-10 w-auto">
+                    </div>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="{% url 'home' %}" class="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Home</a>
+                        <a href="{% url 'accounts:login' %}" class="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-indigo-700 transition duration-300">Investment Dashboard</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-r from-green-600 to-blue-600 text-white py-20 pt-32">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h1 class="text-4xl md:text-6xl font-bold mb-6">Investment Services</h1>
+                <p class="text-xl mb-8 max-w-3xl mx-auto">
+                    Build wealth and secure your financial future with our comprehensive investment solutions
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Investment Products -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">Investment Solutions</h2>
+                <p class="text-xl text-gray-600">Diversified portfolio options to meet your financial goals</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-gray-50 p-8 rounded-xl">
+                    <div class="w-16 h-16 bg-green-100 rounded-xl mb-6 flex items-center justify-center">
+                        <i data-feather="trending-up" class="text-green-600 w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Mutual Funds</h3>
+                    <p class="text-gray-600 mb-4">Diversified investment portfolios managed by professional fund managers.</p>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li>✓ Equity funds</li>
+                        <li>✓ Bond funds</li>
+                        <li>✓ Index funds</li>
+                        <li>✓ Sector-specific funds</li>
+                    </ul>
+                </div>
+                
+                <div class="bg-gray-50 p-8 rounded-xl">
+                    <div class="w-16 h-16 bg-blue-100 rounded-xl mb-6 flex items-center justify-center">
+                        <i data-feather="pie-chart" class="text-blue-600 w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Portfolio Management</h3>
+                    <p class="text-gray-600 mb-4">Personalized investment strategies tailored to your risk tolerance and goals.</p>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li>✓ Professional portfolio management</li>
+                        <li>✓ Risk assessment</li>
+                        <li>✓ Regular rebalancing</li>
+                        <li>✓ Performance monitoring</li>
+                    </ul>
+                </div>
+                
+                <div class="bg-gray-50 p-8 rounded-xl">
+                    <div class="w-16 h-16 bg-purple-100 rounded-xl mb-6 flex items-center justify-center">
+                        <i data-feather="clock" class="text-purple-600 w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Retirement Planning</h3>
+                    <p class="text-gray-600 mb-4">Secure your retirement with our comprehensive planning services.</p>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li>✓ 401(k) and IRA accounts</li>
+                        <li>✓ Retirement income planning</li>
+                        <li>✓ Tax-efficient strategies</li>
+                        <li>✓ Estate planning assistance</li>
+                    </ul>
+                </div>
+                
+                <div class="bg-gray-50 p-8 rounded-xl">
+                    <div class="w-16 h-16 bg-orange-100 rounded-xl mb-6 flex items-center justify-center">
+                        <i data-feather="target" class="text-orange-600 w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Financial Planning</h3>
+                    <p class="text-gray-600 mb-4">Comprehensive financial planning to achieve your life goals.</p>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li>✓ Goal-based planning</li>
+                        <li>✓ Cash flow analysis</li>
+                        <li>✓ Insurance planning</li>
+                        <li>✓ Tax planning strategies</li>
+                    </ul>
+                </div>
+                
+                <div class="bg-gray-50 p-8 rounded-xl">
+                    <div class="w-16 h-16 bg-indigo-100 rounded-xl mb-6 flex items-center justify-center">
+                        <i data-feather="bar-chart-2" class="text-indigo-600 w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Wealth Management</h3>
+                    <p class="text-gray-600 mb-4">Holistic wealth management for high-net-worth individuals.</p>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li>✓ Private banking services</li>
+                        <li>✓ Alternative investments</li>
+                        <li>✓ Trust services</li>
+                        <li>✓ Philanthropic planning</li>
+                    </ul>
+                </div>
+                
+                <div class="bg-gray-50 p-8 rounded-xl">
+                    <div class="w-16 h-16 bg-red-100 rounded-xl mb-6 flex items-center justify-center">
+                        <i data-feather="graduation-cap" class="text-red-600 w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Education Planning</h3>
+                    <p class="text-gray-600 mb-4">Save for your children's education with tax-advantaged accounts.</p>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li>✓ 529 Education Savings Plans</li>
+                        <li>✓ Coverdell ESAs</li>
+                        <li>✓ Education cost projections</li>
+                        <li>✓ Financial aid planning</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Advisory Services -->
+    <section class="py-16 bg-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-3xl font-bold mb-6">Expert Financial Advisors</h2>
+                    <p class="text-lg text-gray-600 mb-6">
+                        Our certified financial planners and investment advisors are here to guide you through your investment journey with personalized advice and strategies.
+                    </p>
+                    <ul class="space-y-3 text-gray-600">
+                        <li class="flex items-center"><i data-feather="check" class="text-green-500 w-5 h-5 mr-3"></i>Certified Financial Planners (CFP)</li>
+                        <li class="flex items-center"><i data-feather="check" class="text-green-500 w-5 h-5 mr-3"></i>Chartered Financial Analysts (CFA)</li>
+                        <li class="flex items-center"><i data-feather="check" class="text-green-500 w-5 h-5 mr-3"></i>Fee-transparent advisory services</li>
+                        <li class="flex items-center"><i data-feather="check" class="text-green-500 w-5 h-5 mr-3"></i>Fiduciary standard of care</li>
+                    </ul>
+                </div>
+                <div class="bg-white p-8 rounded-2xl shadow-lg">
+                    <h3 class="text-2xl font-bold mb-4">Schedule a Consultation</h3>
+                    <p class="text-gray-600 mb-6">Get personalized investment advice from our experts</p>
+                    <button class="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition duration-300">
+                        Book Free Consultation
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard CTA -->
+    <section class="py-16 bg-green-600 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl font-bold mb-4">Manage Your Investments Online</h2>
+            <p class="text-xl mb-8 max-w-3xl mx-auto">
+                Track your portfolio performance, access research reports, and manage your investments 24/7 through your secure investment dashboard. Get expert support whenever you need it.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button class="bg-white text-green-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition duration-300">
+                    Investment Dashboard
+                </button>
+                <button class="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-green-600 transition duration-300">
+                    Speak with Advisor
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Support Section -->
+    <section class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h2 class="text-3xl font-bold mb-4">Investment Support & Resources</h2>
+                <p class="text-xl text-gray-600 mb-8">
+                    Access expert guidance and resources to make informed investment decisions.
+                </p>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-green-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+                            <i data-feather="monitor" class="text-green-600 w-8 h-8"></i>
+                        </div>
+                        <h3 class="font-semibold mb-2">Investment Dashboard</h3>
+                        <p class="text-gray-600">Real-time portfolio tracking and analysis</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-blue-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+                            <i data-feather="user-check" class="text-blue-600 w-8 h-8"></i>
+                        </div>
+                        <h3 class="font-semibold mb-2">Personal Financial Advisor</h3>
+                        <p class="text-gray-600">Dedicated investment professional</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-purple-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+                            <i data-feather="book-open" class="text-purple-600 w-8 h-8"></i>
+                        </div>
+                        <h3 class="font-semibold mb-2">Research & Insights</h3>
+                        <p class="text-gray-600">Market research and investment reports</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h3 class="text-2xl font-bold mb-4">BetaBank</h3>
+            <p class="text-gray-300 mb-6">Your trusted investment partner.</p>
+            <p class="text-sm text-gray-400">&copy; 2025 BetaBank. All rights reserved. | Investment products are not FDIC insured and may lose value.</p>
+        </div>
+    </footer>
+
+    <script>
+        feather.replace();
+    </script>
+</body>
+</html>

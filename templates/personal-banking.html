@@ -1,0 +1,166 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Banking - BetaBank</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+        * {
+            font-family: 'Montserrat', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <img src="{% static 'photos/beta_logo.png' %}" alt="BetaBank Logo" class="h-10 w-auto">
+                    </div>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="{% url 'home' %}" class="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Home</a>
+                        <a href="{% url 'accounts:login' %}" class="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-indigo-700 transition duration-300">Online Banking</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-20 pt-32">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h1 class="text-4xl md:text-6xl font-bold mb-6">Personal Banking</h1>
+                <p class="text-xl mb-8 max-w-3xl mx-auto">
+                    Comprehensive banking solutions tailored to your personal financial needs
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Overview -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-gray-50 p-8 rounded-xl">
+                    <div class="w-16 h-16 bg-indigo-100 rounded-xl mb-6 flex items-center justify-center">
+                        <i data-feather="credit-card" class="text-indigo-600 w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Checking Accounts</h3>
+                    <p class="text-gray-600 mb-4">Free checking with no minimum balance, mobile check deposit, and unlimited transactions.</p>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li>✓ No monthly fees</li>
+                        <li>✓ Free debit card</li>
+                        <li>✓ Online & mobile banking</li>
+                        <li>✓ Overdraft protection</li>
+                    </ul>
+                </div>
+                
+                <div class="bg-gray-50 p-8 rounded-xl">
+                    <div class="w-16 h-16 bg-green-100 rounded-xl mb-6 flex items-center justify-center">
+                        <i data-feather="trending-up" class="text-green-600 w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Savings Accounts</h3>
+                    <p class="text-gray-600 mb-4">High-yield savings accounts to help your money grow with competitive interest rates.</p>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li>✓ Competitive APY rates</li>
+                        <li>✓ No minimum balance</li>
+                        <li>✓ Automatic savings programs</li>
+                        <li>✓ Goal-based savings tools</li>
+                    </ul>
+                </div>
+                
+                <div class="bg-gray-50 p-8 rounded-xl">
+                    <div class="w-16 h-16 bg-purple-100 rounded-xl mb-6 flex items-center justify-center">
+                        <i data-feather="shield" class="text-purple-600 w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Certificates of Deposit</h3>
+                    <p class="text-gray-600 mb-4">Secure your future with guaranteed returns on our CD products with flexible terms.</p>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li>✓ Terms from 3 months to 5 years</li>
+                        <li>✓ Guaranteed fixed rates</li>
+                        <li>✓ FDIC insured up to $250,000</li>
+                        <li>✓ Automatic renewal options</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard CTA -->
+    <section class="py-16 bg-indigo-600 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl font-bold mb-4">Manage Everything from Your Dashboard</h2>
+            <p class="text-xl mb-8 max-w-3xl mx-auto">
+                Access all your personal banking services, apply for new accounts, transfer funds, and get support - all from your secure online dashboard.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button class="bg-white text-indigo-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition duration-300">
+                    Access Dashboard
+                </button>
+                <button class="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-indigo-600 transition duration-300">
+                    Contact Representative
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Support Section -->
+    <section class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h2 class="text-3xl font-bold mb-4">Need Help with Personal Banking?</h2>
+                <p class="text-xl text-gray-600 mb-8">
+                    Our customer service team is available 24/7 to assist you with any questions or concerns about your personal banking needs.
+                </p>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-indigo-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+                            <i data-feather="monitor" class="text-indigo-600 w-8 h-8"></i>
+                        </div>
+                        <h3 class="font-semibold mb-2">Online Dashboard</h3>
+                        <p class="text-gray-600">Manage accounts, transfers, and settings</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-green-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+                            <i data-feather="message-circle" class="text-green-600 w-8 h-8"></i>
+                        </div>
+                        <h3 class="font-semibold mb-2">Live Chat Support</h3>
+                        <p class="text-gray-600">Instant help from our representatives</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-blue-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+                            <i data-feather="phone" class="text-blue-600 w-8 h-8"></i>
+                        </div>
+                        <h3 class="font-semibold mb-2">24/7 Phone Support</h3>
+                        <p class="text-gray-600">Call 1-800-BETA-BANK anytime</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h3 class="text-2xl font-bold mb-4">BetaBank</h3>
+            <p class="text-gray-300 mb-6">Your trusted financial partner for over 50 years.</p>
+            <p class="text-sm text-gray-400">&copy; 2025 BetaBank. All rights reserved. | FDIC Insured | Equal Housing Lender</p>
+        </div>
+    </footer>
+
+    <script>
+        feather.replace();
+    </script>
+</body>
+</html>
