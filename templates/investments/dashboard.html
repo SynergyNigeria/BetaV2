@@ -1,0 +1,420 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investment Dashboard - BetaBank</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
+    <link rel="shortcut icon" href="{% static 'photos/favicon.ico' %}" type="image/x-icon">
+    <style>
+        * {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-bar {
+            transition: width 0.3s ease;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+    <!-- Sidebar -->
+    <div id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
+        <div class="flex flex-col h-full">
+            <!-- Header -->
+            <div class="flex items-center justify-center h-16 border-b border-gray-200">
+                <img src="{% static 'photos/beta_logo.png' %}" alt="BetaBank" class="h-8">
+                <span class="ml-2 text-xl font-bold text-gray-800 hidden">BetaBank</span>
+            </div>
+
+            <!-- Navigation -->
+            <nav class="flex-1 px-4 py-6 space-y-2">
+                <a href="{% url 'accounts:dashboard' %}" class="flex items-center px-4 py-2 text-gray-700 rounded-lg hover:bg-gray-100">
+                    <i data-feather="home" class="w-5 h-5 mr-3"></i>
+                    Dashboard
+                </a>
+                <a href="/banking/accounts/" class="flex items-center px-4 py-2 text-gray-700 rounded-lg hover:bg-gray-100">
+                    <i data-feather="credit-card" class="w-5 h-5 mr-3"></i>
+                    Accounts
+                </a>
+                <a href="{% url 'transactions:transfer' %}" class="flex items-center px-4 py-2 text-gray-700 rounded-lg hover:bg-gray-100">
+                    <i data-feather="send" class="w-5 h-5 mr-3"></i>
+                    Transfer
+                </a>
+                <a href="#" class="flex items-center px-4 py-2 text-white bg-indigo-600 rounded-lg">
+                    <i data-feather="trending-up" class="w-5 h-5 mr-3"></i>
+                    Investments
+                </a>
+                <a href="/loans/" class="flex items-center px-4 py-2 text-gray-700 rounded-lg hover:bg-gray-100">
+                    <i data-feather="dollar-sign" class="w-5 h-5 mr-3"></i>
+                    Loans
+                </a>
+            </nav>
+
+            <!-- User Profile -->
+            <div class="p-4 border-t border-gray-200">
+                <div class="flex items-center">
+                    <div class="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center">
+                        <span class="text-white font-medium text-sm">{{ user.first_name.0|default:user.username.0 }}</span>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm font-medium text-gray-900">{{ user.get_full_name|default:user.username }}</p>
+                        <p class="text-xs text-gray-500">{{ user.email }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar overlay for mobile -->
+    <div id="sidebarOverlay" class="fixed inset-0 z-40 bg-black bg-opacity-50 md:hidden hidden"></div>
+
+    <!-- Main Content -->
+    <div class="md:ml-64">
+        <!-- Top Bar -->
+        <header class="bg-white shadow-sm border-b border-gray-200">
+            <div class="flex items-center justify-between px-4 py-4">
+                <div class="flex items-center">
+                    <button id="openSidebar" class="md:hidden p-2 rounded-md text-gray-600 hover:bg-gray-100">
+                        <i data-feather="menu" class="w-6 h-6"></i>
+                    </button>
+                    <h1 class="ml-2 text-2xl font-bold text-gray-900">Investment Dashboard</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="text-right">
+                        <p class="text-sm text-gray-600">Available Balance</p>
+                        <p class="text-xl font-bold text-green-600">${{ primary_account.balance|floatformat:2|default:"0.00" }}</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="p-4 md:p-6 pb-20 md:pb-6">
+            <!-- Investment Overview Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-white p-6 rounded-xl shadow-sm border card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">Total Invested</p>
+                            <p class="text-2xl font-bold text-indigo-600">${{ total_invested|floatformat:2|default:"0.00" }}</p>
+                        </div>
+                        <div class="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center">
+                            <i data-feather="arrow-up-circle" class="w-6 h-6 text-indigo-600"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">Expected Returns</p>
+                            <p class="text-2xl font-bold text-green-600">${{ total_expected_returns|floatformat:2|default:"0.00" }}</p>
+                        </div>
+                        <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                            <i data-feather="trending-up" class="w-6 h-6 text-green-600"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">Total Profit</p>
+                            <p class="text-2xl font-bold text-emerald-600">${{ total_profit|floatformat:2|default:"0.00" }}</p>
+                        </div>
+                        <div class="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center">
+                            <i data-feather="dollar-sign" class="w-6 h-6 text-emerald-600"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row gap-4 mb-8">
+                <a href="{% url 'investments:plans' %}" class="inline-flex items-center justify-center px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
+                    <i data-feather="plus" class="w-5 h-5 mr-2"></i>
+                    New Investment
+                </a>
+                <button class="inline-flex items-center justify-center px-6 py-3 bg-white text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                    <i data-feather="download" class="w-5 h-5 mr-2"></i>
+                    Download Report
+                </button>
+            </div>
+
+            <!-- Active Investments -->
+            <div class="bg-white rounded-xl shadow-sm border mb-8">
+                <div class="p-6 border-b border-gray-200">
+                    <h2 class="text-xl font-bold text-gray-900">Active Investments</h2>
+                    <p class="text-gray-600">Your current investment portfolio</p>
+                </div>
+
+                <div class="p-6">
+                    {% if active_investments %}
+                        <div class="space-y-4">
+                            {% for investment in active_investments %}
+                            <div class="bg-gray-50 rounded-lg p-4 card-hover">
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="flex items-center">
+                                        <div class="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center mr-3">
+                                            <i data-feather="briefcase" class="w-5 h-5 text-indigo-600"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="font-semibold text-gray-900">{{ investment.plan.name }}</h3>
+                                            <p class="text-sm text-gray-600">{{ investment.plan.interest_rate }}% for {{ investment.plan.duration_days }} days</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="font-bold text-gray-900">${{ investment.principal_amount|floatformat:2 }}</p>
+                                        <p class="text-sm text-green-600">Returns: ${{ investment.expected_returns|floatformat:2 }}</p>
+                                    </div>
+                                </div>
+
+                                <!-- Progress Bar -->
+                                <div class="mb-3">
+                                    <div class="flex justify-between text-sm text-gray-600 mb-1">
+                                        <span>Progress</span>
+                                        <span>{{ investment.days_remaining }} days remaining</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-indigo-600 h-2 rounded-full progress-bar" style="width: {{ investment.progress_percentage }}%"></div>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs text-gray-500">Started: {{ investment.start_date|date:"M d, Y" }}</span>
+                                    <div class="flex space-x-2">
+                                        <a href="{% url 'investments:detail' investment.investment_id %}" class="text-indigo-600 hover:text-indigo-800 text-sm font-medium">View Details</a>
+                                        {% if investment.is_matured %}
+                                        <button onclick="withdrawInvestment('{{ investment.investment_id }}')" class="text-green-600 hover:text-green-800 text-sm font-medium">Withdraw</button>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-12">
+                            <div class="w-16 h-16 bg-gray-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+                                <i data-feather="trending-up" class="w-8 h-8 text-gray-400"></i>
+                            </div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">No Active Investments</h3>
+                            <p class="text-gray-600 mb-6">Start growing your wealth with our investment plans</p>
+                            <a href="{% url 'investments:plans' %}" class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+                                <i data-feather="plus" class="w-4 h-4 mr-2"></i>
+                                Start Investing
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Investment Plans Preview -->
+            <div class="bg-white rounded-xl shadow-sm border">
+                <div class="p-6 border-b border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-900">Available Investment Plans</h2>
+                            <p class="text-gray-600">Choose from our profitable investment options</p>
+                        </div>
+                        <a href="{% url 'investments:plans' %}" class="text-indigo-600 hover:text-indigo-800 font-medium">View All Plans</a>
+                    </div>
+                </div>
+
+                <div class="p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        {% for plan in available_plans|slice:":3" %}
+                        <div class="border border-gray-200 rounded-lg p-4 card-hover">
+                            <div class="text-center">
+                                <div class="w-12 h-12 bg-{{ plan.plan_type|default:'indigo' }}-100 rounded-full mx-auto mb-3 flex items-center justify-center">
+                                    <i data-feather="star" class="w-6 h-6 text-{{ plan.plan_type|default:'indigo' }}-600"></i>
+                                </div>
+                                <h3 class="font-bold text-gray-900 mb-1">{{ plan.name }}</h3>
+                                <p class="text-2xl font-bold text-indigo-600 mb-2">{{ plan.interest_rate }}%</p>
+                                <p class="text-sm text-gray-600 mb-4">{{ plan.duration_days }} days</p>
+                                <p class="text-xs text-gray-500 mb-4">Min: ${{ plan.minimum_amount|floatformat:2 }}</p>
+                                <a href="{% url 'investments:plans' %}" class="w-full inline-flex items-center justify-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm">
+                                    Invest Now
+                                </a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Success/Error Messages -->
+    <div id="messageContainer" class="fixed top-4 right-4 z-50"></div>
+
+    <!-- Withdrawal Confirmation Modal -->
+    <div id="withdrawModal" class="fixed inset-0 z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen px-4">
+            <div class="fixed inset-0 bg-black bg-opacity-50" onclick="closeWithdrawModal()"></div>
+            <div class="bg-white rounded-xl shadow-xl max-w-md w-full relative">
+                <div class="p-6">
+                    <h3 class="text-lg font-bold text-gray-900 mb-4">Confirm Withdrawal</h3>
+                    <p class="text-gray-600 mb-6">Are you sure you want to withdraw this investment? You will receive the full returns amount.</p>
+                    <div class="flex space-x-4">
+                        <button onclick="confirmWithdrawal()" class="flex-1 bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700">
+                            Confirm Withdrawal
+                        </button>
+                        <button onclick="closeWithdrawModal()" class="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let currentWithdrawalId = null;
+
+        // Get CSRF token
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        const csrftoken = getCookie('csrftoken');
+
+        // Sidebar functionality
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        const openSidebarBtn = document.getElementById('openSidebar');
+
+        function openSidebar() {
+            sidebar.classList.remove('-translate-x-full');
+            sidebarOverlay.classList.remove('hidden');
+        }
+
+        function closeSidebar() {
+            sidebar.classList.add('-translate-x-full');
+            sidebarOverlay.classList.add('hidden');
+        }
+
+        if (openSidebarBtn) openSidebarBtn.addEventListener('click', openSidebar);
+        if (sidebarOverlay) sidebarOverlay.addEventListener('click', closeSidebar);
+
+        // Message display
+        function showMessage(message, type = 'success') {
+            const container = document.getElementById('messageContainer');
+            const messageDiv = document.createElement('div');
+            const bgColor = type === 'success' ? 'bg-green-600' : 'bg-red-600';
+            
+            messageDiv.className = `${bgColor} text-white px-4 py-3 rounded-lg shadow-lg mb-2 fade-in`;
+            messageDiv.innerHTML = `
+                <div class="flex items-center justify-between">
+                    <span>${message}</span>
+                    <button onclick="this.parentElement.parentElement.remove()" class="ml-4 text-white hover:text-gray-200">
+                        <i data-feather="x" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            `;
+            
+            container.appendChild(messageDiv);
+            feather.replace();
+            
+            setTimeout(() => {
+                if (messageDiv.parentElement) {
+                    messageDiv.remove();
+                }
+            }, 5000);
+        }
+
+        // Investment withdrawal
+        function withdrawInvestment(investmentId) {
+            currentWithdrawalId = investmentId;
+            document.getElementById('withdrawModal').classList.remove('hidden');
+        }
+
+        function closeWithdrawModal() {
+            document.getElementById('withdrawModal').classList.add('hidden');
+            currentWithdrawalId = null;
+        }
+
+        function confirmWithdrawal() {
+            if (!currentWithdrawalId) return;
+
+            fetch(`/investments/withdraw/${currentWithdrawalId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrftoken,
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showMessage(data.message, 'success');
+                    setTimeout(() => {
+                        location.reload();
+                    }, 2000);
+                } else {
+                    showMessage(data.error || 'Error processing withdrawal', 'error');
+                }
+                closeWithdrawModal();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showMessage('Network error occurred', 'error');
+                closeWithdrawModal();
+            });
+        }
+
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            if (window.innerWidth >= 768) {
+                closeSidebar();
+            }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            feather.replace();
+        });
+    </script>
+</body>
+
+</html>

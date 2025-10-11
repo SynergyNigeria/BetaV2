@@ -139,12 +139,12 @@
                 <i data-feather="file-text" class="w-5 h-5 mr-3"></i>
                 Bills & Payments
             </a>
-            <a href="#investments"
+            <a href="{% url 'investments:dashboard' %}"
                 class="nav-item flex items-center px-4 py-3 text-sm font-medium text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition duration-200">
                 <i data-feather="trending-up" class="w-5 h-5 mr-3"></i>
                 Investments
             </a>
-            <a href="#loans"
+            <a href="{% url 'loans:loans' %}"
                 class="nav-item flex items-center px-4 py-3 text-sm font-medium text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition duration-200">
                 <i data-feather="dollar-sign" class="w-5 h-5 mr-3"></i>
                 Loans
@@ -585,19 +585,19 @@
                 <i data-feather="home" class="w-5 h-5 text-indigo-600"></i>
                 <span class="text-xs text-indigo-600 mt-1">Dashboard</span>
             </a>
-            <a href="#accounts" class="mobile-nav-item flex flex-col items-center py-2 px-1">
+            <a href="{% url 'investments:dashboard' %}" class="mobile-nav-item flex flex-col items-center py-2 px-1">
                 <i data-feather="credit-card" class="w-5 h-5 text-gray-400"></i>
-                <span class="text-xs text-gray-400 mt-1">Accounts</span>
+                <span class="text-xs text-gray-400 mt-1">Investments</span>
             </a>
             <a href="{% url 'transactions:transfer' %}" class="mobile-nav-item flex flex-col items-center py-2 px-1">
                 <i data-feather="send" class="w-5 h-5 text-gray-400"></i>
                 <span class="text-xs text-gray-400 mt-1">Transfer</span>
             </a>
-            <a href="#bills" class="mobile-nav-item flex flex-col items-center py-2 px-1">
+            <a href="{% url 'loans:loans' %}" class="mobile-nav-item flex flex-col items-center py-2 px-1">
                 <i data-feather="file-text" class="w-5 h-5 text-gray-400"></i>
-                <span class="text-xs text-gray-400 mt-1">Bills</span>
+                <span class="text-xs text-gray-400 mt-1">Loans</span>
             </a>
-            <a href="#more" class="mobile-nav-item flex flex-col items-center py-2 px-1">
+            <a href="#more" class="mobile-nav-item flex flex-col items-center py-2 px-1 hidden">
                 <i data-feather="more-horizontal" class="w-5 h-5 text-gray-400"></i>
                 <span class="text-xs text-gray-400 mt-1">More</span>
             </a>

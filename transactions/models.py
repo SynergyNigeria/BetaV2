@@ -38,7 +38,7 @@ class Deposit(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name="verified_deposits"
+        related_name="verified_deposits",
     )
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -51,7 +51,11 @@ class Deposit(models.Model):
 
     def generate_reference_number(self):
         while True:
-            ref_num = "DEP-" + timezone.now().strftime("%y%m%d-") + "".join(random.choices(string.digits, k=3))
+            ref_num = (
+                "DEP-"
+                + timezone.now().strftime("%y%m%d-")
+                + "".join(random.choices(string.digits, k=3))
+            )
             if not Deposit.objects.filter(reference_number=ref_num).exists():
                 return ref_num
 
@@ -73,11 +77,13 @@ class Transaction(models.Model):
         ("deposit", "Deposit"),
         ("withdrawal", "Withdrawal"),
         ("fee", "Service Fee"),
+        ("investment", "Investment"),
+        ("investment_withdrawal", "Investment Withdrawal"),
     ]
 
     transaction_id = models.CharField(max_length=20, unique=True, blank=True)
     reference_number = models.CharField(max_length=20, unique=True, blank=True)
-    transaction_type = models.CharField(max_length=20, choices=TRANSACTION_TYPES)
+    transaction_type = models.CharField(max_length=25, choices=TRANSACTION_TYPES)
     status = models.CharField(
         max_length=15,
         choices=[
@@ -87,18 +93,34 @@ class Transaction(models.Model):
             ("failed", "Failed"),
             ("cancelled", "Cancelled"),
         ],
-        default="pending"
+        default="pending",
     )
 
     amount = models.DecimalField(max_digits=15, decimal_places=2)
     fee = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal("0.00"))
     description = models.TextField(blank=True, null=True)
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="transactions")
-    from_account = models.ForeignKey(BankAccount, on_delete=models.CASCADE, related_name="outgoing_transactions")
-    to_account = models.ForeignKey(BankAccount, on_delete=models.CASCADE, related_name="incoming_transactions", blank=True, null=True)
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="transactions"
+    )
+    from_account = models.ForeignKey(
+        BankAccount, on_delete=models.CASCADE, related_name="outgoing_transactions"
+    )
+    to_account = models.ForeignKey(
+        BankAccount,
+        on_delete=models.CASCADE,
+        related_name="incoming_transactions",
+        blank=True,
+        null=True,
+    )
 
-    recipient_user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="received_transactions")
+    recipient_user = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="received_transactions",
+    )
     recipient_name = models.CharField(max_length=255, blank=True, null=True)
     recipient_account_number = models.CharField(max_length=50, blank=True, null=True)
     recipient_account_holder = models.CharField(max_length=255, blank=True, null=True)
@@ -112,14 +134,20 @@ class Transaction(models.Model):
             ("international", "International Transfer"),
         ],
         blank=True,
-        null=True
+        null=True,
     )
     transfer_purpose = models.CharField(max_length=255, blank=True, null=True)
 
     occid_verified = models.BooleanField(default=False)
     occid_verified_at = models.DateTimeField(blank=True, null=True)
 
-    deposit = models.ForeignKey('Deposit', on_delete=models.SET_NULL, null=True, blank=True, related_name="transactions")
+    deposit = models.ForeignKey(
+        "Deposit",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="transactions",
+    )
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

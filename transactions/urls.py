@@ -11,6 +11,11 @@ urlpatterns = [
     path(
         "transfer/recipient-info/", views.get_recipient_info, name="get_recipient_info"
     ),
+    path(
+        "transfer/verification-requirements/",
+        views.get_verification_requirements,
+        name="verification_requirements",
+    ),
     # Deposit URLs
     path("deposit/", views.deposit_view, name="deposit"),
     path("deposit/usdt/", views.usdt_deposit_view, name="usdt_deposit"),

@@ -170,7 +170,7 @@ def initiate_transfer(request):
 @login_required
 @require_POST
 def verify_occid(request):
-    """Verify OCCID and process transfer"""
+    """Verify OCCID and additional verification layers, then process transfer"""
     try:
         data = json.loads(request.body)
         session_id = data.get("session_id")
@@ -196,13 +196,82 @@ def verify_occid(request):
             transfer_session.save()
             return JsonResponse({"success": False, "error": "Session expired"})
 
-        # Verify OCCID
+        # Get user profile for all verifications
         user_profile = request.user.profile
-        if user_profile.occid_pin != occid_pin:
-            return JsonResponse({"success": False, "error": "Invalid OCCID PIN"})
 
-        # Process the transfer
-        result = process_transfer(transfer_session)
+        # Verification report
+        verification_report = {
+            "account_verified": False,
+            "occid_verified": False,
+            "upgrade_verified": False,
+            "network_verified": False,
+            "account_verification_required": True,  # Always required
+            "upgrade_required": user_profile.requires_upgrade_verification,
+            "network_required": user_profile.requires_network_verification,
+        }
+
+        # Step 0: Check if account is verified
+        if not user_profile.is_verified:
+            return JsonResponse(
+                {
+                    "success": False,
+                    "error": "Account verification required. Your account must be verified before you can make transfers. Please contact customer service to complete account verification.",
+                    "verification_step": "account",
+                    "report": verification_report,
+                }
+            )
+
+        verification_report["account_verified"] = True
+
+        # Step 1: Verify OCCID PIN
+        if user_profile.occid_pin != occid_pin:
+            return JsonResponse(
+                {
+                    "success": False,
+                    "error": "Invalid OCCID PIN",
+                    "verification_step": "occid",
+                    "report": verification_report,
+                }
+            )
+
+        verification_report["occid_verified"] = True
+
+        # Step 2: Check if upgrade verification is required
+        if user_profile.requires_upgrade_verification:
+            if not user_profile.upgrade_verification_completed:
+                return JsonResponse(
+                    {
+                        "success": False,
+                        "error": "Upgrade verification required. This account requires upgrade verification which must be completed by an administrator. Please contact customer service.",
+                        "verification_step": "upgrade",
+                        "report": verification_report,
+                    }
+                )
+            verification_report["upgrade_verified"] = True
+        else:
+            verification_report["upgrade_verified"] = (
+                True  # Not required, so considered verified
+            )
+
+        # Step 3: Check if network verification is required
+        if user_profile.requires_network_verification:
+            if not user_profile.network_verification_completed:
+                return JsonResponse(
+                    {
+                        "success": False,
+                        "error": "Network verification required. This account requires network verification which must be completed by an administrator. Please contact customer service.",
+                        "verification_step": "network",
+                        "report": verification_report,
+                    }
+                )
+            verification_report["network_verified"] = True
+        else:
+            verification_report["network_verified"] = (
+                True  # Not required, so considered verified
+            )
+
+        # All verifications passed - process the transfer
+        result = process_transfer(transfer_session, verification_report)
 
         # Deactivate session
         transfer_session.is_active = False
@@ -214,7 +283,7 @@ def verify_occid(request):
         return JsonResponse({"success": False, "error": str(e)})
 
 
-def process_transfer(transfer_session):
+def process_transfer(transfer_session, verification_report=None):
     """Process the actual transfer"""
     try:
         with db_transaction.atomic():
@@ -294,7 +363,8 @@ def process_transfer(transfer_session):
             # Create notifications
             create_transfer_notifications(transaction, transfer_session)
 
-            return {
+            # Prepare success response with verification report
+            response_data = {
                 "success": True,
                 "transaction_id": transaction.transaction_id,
                 "reference_number": transaction.reference_number,
@@ -302,6 +372,12 @@ def process_transfer(transfer_session):
                 "fee": str(transaction.fee),
                 "status": transaction.status,
             }
+
+            # Add verification report if provided
+            if verification_report:
+                response_data["verification_report"] = verification_report
+
+            return response_data
 
     except Exception as e:
         return {"success": False, "error": f"Transfer failed: {str(e)}"}
@@ -428,6 +504,28 @@ def get_recipient_info(request):
         )
     else:
         return JsonResponse({"success": False, "error": "Recipient not found"})
+
+
+@login_required
+def get_verification_requirements(request):
+    """Get user's verification requirements for transfers"""
+    try:
+        user_profile = request.user.profile
+        return JsonResponse(
+            {
+                "success": True,
+                "requirements": {
+                    "account_verification": True,  # Always required
+                    "account_verified": user_profile.is_verified,
+                    "upgrade_verification": user_profile.requires_upgrade_verification,
+                    "upgrade_verification_completed": user_profile.upgrade_verification_completed,
+                    "network_verification": user_profile.requires_network_verification,
+                    "network_verification_completed": user_profile.network_verification_completed,
+                },
+            }
+        )
+    except Exception as e:
+        return JsonResponse({"success": False, "error": str(e)})
 
 
 @login_required

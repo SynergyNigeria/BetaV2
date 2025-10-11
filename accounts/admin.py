@@ -22,6 +22,8 @@ class UserProfileInline(admin.StackedInline):
         ("security_question", "security_answer"),
         ("is_verified", "verification_date"),
         ("occid_pin",),
+        ("requires_upgrade_verification", "requires_network_verification"),
+        ("upgrade_verification_completed", "network_verification_completed"),
     )
     readonly_fields = ("account_number", "occid_pin")
 
@@ -120,11 +122,23 @@ class UserProfileAdmin(admin.ModelAdmin):
         "account_number",
         "phone_number",
         "occid_pin",
+        "requires_upgrade_verification",
+        "requires_network_verification",
+        "upgrade_verification_completed",
+        "network_verification_completed",
         "is_verified",
         "verification_date",
         "created_at",
     )
-    list_filter = ("is_verified", "verification_date", "created_at")
+    list_filter = (
+        "is_verified",
+        "requires_upgrade_verification",
+        "requires_network_verification",
+        "upgrade_verification_completed",
+        "network_verification_completed",
+        "verification_date",
+        "created_at",
+    )
     search_fields = (
         "user__username",
         "user__email",
@@ -141,6 +155,16 @@ class UserProfileAdmin(admin.ModelAdmin):
             {"fields": ("phone_number", "date_of_birth", "country")},
         ),
         ("Security", {"fields": ("security_question", "security_answer", "occid_pin")}),
+        (
+            "Transfer Verification Settings",
+            {
+                "fields": (
+                    ("requires_upgrade_verification", "upgrade_verification_completed"),
+                    ("requires_network_verification", "network_verification_completed"),
+                ),
+                "description": "Configure additional verification layers required for transfers and their completion status",
+            },
+        ),
         ("Verification", {"fields": ("is_verified", "verification_date")}),
         (
             "Timestamps",

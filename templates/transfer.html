@@ -93,6 +93,29 @@
 </head>
 
 <body class="bg-gray-50">
+    <!-- Slide-down Notification System -->
+    <div id="notificationOverlay" class="fixed top-0 left-0 right-0 z-50 transform -translate-y-full transition-transform duration-300 ease-in-out">
+        <div id="notificationContent" class="bg-white shadow-lg border-l-4 mx-4 mt-4 rounded-lg overflow-hidden">
+            <div class="p-4">
+                <div class="flex items-start justify-between">
+                    <div class="flex items-start">
+                        <div id="notificationIcon" class="flex-shrink-0 mr-3 mt-1">
+                            <i data-feather="alert-circle" class="w-6 h-6 text-red-500"></i>
+                        </div>
+                        <div class="flex-grow">
+                            <h4 id="notificationTitle" class="text-lg font-semibold text-gray-900 mb-1">Verification Required</h4>
+                            <p id="notificationMessage" class="text-sm text-gray-700 leading-relaxed"></p>
+                        </div>
+                    </div>
+                    <button id="notificationClose" class="flex-shrink-0 ml-4 p-1 text-gray-400 hover:text-gray-600 transition-colors">
+                        <i data-feather="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>
+            <div id="notificationProgress" class="h-1 bg-gradient-to-r from-blue-500 to-blue-600 transform origin-left scale-x-0 transition-transform duration-5000 ease-linear"></div>
+        </div>
+    </div>
+
     <!-- Mobile Sidebar Overlay -->
     <div id="sidebarOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden md:hidden"></div>
 
@@ -144,7 +167,7 @@
                 <i data-feather="file-text" class="w-5 h-5 mr-3"></i>
                 Bills & Payments
             </a>
-            <a href="#investments"
+            <a href="{% url 'investments:dashboard' %}"
                 class="nav-item flex items-center px-4 py-3 text-sm font-medium text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition duration-200">
                 <i data-feather="trending-up" class="w-5 h-5 mr-3"></i>
                 Investments
@@ -626,6 +649,58 @@
                         </div>
                     </div>
 
+                    <!-- Additional Verification Requirements (shown when needed) -->
+                    <div id="additionalVerifications" class="mb-6 hidden">
+                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                            <h3 class="text-lg font-semibold text-blue-900 mb-3">Additional Verification Required</h3>
+                            <p class="text-blue-800 text-sm mb-4">Your account requires additional verification steps for this transfer:</p>
+                            
+                            <!-- Account Verification -->
+                            <div id="accountVerificationBlock" class="mb-4 hidden">
+                                <div class="flex items-center justify-between bg-white p-3 rounded border border-red-200">
+                                    <div class="flex items-center">
+                                        <i data-feather="user-check" class="w-5 h-5 text-red-600 mr-3"></i>
+                                        <span class="font-medium text-gray-900">Account Verification</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="text-sm text-red-600 font-medium">Required</span>
+                                    </div>
+                                </div>
+                                <p class="text-xs text-red-700 mt-1 ml-8">Your account must be verified before you can make transfers. Please contact customer service.</p>
+                            </div>
+
+                            <!-- Upgrade Verification -->
+                            <div id="upgradeVerificationBlock" class="mb-4 hidden">
+                                <div class="flex items-center justify-between bg-white p-3 rounded border">
+                                    <div class="flex items-center">
+                                        <i data-feather="shield" class="w-5 h-5 text-blue-600 mr-3"></i>
+                                        <span class="font-medium text-gray-900">Upgrade Verification</span>
+                                    </div>
+                                    <div id="upgradeVerificationStatus" class="flex items-center">
+                                        <i data-feather="x-circle" class="w-5 h-5 text-red-600 mr-1"></i>
+                                        <span class="text-sm text-red-600">Not Completed</span>
+                                    </div>
+                                </div>
+                                <p class="text-xs text-blue-700 mt-1 ml-8">Admin must complete upgrade verification before transfers are allowed</p>
+                            </div>
+
+                            <!-- Network Verification -->
+                            <div id="networkVerificationBlock" class="mb-4 hidden">
+                                <div class="flex items-center justify-between bg-white p-3 rounded border">
+                                    <div class="flex items-center">
+                                        <i data-feather="wifi" class="w-5 h-5 text-blue-600 mr-3"></i>
+                                        <span class="font-medium text-gray-900">Network Verification</span>
+                                    </div>
+                                    <div id="networkVerificationStatus" class="flex items-center">
+                                        <i data-feather="x-circle" class="w-5 h-5 text-red-600 mr-1"></i>
+                                        <span class="text-sm text-red-600">Not Completed</span>
+                                    </div>
+                                </div>
+                                <p class="text-xs text-blue-700 mt-1 ml-8">Admin must complete network verification before transfers are allowed</p>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- OCCID Help Message -->
                     <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
                         <div class="flex items-start">
@@ -1001,6 +1076,8 @@
                             document.getElementById('summaryFee').textContent = `$${data.fee}`;
                             document.getElementById('summaryTotal').textContent = `$${data.total}`;
 
+                            // Load verification requirements before showing step 3
+                            loadVerificationRequirements();
                             showStep(3);
                         } else {
                             alert(data.error || 'Failed to initiate transfer');
@@ -1019,6 +1096,193 @@
                     });
             }
 
+            // Load verification requirements
+            function loadVerificationRequirements() {
+                // First, hide all verification blocks
+                document.getElementById('additionalVerifications')?.classList.add('hidden');
+                document.getElementById('accountVerificationBlock')?.classList.add('hidden');
+                document.getElementById('upgradeVerificationBlock')?.classList.add('hidden');
+                document.getElementById('networkVerificationBlock')?.classList.add('hidden');
+                
+                fetch('/transactions/transfer/verification-requirements/', {
+                    method: 'GET',
+                    headers: {
+                        'X-CSRFToken': csrftoken
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const requirements = data.requirements;
+                        
+                        let hasVerificationIssues = false;
+                        
+                        // Show account verification if not verified
+                        if (!requirements.account_verified) {
+                            document.getElementById('accountVerificationBlock').classList.remove('hidden');
+                            hasVerificationIssues = true;
+                        }
+                        
+                        // Check for upgrade verification issues
+                        if (requirements.upgrade_verification && !requirements.upgrade_verification_completed) {
+                            document.getElementById('upgradeVerificationBlock').classList.remove('hidden');
+                            updateVerificationStatus('upgradeVerificationStatus', requirements.upgrade_verification_completed);
+                            hasVerificationIssues = true;
+                        }
+                        
+                        // Check for network verification issues
+                        if (requirements.network_verification && !requirements.network_verification_completed) {
+                            document.getElementById('networkVerificationBlock').classList.remove('hidden');
+                            updateVerificationStatus('networkVerificationStatus', requirements.network_verification_completed);
+                            hasVerificationIssues = true;
+                        }
+                        
+                        // Only show the additional verifications section if there are actual issues
+                        if (hasVerificationIssues) {
+                            document.getElementById('additionalVerifications').classList.remove('hidden');
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading verification requirements:', error);
+                });
+            }
+
+            // Update verification status display
+            function updateVerificationStatus(statusElementId, isCompleted) {
+                const statusElement = document.getElementById(statusElementId);
+                if (statusElement) {
+                    if (isCompleted) {
+                        statusElement.innerHTML = `
+                            <i data-feather="check-circle" class="w-5 h-5 text-green-600 mr-1"></i>
+                            <span class="text-sm text-green-600">Completed</span>
+                        `;
+                    } else {
+                        statusElement.innerHTML = `
+                            <i data-feather="x-circle" class="w-5 h-5 text-red-600 mr-1"></i>
+                            <span class="text-sm text-red-600">Not Completed</span>
+                        `;
+                    }
+                    feather.replace();
+                }
+            }
+
+            // Show slide-down verification notification
+            function showVerificationMessage(message, type = 'error', title = null) {
+                const notification = document.getElementById('notificationOverlay');
+                const content = document.getElementById('notificationContent');
+                const icon = document.getElementById('notificationIcon');
+                const titleElement = document.getElementById('notificationTitle');
+                const messageElement = document.getElementById('notificationMessage');
+                const progress = document.getElementById('notificationProgress');
+                
+                // Clear any existing timeout
+                if (window.notificationTimeout) {
+                    clearTimeout(window.notificationTimeout);
+                }
+                
+                // Set colors and icons based on type
+                let colors, iconName, defaultTitle;
+                if (type === 'error') {
+                    colors = {
+                        border: 'border-l-red-500',
+                        icon: 'text-red-500',
+                        title: 'text-red-900',
+                        message: 'text-red-700',
+                        progress: 'from-red-500 to-red-600'
+                    };
+                    iconName = 'alert-circle';
+                    defaultTitle = 'Verification Failed';
+                } else if (type === 'success') {
+                    colors = {
+                        border: 'border-l-green-500',
+                        icon: 'text-green-500',
+                        title: 'text-green-900',
+                        message: 'text-green-700',
+                        progress: 'from-green-500 to-green-600'
+                    };
+                    iconName = 'check-circle';
+                    defaultTitle = 'Success';
+                } else {
+                    colors = {
+                        border: 'border-l-blue-500',
+                        icon: 'text-blue-500',
+                        title: 'text-blue-900',
+                        message: 'text-blue-700',
+                        progress: 'from-blue-500 to-blue-600'
+                    };
+                    iconName = 'info';
+                    defaultTitle = 'Information';
+                }
+                
+                // Update content
+                content.className = `bg-white shadow-lg border-l-4 mx-4 mt-4 rounded-lg overflow-hidden ${colors.border}`;
+                icon.innerHTML = `<i data-feather="${iconName}" class="w-6 h-6 ${colors.icon}"></i>`;
+                titleElement.textContent = title || defaultTitle;
+                titleElement.className = `text-lg font-semibold mb-1 ${colors.title}`;
+                messageElement.innerHTML = message.replace(/\n/g, '<br>');
+                messageElement.className = `text-sm leading-relaxed ${colors.message}`;
+                progress.className = `h-1 bg-gradient-to-r ${colors.progress} transform origin-left scale-x-0 transition-transform duration-5000 ease-linear`;
+                
+                // Show notification with slide down effect
+                notification.classList.remove('-translate-y-full');
+                notification.classList.add('translate-y-0');
+                
+                // Replace feather icons
+                feather.replace();
+                
+                // Start progress bar animation
+                setTimeout(() => {
+                    progress.classList.remove('scale-x-0');
+                    progress.classList.add('scale-x-100');
+                }, 100);
+                
+                // Auto hide after 5 seconds
+                window.notificationTimeout = setTimeout(() => {
+                    hideVerificationMessage();
+                }, 5000);
+            }
+
+            // Hide slide-down notification
+            function hideVerificationMessage() {
+                const notification = document.getElementById('notificationOverlay');
+                const progress = document.getElementById('notificationProgress');
+                
+                notification.classList.remove('translate-y-0');
+                notification.classList.add('-translate-y-full');
+                
+                // Reset progress bar
+                setTimeout(() => {
+                    progress.classList.remove('scale-x-100');
+                    progress.classList.add('scale-x-0');
+                }, 300);
+                
+                if (window.notificationTimeout) {
+                    clearTimeout(window.notificationTimeout);
+                }
+            }
+
+            // Clear verification messages (legacy function for compatibility)
+            function clearVerificationMessages() {
+                hideVerificationMessage();
+            }
+
+            // Get appropriate title for verification step
+            function getVerificationStepTitle(step) {
+                switch(step) {
+                    case 'account':
+                        return 'Account Verification Required';
+                    case 'occid':
+                        return 'Invalid OCCID PIN';
+                    case 'upgrade':
+                        return 'Upgrade Verification Required';
+                    case 'network':
+                        return 'Network Verification Required';
+                    default:
+                        return 'Verification Required';
+                }
+            }
+
             // OCCID Keypad functionality
             document.querySelectorAll('.keypad-button[data-number]').forEach(button => {
                 button.addEventListener('click', function () {
@@ -1029,11 +1293,8 @@
                             occidInput.value = '•'.repeat(occidValue.length);
                         }
 
-                        // Enable verify button when 6 digits entered
-                        const verifyBtn = document.getElementById('verifyOccid');
-                        if (occidValue.length === 6 && verifyBtn) {
-                            verifyBtn.disabled = false;
-                        }
+                        // Enable verify button when 6 digits entered and additional verifications are completed
+                        updateVerifyButtonState();
                     }
                 });
             });
@@ -1047,18 +1308,33 @@
                         occidInput.value = '•'.repeat(occidValue.length);
                     }
 
-                    const verifyBtn = document.getElementById('verifyOccid');
-                    if (occidValue.length < 6 && verifyBtn) {
-                        verifyBtn.disabled = true;
-                    }
+                    updateVerifyButtonState();
                 }
             });
 
-            // Verify OCCID
+            // Update verify button state based on all requirements
+            function updateVerifyButtonState() {
+                const verifyBtn = document.getElementById('verifyOccid');
+                if (!verifyBtn) return;
+
+                let canVerify = occidValue.length === 6;
+
+                verifyBtn.disabled = !canVerify;
+            }
+
+            // Verify OCCID and additional verifications
             document.getElementById('verifyOccid')?.addEventListener('click', function () {
                 const verifyBtn = this;
                 verifyBtn.innerHTML = 'Verifying...';
                 verifyBtn.disabled = true;
+
+                clearVerificationMessages();
+
+                // Collect verification data
+                const verificationData = {
+                    session_id: currentSessionId,
+                    occid_pin: occidValue
+                };
 
                 fetch('/transactions/transfer/verify-occid/', {
                     method: 'POST',
@@ -1066,14 +1342,16 @@
                         'Content-Type': 'application/json',
                         'X-CSRFToken': csrftoken
                     },
-                    body: JSON.stringify({
-                        session_id: currentSessionId,
-                        occid_pin: occidValue
-                    })
+                    body: JSON.stringify(verificationData)
                 })
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
+                            // Display verification report if available
+                            if (data.verification_report) {
+                                displayVerificationReport(data.verification_report);
+                            }
+
                             // Update completion step with transaction data
                             document.getElementById('completionTransactionId').textContent = data.transaction_id;
                             document.getElementById('completionReferenceNumber').textContent = data.reference_number;
@@ -1084,18 +1362,53 @@
 
                             showStep(4);
                         } else {
-                            alert(data.error || 'OCCID verification failed');
+                            // Show specific error message based on verification step
+                            let errorMessage = data.error || 'Verification failed';
+                            
+                            if (data.verification_step) {
+                                switch(data.verification_step) {
+                                    case 'occid':
+                                        errorMessage = '❌ OCCID verification failed. Please check your 6-digit OCCID PIN and try again.';
+                                        break;
+                                    case 'upgrade':
+                                        errorMessage = '🔒 Upgrade verification required. Please complete the upgrade verification process to continue.';
+                                        break;
+                                    case 'network':
+                                        errorMessage = '📶 Network verification required. Please complete the network verification process to continue.';
+                                        break;
+                                }
+                            }
+
+                            showVerificationMessage(errorMessage, 'error', getVerificationStepTitle(data.verification_step));
                             verifyBtn.innerHTML = 'Verify & Continue';
                             verifyBtn.disabled = false;
                         }
                     })
                     .catch(error => {
                         console.error('Error verifying OCCID:', error);
-                        alert('Verification failed. Please try again.');
+                        showVerificationMessage('Verification failed. Please check your connection and try again.', 'error', 'Connection Error');
                         verifyBtn.innerHTML = 'Verify & Continue';
                         verifyBtn.disabled = false;
                     });
             });
+
+            // Display verification report
+            function displayVerificationReport(report) {
+                console.log('Verification Report:', report);
+                
+                let reportMessage = '✅ Verification Complete!\n\n';
+                reportMessage += `OCCID Verification: ${report.occid_verified ? '✅ Passed' : '❌ Failed'}\n`;
+                
+                if (report.upgrade_required) {
+                    reportMessage += `Upgrade Verification: ${report.upgrade_verified ? '✅ Passed' : '❌ Failed'}\n`;
+                }
+                
+                if (report.network_required) {
+                    reportMessage += `Network Verification: ${report.network_verified ? '✅ Passed' : '❌ Failed'}\n`;
+                }
+                
+                showVerificationMessage(reportMessage, 'success', 'Transfer Approved');
+            }
 
             // Handle window resize
             window.addEventListener('resize', function () {
@@ -1106,6 +1419,14 @@
 
             // Initialize
             showStep(1);
+            
+            // Notification close button event listener
+            document.getElementById('notificationClose')?.addEventListener('click', function() {
+                hideVerificationMessage();
+            });
+            
+            // Initialize feather icons
+            feather.replace();
         });
     </script>
 </body>

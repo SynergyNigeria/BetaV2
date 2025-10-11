@@ -1,0 +1,547 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investment Plans - BetaBank</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
+    <link rel="shortcut icon" href="{% static 'photos/favicon.ico' %}" type="image/x-icon">
+    <style>
+        * {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .plan-card.selected {
+            border-color: #4f46e5;
+            background-color: #f0f9ff;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slide-down {
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+    <!-- Sidebar -->
+    <div id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
+        <div class="flex flex-col h-full">
+            <!-- Header -->
+            <div class="flex items-center justify-center h-16 border-b border-gray-200">
+                <img src="{% static 'photos/beta_logo.png' %}" alt="BetaBank" class="h-8">
+                <span class="ml-2 text-xl font-bold text-gray-800 hidden">BetaBank</span>
+            </div>
+
+            <!-- Navigation -->
+            <nav class="flex-1 px-4 py-6 space-y-2">
+                <a href="{% url 'accounts:dashboard' %}" class="flex items-center px-4 py-2 text-gray-700 rounded-lg hover:bg-gray-100">
+                    <i data-feather="home" class="w-5 h-5 mr-3"></i>
+                    Dashboard
+                </a>
+                <a href="/banking/accounts/" class="flex items-center px-4 py-2 text-gray-700 rounded-lg hover:bg-gray-100">
+                    <i data-feather="credit-card" class="w-5 h-5 mr-3"></i>
+                    Accounts
+                </a>
+                <a href="{% url 'transactions:transfer' %}" class="flex items-center px-4 py-2 text-gray-700 rounded-lg hover:bg-gray-100">
+                    <i data-feather="send" class="w-5 h-5 mr-3"></i>
+                    Transfer
+                </a>
+                <a href="#" class="flex items-center px-4 py-2 text-white bg-indigo-600 rounded-lg">
+                    <i data-feather="trending-up" class="w-5 h-5 mr-3"></i>
+                    Investments
+                </a>
+                <a href="/loans/" class="flex items-center px-4 py-2 text-gray-700 rounded-lg hover:bg-gray-100">
+                    <i data-feather="dollar-sign" class="w-5 h-5 mr-3"></i>
+                    Loans
+                </a>
+            </nav>
+
+            <!-- User Profile -->
+            <div class="p-4 border-t border-gray-200">
+                <div class="flex items-center">
+                    <div class="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center">
+                        <span class="text-white font-medium text-sm">{{ user.first_name.0|default:user.username.0 }}</span>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm font-medium text-gray-900">{{ user.get_full_name|default:user.username }}</p>
+                        <p class="text-xs text-gray-500">{{ user.email }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar overlay for mobile -->
+    <div id="sidebarOverlay" class="fixed inset-0 z-40 bg-black bg-opacity-50 md:hidden hidden"></div>
+
+    <!-- Main Content -->
+    <div class="md:ml-64">
+        <!-- Top Bar -->
+        <header class="bg-white shadow-sm border-b border-gray-200">
+            <div class="flex items-center justify-between px-4 py-4">
+                <div class="flex items-center">
+                    <button id="openSidebar" class="md:hidden p-2 rounded-md text-gray-600 hover:bg-gray-100">
+                        <i data-feather="menu" class="w-6 h-6"></i>
+                    </button>
+                    <div class="ml-2">
+                        <h1 class="text-2xl font-bold text-gray-900">Investment Plans</h1>
+                        <p class="text-gray-600">Choose from our profitable investment options</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="text-right">
+                        <p class="text-sm text-gray-600">Available Balance</p>
+                        <p class="text-xl font-bold text-green-600">${{ primary_account.balance|floatformat:2|default:"0.00" }}</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="p-4 md:p-6 pb-20 md:pb-6">
+            <!-- Back Navigation -->
+            <div class="mb-6">
+                <a href="{% url 'investments:dashboard' %}" class="inline-flex items-center text-indigo-600 hover:text-indigo-800">
+                    <i data-feather="arrow-left" class="w-4 h-4 mr-2"></i>
+                    Back to Dashboard
+                </a>
+            </div>
+
+            <!-- Investment Plans -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                {% for plan in plans %}
+                <div class="plan-card bg-white border-2 border-gray-200 rounded-xl p-6 cursor-pointer card-hover" onclick="selectPlan({{ plan.id }})">
+                    <div class="text-center">
+                        <!-- Plan Icon -->
+                        <div class="w-16 h-16 bg-{% if plan.plan_type == 'basic' %}blue{% elif plan.plan_type == 'premium' %}purple{% elif plan.plan_type == 'gold' %}yellow{% else %}gray{% endif %}-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+                            <i data-feather="{% if plan.plan_type == 'basic' %}star{% elif plan.plan_type == 'premium' %}crown{% elif plan.plan_type == 'gold' %}award{% else %}diamond{% endif %}" class="w-8 h-8 text-{% if plan.plan_type == 'basic' %}blue{% elif plan.plan_type == 'premium' %}purple{% elif plan.plan_type == 'gold' %}yellow{% else %}gray{% endif %}-600"></i>
+                        </div>
+
+                        <!-- Plan Details -->
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">{{ plan.name }}</h3>
+                        <div class="text-3xl font-bold text-indigo-600 mb-2">{{ plan.interest_rate }}%</div>
+                        <p class="text-gray-600 mb-4">{{ plan.duration_days }} days</p>
+                        <p class="text-sm text-gray-500 mb-6">{{ plan.description }}</p>
+
+                        <!-- Plan Features -->
+                        <div class="space-y-2 mb-6">
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-gray-600">Minimum Amount:</span>
+                                <span class="font-medium">${{ plan.minimum_amount|floatformat:2 }}</span>
+                            </div>
+                            {% if plan.maximum_amount %}
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-gray-600">Maximum Amount:</span>
+                                <span class="font-medium">${{ plan.maximum_amount|floatformat:2 }}</span>
+                            </div>
+                            {% endif %}
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-gray-600">Returns Period:</span>
+                                <span class="font-medium">{{ plan.duration_days }} days</span>
+                            </div>
+                        </div>
+
+                        <button class="w-full bg-indigo-600 text-white py-3 px-4 rounded-lg hover:bg-indigo-700 transition-colors font-medium">
+                            Select Plan
+                        </button>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-span-full text-center py-12">
+                    <div class="w-16 h-16 bg-gray-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+                        <i data-feather="trending-up" class="w-8 h-8 text-gray-400"></i>
+                    </div>
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">No Investment Plans Available</h3>
+                    <p class="text-gray-600">Please check back later for new investment opportunities.</p>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Investment Form -->
+            <div id="investmentForm" class="bg-white rounded-xl shadow-sm border p-6 hidden">
+                <h3 class="text-lg font-bold text-gray-900 mb-4">Investment Details</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Selected Plan</label>
+                        <div id="selectedPlanInfo" class="p-3 bg-gray-50 rounded-lg">
+                            <!-- Plan info will be populated here -->
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label for="investmentAmount" class="block text-sm font-medium text-gray-700 mb-2">Investment Amount</label>
+                        <div class="relative">
+                            <span class="absolute left-3 top-3 text-gray-500">$</span>
+                            <input type="number" id="investmentAmount" class="w-full pl-8 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500" placeholder="0.00" step="0.01" min="0">
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">Available balance: ${{ primary_account.balance|floatformat:2|default:"0.00" }}</p>
+                    </div>
+                </div>
+
+                <!-- Investment Calculator -->
+                <div id="investmentCalculator" class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 hidden">
+                    <h4 class="font-medium text-blue-900 mb-3">Investment Projection</h4>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                        <div>
+                            <p class="text-sm text-blue-600">Principal</p>
+                            <p id="calculatedPrincipal" class="font-bold text-blue-900">$0.00</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-blue-600">Interest Rate</p>
+                            <p id="calculatedRate" class="font-bold text-blue-900">0%</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-blue-600">Duration</p>
+                            <p id="calculatedDuration" class="font-bold text-blue-900">0 days</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-green-600">Total Returns</p>
+                            <p id="calculatedReturns" class="font-bold text-green-900">$0.00</p>
+                        </div>
+                    </div>
+                    <div class="mt-3 pt-3 border-t border-blue-200">
+                        <div class="text-center">
+                            <p class="text-sm text-green-600">Expected Profit</p>
+                            <p id="calculatedProfit" class="text-xl font-bold text-green-900">$0.00</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex space-x-4">
+                    <button id="calculateBtn" onclick="calculateReturns()" class="flex-1 bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors">
+                        Calculate Returns
+                    </button>
+                    <button id="investBtn" onclick="confirmInvestment()" class="flex-1 bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 transition-colors" disabled>
+                        Invest Now
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Success/Error Messages -->
+    <div id="messageContainer" class="fixed top-4 right-4 z-50"></div>
+
+    <!-- Investment Confirmation Modal -->
+    <div id="confirmationModal" class="fixed inset-0 z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen px-4">
+            <div class="fixed inset-0 bg-black bg-opacity-50" onclick="closeConfirmationModal()"></div>
+            <div class="bg-white rounded-xl shadow-xl max-w-md w-full relative">
+                <div class="p-6">
+                    <h3 class="text-lg font-bold text-gray-900 mb-4">Confirm Investment</h3>
+                    <div id="confirmationDetails" class="space-y-2 mb-6">
+                        <!-- Investment details will be populated here -->
+                    </div>
+                    <div class="flex space-x-4">
+                        <button onclick="processInvestment()" class="flex-1 bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700">
+                            Confirm Investment
+                        </button>
+                        <button onclick="closeConfirmationModal()" class="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let selectedPlan = null;
+        let calculatedData = null;
+
+        // Get CSRF token
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        const csrftoken = getCookie('csrftoken');
+
+        // Sidebar functionality
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        const openSidebarBtn = document.getElementById('openSidebar');
+
+        function openSidebar() {
+            sidebar.classList.remove('-translate-x-full');
+            sidebarOverlay.classList.remove('hidden');
+        }
+
+        function closeSidebar() {
+            sidebar.classList.add('-translate-x-full');
+            sidebarOverlay.classList.add('hidden');
+        }
+
+        if (openSidebarBtn) openSidebarBtn.addEventListener('click', openSidebar);
+        if (sidebarOverlay) sidebarOverlay.addEventListener('click', closeSidebar);
+
+        // Message display
+        function showMessage(message, type = 'success') {
+            const container = document.getElementById('messageContainer');
+            const messageDiv = document.createElement('div');
+            const bgColor = type === 'success' ? 'bg-green-600' : 'bg-red-600';
+            
+            messageDiv.className = `${bgColor} text-white px-4 py-3 rounded-lg shadow-lg mb-2 fade-in`;
+            messageDiv.innerHTML = `
+                <div class="flex items-center justify-between">
+                    <span>${message}</span>
+                    <button onclick="this.parentElement.parentElement.remove()" class="ml-4 text-white hover:text-gray-200">
+                        <i data-feather="x" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            `;
+            
+            container.appendChild(messageDiv);
+            feather.replace();
+            
+            setTimeout(() => {
+                if (messageDiv.parentElement) {
+                    messageDiv.remove();
+                }
+            }, 5000);
+        }
+
+        // Plan selection
+        function selectPlan(planId) {
+            // Remove previous selection
+            document.querySelectorAll('.plan-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+
+            // Add selection to clicked card
+            event.currentTarget.classList.add('selected');
+
+            // Fetch plan details
+            fetch(`/investments/plan/${planId}/`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        selectedPlan = data.plan;
+                        populatePlanInfo(data.plan);
+                        document.getElementById('investmentForm').classList.remove('hidden');
+                        document.getElementById('investmentForm').scrollIntoView({ behavior: 'smooth' });
+                    } else {
+                        showMessage(data.error || 'Error loading plan details', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showMessage('Network error occurred', 'error');
+                });
+        }
+
+        function populatePlanInfo(plan) {
+            const infoDiv = document.getElementById('selectedPlanInfo');
+            infoDiv.innerHTML = `
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h4 class="font-medium text-gray-900">${plan.name}</h4>
+                        <p class="text-sm text-gray-600">${plan.interest_rate}% for ${plan.duration_days} days</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-sm text-gray-600">Min: $${plan.minimum_amount}</p>
+                        ${plan.maximum_amount ? `<p class="text-sm text-gray-600">Max: $${plan.maximum_amount}</p>` : ''}
+                    </div>
+                </div>
+            `;
+
+            // Update amount input constraints
+            const amountInput = document.getElementById('investmentAmount');
+            amountInput.min = plan.minimum_amount;
+            if (plan.maximum_amount) {
+                amountInput.max = plan.maximum_amount;
+            }
+            amountInput.placeholder = `Min: $${plan.minimum_amount}`;
+        }
+
+        // Calculate returns
+        function calculateReturns() {
+            if (!selectedPlan) {
+                showMessage('Please select an investment plan first', 'error');
+                return;
+            }
+
+            const amount = parseFloat(document.getElementById('investmentAmount').value);
+            if (!amount || amount <= 0) {
+                showMessage('Please enter a valid investment amount', 'error');
+                return;
+            }
+
+            if (amount < parseFloat(selectedPlan.minimum_amount)) {
+                showMessage(`Minimum investment amount is $${selectedPlan.minimum_amount}`, 'error');
+                return;
+            }
+
+            if (selectedPlan.maximum_amount && amount > parseFloat(selectedPlan.maximum_amount)) {
+                showMessage(`Maximum investment amount is $${selectedPlan.maximum_amount}`, 'error');
+                return;
+            }
+
+            // Fetch calculation from server
+            fetch(`/investments/calculate/?plan_id=${selectedPlan.id}&amount=${amount}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        calculatedData = data;
+                        displayCalculation(data);
+                        document.getElementById('investBtn').disabled = false;
+                    } else {
+                        showMessage(data.error || 'Error calculating returns', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showMessage('Network error occurred', 'error');
+                });
+        }
+
+        function displayCalculation(data) {
+            document.getElementById('calculatedPrincipal').textContent = `$${parseFloat(data.principal).toFixed(2)}`;
+            document.getElementById('calculatedRate').textContent = `${data.interest_rate}%`;
+            document.getElementById('calculatedDuration').textContent = `${data.duration_days} days`;
+            document.getElementById('calculatedReturns').textContent = `$${parseFloat(data.expected_returns).toFixed(2)}`;
+            document.getElementById('calculatedProfit').textContent = `$${parseFloat(data.profit).toFixed(2)}`;
+            
+            document.getElementById('investmentCalculator').classList.remove('hidden');
+            document.getElementById('investmentCalculator').classList.add('slide-down');
+        }
+
+        // Investment confirmation
+        function confirmInvestment() {
+            if (!calculatedData) {
+                showMessage('Please calculate returns first', 'error');
+                return;
+            }
+
+            const confirmationDetails = document.getElementById('confirmationDetails');
+            confirmationDetails.innerHTML = `
+                <div class="text-sm space-y-2">
+                    <div class="flex justify-between">
+                        <span>Investment Plan:</span>
+                        <span class="font-medium">${selectedPlan.name}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Investment Amount:</span>
+                        <span class="font-medium">$${parseFloat(calculatedData.principal).toFixed(2)}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Expected Returns:</span>
+                        <span class="font-medium text-green-600">$${parseFloat(calculatedData.expected_returns).toFixed(2)}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Profit:</span>
+                        <span class="font-medium text-green-600">$${parseFloat(calculatedData.profit).toFixed(2)}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Duration:</span>
+                        <span class="font-medium">${calculatedData.duration_days} days</span>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('confirmationModal').classList.remove('hidden');
+        }
+
+        function closeConfirmationModal() {
+            document.getElementById('confirmationModal').classList.add('hidden');
+        }
+
+        function processInvestment() {
+            const investData = {
+                plan_id: selectedPlan.id,
+                amount: parseFloat(calculatedData.principal)
+            };
+
+            fetch('/investments/create/', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrftoken,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(investData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showMessage(data.message, 'success');
+                    closeConfirmationModal();
+                    setTimeout(() => {
+                        window.location.href = '/investments/';
+                    }, 2000);
+                } else {
+                    showMessage(data.error || 'Error creating investment', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showMessage('Network error occurred', 'error');
+            });
+        }
+
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            if (window.innerWidth >= 768) {
+                closeSidebar();
+            }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            feather.replace();
+        });
+    </script>
+</body>
+
+</html>

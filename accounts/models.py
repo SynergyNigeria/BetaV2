@@ -28,6 +28,22 @@ class UserProfile(models.Model):
         null=True,
         help_text="6-digit OCCID PIN for secure transactions",
     )
+    # Multi-layer verification settings
+    requires_upgrade_verification = models.BooleanField(
+        default=False, help_text="Whether user needs upgrade verification for transfers"
+    )
+    requires_network_verification = models.BooleanField(
+        default=False, help_text="Whether user needs network verification for transfers"
+    )
+    # Verification completion status (can only be set by admin)
+    upgrade_verification_completed = models.BooleanField(
+        default=False,
+        help_text="Whether upgrade verification has been completed by admin",
+    )
+    network_verification_completed = models.BooleanField(
+        default=False,
+        help_text="Whether network verification has been completed by admin",
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
