@@ -80,6 +80,79 @@
         .stagger-2 { transition-delay: 0.2s; }
         .stagger-3 { transition-delay: 0.3s; }
         .stagger-4 { transition-delay: 0.4s; }
+        
+        /* Force desktop layout on mobile - override all responsive classes */
+        
+        /* Force desktop navigation to show on all screen sizes */
+        .hidden.md\:block {
+            display: block !important;
+        }
+        
+        .md\:hidden {
+            display: none !important;
+        }
+        
+        /* Force all grids to show desktop columns on mobile */
+        .grid.grid-cols-2.md\:grid-cols-4 {
+            grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+        }
+        
+        .grid.md\:grid-cols-2 {
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        }
+        
+        .grid.md\:grid-cols-3 {
+            grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        }
+        
+        .grid.md\:grid-cols-4 {
+            grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+        }
+        
+        .grid.lg\:grid-cols-4 {
+            grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+        }
+        
+        /* Force flex row layout on mobile */
+        .flex.flex-col.sm\:flex-row {
+            flex-direction: row !important;
+        }
+        
+        /* Force desktop text sizes on mobile */
+        .text-4xl.md\:text-6xl {
+            font-size: 3.75rem !important;
+            line-height: 1 !important;
+        }
+        
+        /* Ensure proper spacing and sizing */
+        * {
+            -webkit-text-size-adjust: 100%;
+            -moz-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+        }
+        
+        /* Hero section responsive height - full screen on desktop, normal on mobile */
+        @media (min-width: 769px) {
+            /* Desktop: keep full screen height */
+            #home {
+                min-height: 100vh !important;
+                display: flex !important;
+                align-items: center !important;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            /* Mobile: normal section height */
+            #home {
+                min-height: auto !important;
+                padding-top: 8rem !important;
+                padding-bottom: 5rem !important;
+                display: block !important;
+                align-items: stretch !important;
+            }
+        }
+    
     </style>
 </head>
 <body class="bg-gray-50">
@@ -124,7 +197,7 @@
     </nav>
 
     <!-- Hero Section -->
-    <section id="home" class="gradient-bg min-h-screen flex items-center pt-16">
+    <section id="home" class="gradient-bg max-h-8 flex items-center pt-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid md:grid-cols-2 gap-12 items-center">
                 <div class="text-white">

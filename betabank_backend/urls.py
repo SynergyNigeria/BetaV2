@@ -20,8 +20,28 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.views.generic import TemplateView
+from django.http import HttpResponse
+from django.views.decorators.http import require_GET
+from django.views.decorators.cache import cache_control
+import os
+
+
+# Service Worker View
+@require_GET
+@cache_control(max_age=0, no_cache=True, no_store=True, must_revalidate=True)
+def service_worker(request):
+    """Serve the service worker from root"""
+    sw_path = os.path.join(settings.BASE_DIR, "static", "service-worker.js")
+    try:
+        with open(sw_path, "r") as f:
+            content = f.read()
+        return HttpResponse(content, content_type="application/javascript")
+    except FileNotFoundError:
+        return HttpResponse("Service Worker not found", status=404)
+
 
 urlpatterns = [
+    path("service-worker.js", service_worker, name="service_worker"),
     path("admin/", admin.site.urls),
     path("", TemplateView.as_view(template_name="index.html"), name="home"),
     path("accounts/", include("accounts.urls")),
