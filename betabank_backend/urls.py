@@ -50,7 +50,7 @@ urlpatterns = [
     path("loans/", include("loans.urls")),
     path("investments/", include("investments.urls")),
     path("notifications/", include("notifications.urls")),
-    # path("chat/", include("chat.urls")),
+    path("chat/", include("chat.urls")),
     path("manager/", include("manager.urls")),
     path("empty/", include("empty_routes.urls")),
 ]
